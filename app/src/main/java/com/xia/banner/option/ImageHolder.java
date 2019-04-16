@@ -3,6 +3,8 @@ package com.xia.banner.option;
 import android.view.View;
 
 import com.xia.banner.R;
+import com.xia.fly.imageloader.ImageConfigImpl;
+import com.xia.fly.ui.imageloader.ImageLoader;
 import com.xia.flybanner.holder.FBHolder;
 
 import androidx.appcompat.widget.AppCompatImageView;
@@ -25,6 +27,12 @@ public class ImageHolder extends FBHolder<Integer> {
 
     @Override
     public void updateUI(Integer data) {
-        mAppCompatImageView.setImageResource(data);
+        ImageLoader.loadImage(
+                ImageConfigImpl.load(data)
+                        .crossFade()
+                        .imageRadius(50)
+                        .into(mAppCompatImageView)
+                        .build()
+        );
     }
 }
