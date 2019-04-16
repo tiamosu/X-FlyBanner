@@ -38,9 +38,9 @@ public class FlyBanner<T> extends RelativeLayout {
     private List<T> mDatas = new ArrayList<>();
     private int[] mPageIndicatorId;
     private long mAutoTurningTime;
+    private boolean mCanLoop;
     private boolean mTurning;
     private boolean mCanTurn;
-    private boolean mCanLoop;
 
     private FBPageAdapter mPageAdapter;
     private FBLoopViewPager mLoopViewPager;
@@ -60,8 +60,8 @@ public class FlyBanner<T> extends RelativeLayout {
     public FlyBanner(Context context, AttributeSet attrs) {
         super(context, attrs);
         final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FlyBanner);
-        mCanLoop = typedArray.getBoolean(R.styleable.FlyBanner_canLoop, true);
-        mAutoTurningTime = typedArray.getInteger(R.styleable.FlyBanner_autoTurningTime, -1);
+        mCanLoop = typedArray.getBoolean(R.styleable.FlyBanner_fb_canLoop, true);
+        mAutoTurningTime = typedArray.getInteger(R.styleable.FlyBanner_fb_autoTurningTime, -1);
         typedArray.recycle();
 
         init(context);
@@ -250,6 +250,9 @@ public class FlyBanner<T> extends RelativeLayout {
         return mLoopScaleHelper.getRealCurrentItem();
     }
 
+    /**
+     * 是否开启了自动轮播
+     */
     public boolean isCanLoop() {
         return mCanLoop;
     }

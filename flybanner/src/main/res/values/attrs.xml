@@ -2,7 +2,7 @@
 <resources>
 
     <declare-styleable name="FlyBanner">
-        <attr name="canLoop" format="boolean"/>
-        <attr name="autoTurningTime" format="integer"/>
+        <attr name="fb_canLoop" format="boolean"/>
+        <attr name="fb_autoTurningTime" format="integer"/>
     </declare-styleable>
 </resources>

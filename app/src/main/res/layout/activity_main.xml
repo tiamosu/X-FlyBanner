@@ -9,8 +9,8 @@
         android:id="@+id/banner"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        app:autoTurningTime="3000"
-        app:canLoop="true"
+        app:fb_autoTurningTime="3000"
+        app:fb_canLoop="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

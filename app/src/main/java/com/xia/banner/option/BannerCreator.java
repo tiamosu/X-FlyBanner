@@ -17,11 +17,18 @@ public final class BannerCreator {
                                   OnItemClickListener onItemClickListener,
                                   OnPageChangeListener onPageChangeListener) {
         final int bannerSize = datas.size();
-        flyBanner.setPages(new HolderCreator(), datas)
+        flyBanner
+                //设置试图布局及数据
+                .setPages(new HolderCreator(), datas)
+                //设置页面指示器
                 .useIndicator()
+                //设置自动轮播时间
                 .startTurning(5000)
+                //设置是否进行自动轮播
                 .setCanLoop(bannerSize > 1)
+                //设置点击事件监听
                 .setOnItemClickListener(onItemClickListener)
+                //设置页面切换事件监听
                 .setOnPageChangeListener(onPageChangeListener);
     }
 }
