@@ -39,7 +39,7 @@ public class FlyBanner<T> extends RelativeLayout {
     private int[] mPageIndicatorId;
     private long mAutoTurningTime;
     private boolean mTurning;
-    private boolean mCanTurn = false;
+    private boolean mCanTurn;
     private boolean mCanLoop;
 
     private FBPageAdapter mPageAdapter;
@@ -96,30 +96,30 @@ public class FlyBanner<T> extends RelativeLayout {
             mFlyBanner = flyBanner;
         }
 
-        public CommonBuilder useIndicator() {
+        public FlyBanner useIndicator() {
             useIndicator(null, null);
-            return new CommonBuilder(mFlyBanner);
+            return mFlyBanner;
         }
 
-        public CommonBuilder useIndicator(@NonNull @IdRes int[] indicatorId) {
+        public FlyBanner useIndicator(@NonNull @IdRes int[] indicatorId) {
             useIndicator(indicatorId, null);
-            return new CommonBuilder(mFlyBanner);
+            return mFlyBanner;
         }
 
-        public CommonBuilder useIndicator(@NonNull PageIndicatorAlign align) {
+        public FlyBanner useIndicator(@NonNull PageIndicatorAlign align) {
             useIndicator(null, align);
-            return new CommonBuilder(mFlyBanner);
+            return mFlyBanner;
         }
 
-        public CommonBuilder useIndicator(@Nullable @IdRes int[] indicatorId,
-                                          @Nullable PageIndicatorAlign align) {
+        public FlyBanner useIndicator(@Nullable @IdRes int[] indicatorId,
+                                      @Nullable PageIndicatorAlign align) {
             indicatorId = indicatorId != null ? indicatorId
                     : new int[]{R.drawable.indicator_gray_radius, R.drawable.indicator_white_radius};
             this.mFlyBanner.mPageIndicatorId = indicatorId;
 
             setPageIndicator(indicatorId);
             setPageIndicatorAlign(align);
-            return new CommonBuilder(mFlyBanner);
+            return mFlyBanner;
         }
     }
 
@@ -174,24 +174,19 @@ public class FlyBanner<T> extends RelativeLayout {
         mLoPageTurningPoint.setLayoutParams(layoutParams);
     }
 
-    public class CommonBuilder {
-        private FlyBanner mFlyBanner;
+    public FlyBanner setLayoutManager(RecyclerView.LayoutManager layoutManager) {
+        mLoopViewPager.setLayoutManager(layoutManager);
+        return this;
+    }
 
-        CommonBuilder(FlyBanner flyBanner) {
-            mFlyBanner = flyBanner;
+    public FlyBanner setCanLoop(boolean canLoop) {
+        this.mCanLoop = canLoop;
+        if (!canLoop) {
+            stopTurning();
         }
-
-        public CommonBuilder setLayoutManager(RecyclerView.LayoutManager layoutManager) {
-            mLoopViewPager.setLayoutManager(layoutManager);
-            return this;
-        }
-
-        public FlyBanner setCanLoop(boolean canLoop) {
-            this.mFlyBanner.mCanLoop = canLoop;
-            mPageAdapter.setCanLoop(canLoop);
-            notifyDataSetChanged();
-            return mFlyBanner;
-        }
+        mPageAdapter.setCanLoop(canLoop);
+        notifyDataSetChanged();
+        return this;
     }
 
     /**
@@ -272,7 +267,7 @@ public class FlyBanner<T> extends RelativeLayout {
      */
     public FlyBanner startTurning(long autoTurningTime) {
         this.mAutoTurningTime = autoTurningTime;
-        if (autoTurningTime < 0) {
+        if (autoTurningTime < 0 || !mCanLoop) {
             return this;
         }
         //如果是正在翻页的话先停掉
