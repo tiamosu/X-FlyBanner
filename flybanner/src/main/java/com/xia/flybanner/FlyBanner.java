@@ -71,9 +71,9 @@ public class FlyBanner<T> extends RelativeLayout {
 
     private void init(Context context) {
         final View view = LayoutInflater.from(context)
-                .inflate(R.layout.fly_banner_include_viewpager, this, true);
-        mLoopViewPager = view.findViewById(R.id.loopViewPager);
-        mLoPageTurningPoint = view.findViewById(R.id.loPageTurningPoint);
+                .inflate(R.layout.fb_include_viewpager, this, true);
+        mLoopViewPager = view.findViewById(R.id.fb_loopViewPager);
+        mLoPageTurningPoint = view.findViewById(R.id.fb_loPageTurningPoint);
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.HORIZONTAL, false);
@@ -213,7 +213,9 @@ public class FlyBanner<T> extends RelativeLayout {
         if (!canLoop) {
             stopTurning();
         }
-        mPageAdapter.setCanLoop(canLoop);
+        if (mPageAdapter != null) {
+            mPageAdapter.setCanLoop(canLoop);
+        }
         notifyDataSetChanged();
         return this;
     }
