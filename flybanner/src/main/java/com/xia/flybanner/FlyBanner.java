@@ -273,6 +273,13 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     /**
+     * 获取ViewPager
+     */
+    public FBLoopViewPager getLoopViewPager() {
+        return mLoopViewPager;
+    }
+
+    /**
      * 获取当前页对应的position
      */
     public int getCurrentItem() {

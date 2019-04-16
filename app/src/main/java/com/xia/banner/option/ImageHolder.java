@@ -30,7 +30,6 @@ public class ImageHolder extends FBHolder<Integer> {
         ImageLoader.loadImage(
                 ImageConfigImpl.load(data)
                         .crossFade()
-                        .imageRadius(50)
                         .into(mAppCompatImageView)
                         .build()
         );
