@@ -12,5 +12,5 @@ public interface OnPageChangeListener {
 
     void onScrolled(RecyclerView recyclerView, int dx, int dy);
 
-    void onPageSelected(int index);
+    void onPageSelected(int index, boolean isLastPage);
 }

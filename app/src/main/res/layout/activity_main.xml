@@ -9,7 +9,6 @@
         android:id="@+id/banner"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        android:background="@color/colorPrimary"
         android:padding="15dp"
         app:fb_autoTurningTime="3000"
         app:fb_canLoop="true"

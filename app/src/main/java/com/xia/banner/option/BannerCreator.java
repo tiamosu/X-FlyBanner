@@ -26,6 +26,8 @@ public final class BannerCreator {
                 .startTurning(5000)
                 //设置是否进行自动轮播
                 .setCanLoop(bannerSize > 1)
+                //设置指示器显隐
+                .setPointViewVisible(bannerSize > 1)
                 //设置点击事件监听
                 .setOnItemClickListener(onItemClickListener)
                 //设置页面切换事件监听

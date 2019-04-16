@@ -35,7 +35,7 @@ public class FBPageChangeListener implements OnPageChangeListener {
     }
 
     @Override
-    public void onPageSelected(int index) {
+    public void onPageSelected(int index, boolean isLastPage) {
         final int size = mPointViews.size();
         for (int i = 0; i < size; i++) {
             mPointViews.get(index).setImageResource(mPageIndicatorId[1]);
@@ -44,7 +44,7 @@ public class FBPageChangeListener implements OnPageChangeListener {
             }
         }
         if (mOnPageChangeListener != null) {
-            mOnPageChangeListener.onPageSelected(index);
+            mOnPageChangeListener.onPageSelected(index, isLastPage);
         }
     }
 

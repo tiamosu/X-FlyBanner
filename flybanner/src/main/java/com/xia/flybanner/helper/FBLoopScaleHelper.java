@@ -60,8 +60,10 @@ public class FBLoopScaleHelper {
                 if (onPageChangeListener != null) {
                     onPageChangeListener.onScrollStateChanged(recyclerView, newState);
                     //停止滚动
-                    if (count != 0 && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        onPageChangeListener.onPageSelected(position % count);
+                    if (count > 0 && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        final int index = position % count;
+                        final boolean isLastPage = index == count - 1;
+                        onPageChangeListener.onPageSelected(index, isLastPage);
                     }
                 }
             }

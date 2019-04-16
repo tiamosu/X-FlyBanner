@@ -36,6 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class FlyBanner<T> extends RelativeLayout {
     private final ArrayList<ImageView> mPointViews = new ArrayList<>();
     private List<T> mDatas = new ArrayList<>();
+    private int mDataSize;
     private int[] mPageIndicatorId;
     private long mAutoTurningTime;
     private boolean mCanLoop;
@@ -81,10 +82,11 @@ public class FlyBanner<T> extends RelativeLayout {
 
     public IndicatorBuilder setPages(@NonNull FBViewHolderCreator holderCreator, @NonNull List<T> datas) {
         this.mDatas = datas;
+        this.mDataSize = datas.size();
         mPageAdapter = new FBPageAdapter(holderCreator, datas, mCanLoop);
         mLoopViewPager.setAdapter(mPageAdapter);
 
-        mLoopScaleHelper.setFirstItemPos(mCanLoop ? datas.size() : 0);
+        mLoopScaleHelper.setFirstItemPos(mCanLoop ? mDataSize : 0);
         mLoopScaleHelper.attachToRecyclerView(mLoopViewPager);
         return new IndicatorBuilder(this);
     }
@@ -130,12 +132,11 @@ public class FlyBanner<T> extends RelativeLayout {
             return;
         }
 
-        final int size = mDatas.size();
-        for (int count = 0; count < size; count++) {
+        for (int count = 0; count < mDataSize; count++) {
             // 翻页指示的点
             final ImageView pointView = new ImageView(getContext());
             pointView.setPadding(5, 0, 5, 0);
-            if (mLoopScaleHelper.getFirstItemPos() % size == count) {
+            if (mLoopScaleHelper.getFirstItemPos() % mDataSize == count) {
                 pointView.setImageResource(indicatorId[1]);
             } else {
                 pointView.setImageResource(indicatorId[0]);
@@ -200,7 +201,7 @@ public class FlyBanner<T> extends RelativeLayout {
         if (mPageIndicatorId != null) {
             setPageIndicator(mPageIndicatorId);
         }
-        mLoopScaleHelper.setCurrentItem(mCanLoop ? mDatas.size() : 0);
+        mLoopScaleHelper.setCurrentItem(mCanLoop ? mDataSize : 0);
         return this;
     }
 
@@ -239,7 +240,7 @@ public class FlyBanner<T> extends RelativeLayout {
      * 设置当前页对应的position
      */
     public FlyBanner setCurrentItem(int position, boolean smoothScroll) {
-        mLoopScaleHelper.setCurrentItem(mCanLoop ? mDatas.size() + position : position, smoothScroll);
+        mLoopScaleHelper.setCurrentItem(mCanLoop ? mDataSize + position : position, smoothScroll);
         return this;
     }
 
@@ -270,7 +271,7 @@ public class FlyBanner<T> extends RelativeLayout {
      */
     public FlyBanner startTurning(long autoTurningTime) {
         this.mAutoTurningTime = autoTurningTime;
-        if (autoTurningTime < 0 || !mCanLoop) {
+        if (autoTurningTime < 0 || !mCanLoop || mDataSize < 1) {
             return this;
         }
         //如果是正在翻页的话先停掉

@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.xia.banner.option.BannerCreator;
 import com.xia.flybanner.FlyBanner;
-import com.xia.flybanner.listener.OnItemClickListener;
 import com.xia.flybanner.listener.OnPageChangeListener;
 
 import java.lang.reflect.Field;
@@ -27,31 +26,30 @@ public class MainActivity extends AppCompatActivity {
         mFlyBanner = findViewById(R.id.banner);
 
         loadTestDatas();
-        BannerCreator.setDefault(mFlyBanner, mLocalImages, new OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Log.e("weixi", "onItemClick: " + position);
-            }
-        }, new OnPageChangeListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            }
+        BannerCreator.setDefault(mFlyBanner, mLocalImages, position -> Log.e("weixi", "onItemClick: " + position),
+                new OnPageChangeListener() {
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    }
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            }
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    }
 
-            @Override
-            public void onPageSelected(int index) {
-                Log.e("weixi", "onPageSelected: " + index);
-            }
-        });
+                    @Override
+                    public void onPageSelected(int index, boolean isLastPage) {
+                        Log.e("weixi", "onPageSelected: " + index + "   isLastPage:" + isLastPage);
+                    }
+                });
     }
 
     private void loadTestDatas() {
         //本地图片集合
         for (int position = 0; position < 7; position++) {
-            mLocalImages.add(getResId("ic_test_" + position, R.drawable.class));
+            final int imgResId = getResId("ic_test_" + position, R.drawable.class);
+            if (imgResId != -1) {
+                mLocalImages.add(imgResId);
+            }
         }
     }
 
