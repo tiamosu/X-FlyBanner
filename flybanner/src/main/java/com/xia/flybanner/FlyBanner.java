@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -173,6 +174,33 @@ public class FlyBanner<T> extends RelativeLayout {
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL,
                 align == PageIndicatorAlign.CENTER_HORIZONTAL ? RelativeLayout.TRUE : 0);
         mLoPageTurningPoint.setLayoutParams(layoutParams);
+    }
+
+    /**
+     * 设置指示器偏移
+     *
+     * @param leftMargin
+     * @param topMargin
+     * @param rightMargin
+     * @param bottomMargin
+     * @return
+     */
+    public FlyBanner setIndicatorMargin(Integer leftMargin, Integer topMargin, Integer rightMargin, Integer bottomMargin) {
+        final ViewGroup.MarginLayoutParams layoutParams = (MarginLayoutParams) mLoPageTurningPoint.getLayoutParams();
+        if (leftMargin != null) {
+            layoutParams.leftMargin = leftMargin;
+        }
+        if (topMargin != null) {
+            layoutParams.topMargin = topMargin;
+        }
+        if (rightMargin != null) {
+            layoutParams.rightMargin = rightMargin;
+        }
+        if (bottomMargin != null) {
+            layoutParams.bottomMargin = bottomMargin;
+        }
+        mLoPageTurningPoint.setLayoutParams(layoutParams);
+        return this;
     }
 
     public FlyBanner setLayoutManager(RecyclerView.LayoutManager layoutManager) {

@@ -15,10 +15,23 @@ public class FBPageAdapterHelper {
     private static int sPagePadding = 0;
     private static int sShowLeftCardWidth = 0;
 
-    public void onCreateViewHolder(ViewGroup parent, View itemView) {
+    public void onCreateViewHolder(final ViewGroup parent, final View itemView) {
         final RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) itemView.getLayoutParams();
-        lp.width = parent.getWidth() - ScreenUtil.dip2px(itemView.getContext(), 2 * (sPagePadding + sShowLeftCardWidth));
-        itemView.setLayoutParams(lp);
+        final int parentWidth = parent.getMeasuredWidth();
+        if (parentWidth != 0) {
+            lp.width = parentWidth - ScreenUtil.dip2px(
+                    itemView.getContext(), 2 * (sPagePadding + sShowLeftCardWidth));
+            itemView.setLayoutParams(lp);
+            return;
+        }
+        parent.post(new Runnable() {
+            @Override
+            public void run() {
+                lp.width = parent.getMeasuredWidth() - ScreenUtil.dip2px(
+                        itemView.getContext(), 2 * (sPagePadding + sShowLeftCardWidth));
+                itemView.setLayoutParams(lp);
+            }
+        });
     }
 
     public void onBindViewHolder(View itemView, final int position, int itemCount) {
