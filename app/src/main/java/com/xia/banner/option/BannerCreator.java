@@ -40,8 +40,6 @@ public final class BannerCreator {
                 .start(5000)
                 //设置是否进行自动轮播
 //                .setCanLoop(datas.size() > 1)
-                //初始页显示
-//                .setCurrentItem(2, false)
                 //设置点击事件监听
                 .setOnItemClickListener(onItemClickListener)
                 //设置页面切换事件监听

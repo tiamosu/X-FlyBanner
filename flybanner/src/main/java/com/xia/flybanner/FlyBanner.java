@@ -319,7 +319,7 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     /**
-     * 设置是否自动轮播
+     * 设置是否自动翻页
      */
     public FlyBanner setCanLoop(boolean canLoop) {
         this.mCanLoop = canLoop;
@@ -360,8 +360,11 @@ public class FlyBanner<T> extends RelativeLayout {
     /**
      * 设置当前页对应的 position
      */
-    public FlyBanner setCurrentItem(int position, boolean smoothScroll) {
-        mLoopScaleHelper.setCurrentItem(mCanLoop ? mDataSize + position : position, smoothScroll);
+    public FlyBanner setCurrentItem(int position) {
+        stopTurning();
+        final int page = mCanLoop ? mDataSize + position : position;
+        mLoopScaleHelper.setCurrentItem(page, true);
+        startTurning();
         return this;
     }
 
@@ -387,7 +390,7 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     /**
-     * 是否开启了自动轮播
+     * 是否开启了自动翻页
      */
     public boolean isCanLoop() {
         return mCanLoop;
@@ -402,10 +405,7 @@ public class FlyBanner<T> extends RelativeLayout {
         if (autoTurningTime < 0 || !mCanLoop || mDataSize <= 1) {
             return;
         }
-        //如果是正在翻页的话先停掉
-        if (mTurning) {
-            stopTurning();
-        }
+        stopTurning();
         //设置可以翻页并开启翻页
         mCanTurn = true;
         mTurning = true;
@@ -416,9 +416,14 @@ public class FlyBanner<T> extends RelativeLayout {
         startTurning(mAutoTurningTime);
     }
 
+    /**
+     * 停止翻页
+     */
     public void stopTurning() {
-        mTurning = false;
-        removeCallbacks(mAdSwitchTask);
+        if (mTurning) {
+            mTurning = false;
+            removeCallbacks(mAdSwitchTask);
+        }
     }
 
     //触碰控件的时候，翻页应该停止，离开的时候如果之前是开启了翻页的话则重新启动翻页
@@ -431,10 +436,8 @@ public class FlyBanner<T> extends RelativeLayout {
         if (action == MotionEvent.ACTION_UP
                 || action == MotionEvent.ACTION_CANCEL
                 || action == MotionEvent.ACTION_OUTSIDE) {
-            // 开始翻页
             startTurning(mAutoTurningTime);
         } else if (action == MotionEvent.ACTION_DOWN) {
-            // 停止翻页
             stopTurning();
         }
         return super.dispatchTouchEvent(ev);

@@ -1,6 +1,7 @@
 package com.xia.banner;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -10,6 +11,7 @@ import com.xia.flybanner.listener.OnPageChangeListener;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -104,5 +106,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshData(View view) {
         loadData();
+    }
+
+    public void setCurrentItem(View view) {
+        int min = 0;
+        int max = mLocalImages.size();
+        final int randomNum = new Random().nextInt(max - min) + min;
+        Log.e("weixi", "setCurrentItem: " + randomNum);
+        mFlyBanner.setCurrentItem(randomNum);
     }
 }
