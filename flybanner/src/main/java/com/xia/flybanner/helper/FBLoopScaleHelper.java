@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * @author weixia
  * @date 2019/4/16.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class FBLoopScaleHelper {
     private int mPagePadding = 0; // 卡片的padding, 卡片间的距离等于2倍的mPagePadding
     private int mShowLeftCardWidth = 0;   // 左边卡片显示大小
@@ -38,6 +38,8 @@ public class FBLoopScaleHelper {
         mPagerSnapHelper.attachToRecyclerView(loopViewPager);
 
         loopViewPager.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastPosition = -1;
+
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 //这里变换位置实现循环
@@ -63,8 +65,11 @@ public class FBLoopScaleHelper {
                     //停止滚动
                     if (count > 0 && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         final int index = position % count;
-                        final boolean isLastPage = index == count - 1;
-                        mOnPageChangeListener.onPageSelected(index, isLastPage);
+                        if (lastPosition != index) {
+                            lastPosition = index;
+                            final boolean isLastPage = index == count - 1;
+                            mOnPageChangeListener.onPageSelected(index, isLastPage);
+                        }
                     }
                 }
             }
