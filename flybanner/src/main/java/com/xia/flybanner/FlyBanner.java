@@ -383,7 +383,6 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     public void stopTurning() {
-        mCanTurn = false;
         mTurning = false;
         removeCallbacks(mAdSwitchTask);
     }
