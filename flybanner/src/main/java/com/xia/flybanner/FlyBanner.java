@@ -276,26 +276,12 @@ public class FlyBanner<T> extends RelativeLayout {
         this.mCanLoop = canLoop;
         if (!canLoop) {
             stopTurning();
+            return this;
         }
-        if (mPageAdapter != null) {
-            mPageAdapter.setCanLoop(canLoop);
+        if (mTurning) {
+            return this;
         }
-        notifyDataSetChanged();
-        return this;
-    }
-
-    /**
-     * 通知数据变化
-     */
-    public FlyBanner notifyDataSetChanged() {
-        final RecyclerView.Adapter adapter;
-        if ((adapter = mLoopViewPager.getAdapter()) != null) {
-            adapter.notifyDataSetChanged();
-        }
-        if (mPageIndicatorId != null) {
-            setPageIndicator(mPageIndicatorId);
-        }
-        mLoopScaleHelper.setCurrentItem(mCanLoop ? mDataSize : 0);
+        startTurning();
         return this;
     }
 
@@ -343,6 +329,13 @@ public class FlyBanner<T> extends RelativeLayout {
      */
     public FBLoopViewPager getLoopViewPager() {
         return mLoopViewPager;
+    }
+
+    /**
+     * 获取 viewPager 布局管理
+     */
+    public RecyclerView.LayoutManager getLayoutManager() {
+        return mLoopViewPager.getLayoutManager();
     }
 
     /**

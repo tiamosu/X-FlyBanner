@@ -26,7 +26,7 @@ public class FBLoopScaleHelper {
 
     private final PagerSnapHelper mPagerSnapHelper = new PagerSnapHelper();
     private FBLoopViewPager mLoopViewPager;
-    private OnPageChangeListener onPageChangeListener;
+    private OnPageChangeListener mOnPageChangeListener;
 
     public void attachToRecyclerView(final FBLoopViewPager loopViewPager) {
         this.mLoopViewPager = loopViewPager;
@@ -57,21 +57,22 @@ public class FBLoopScaleHelper {
                         setCurrentItem(position);
                     }
                 }
-                if (onPageChangeListener != null) {
-                    onPageChangeListener.onScrollStateChanged(recyclerView, newState);
+
+                if (mOnPageChangeListener != null) {
+                    mOnPageChangeListener.onScrollStateChanged(recyclerView, newState);
                     //停止滚动
                     if (count > 0 && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         final int index = position % count;
                         final boolean isLastPage = index == count - 1;
-                        onPageChangeListener.onPageSelected(index, isLastPage);
+                        mOnPageChangeListener.onPageSelected(index, isLastPage);
                     }
                 }
             }
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (onPageChangeListener != null) {
-                    onPageChangeListener.onScrolled(recyclerView, dx, dy);
+                if (mOnPageChangeListener != null) {
+                    mOnPageChangeListener.onScrolled(recyclerView, dx, dy);
                 }
             }
         });
@@ -169,6 +170,6 @@ public class FBLoopScaleHelper {
     }
 
     public void setOnPageChangeListener(OnPageChangeListener onPageChangeListener) {
-        this.onPageChangeListener = onPageChangeListener;
+        this.mOnPageChangeListener = onPageChangeListener;
     }
 }
