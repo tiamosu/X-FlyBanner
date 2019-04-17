@@ -18,6 +18,7 @@ import com.xia.flybanner.listener.FBPageChangeListener;
 import com.xia.flybanner.listener.OnItemClickListener;
 import com.xia.flybanner.listener.OnPageChangeListener;
 import com.xia.flybanner.view.FBLoopViewPager;
+import com.xia.flybanner.view.RecyclerViewCornerRadius;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -81,7 +82,11 @@ public class FlyBanner<T> extends RelativeLayout {
         mAdSwitchTask = new AdSwitchTask(this);
     }
 
-    public IndicatorBuilder setPages(@NonNull FBViewHolderCreator holderCreator, @NonNull List<T> datas) {
+    /**
+     * 设置视图数据初始化，必须第一步调用
+     */
+    public IndicatorBuilder setPages(@NonNull FBViewHolderCreator holderCreator,
+                                     @NonNull List<T> datas) {
         this.mDatas = datas;
         this.mDataSize = datas.size();
         mPageAdapter = new FBPageAdapter(holderCreator, datas, mCanLoop);
@@ -99,29 +104,118 @@ public class FlyBanner<T> extends RelativeLayout {
             mFlyBanner = flyBanner;
         }
 
-        public FlyBanner useIndicator() {
+        /**
+         * 默认使用指示器样式及位置（右下角）
+         */
+        public CommonBuilder useIndicator() {
             useIndicator(null, null);
-            return mFlyBanner;
+            return new CommonBuilder(mFlyBanner);
         }
 
-        public FlyBanner useIndicator(@NonNull @IdRes int[] indicatorId) {
+        /**
+         * 设置指示器样式及默认位置（右下角）
+         */
+        public CommonBuilder useIndicator(@NonNull @IdRes int[] indicatorId) {
             useIndicator(indicatorId, null);
-            return mFlyBanner;
+            return new CommonBuilder(mFlyBanner);
         }
 
-        public FlyBanner useIndicator(@NonNull PageIndicatorAlign align) {
+        /**
+         * 默认使用指示器样式及自定义位置
+         */
+        public CommonBuilder useIndicator(@NonNull PageIndicatorAlign align) {
             useIndicator(null, align);
-            return mFlyBanner;
+            return new CommonBuilder(mFlyBanner);
         }
 
-        public FlyBanner useIndicator(@Nullable @IdRes int[] indicatorId,
-                                      @Nullable PageIndicatorAlign align) {
+        /**
+         * 设置指示器样式及位置
+         */
+        public CommonBuilder useIndicator(@Nullable @IdRes int[] indicatorId,
+                                          @Nullable PageIndicatorAlign align) {
             indicatorId = indicatorId != null ? indicatorId
                     : new int[]{R.drawable.indicator_gray_radius, R.drawable.indicator_white_radius};
             this.mFlyBanner.mPageIndicatorId = indicatorId;
 
             setPageIndicator(indicatorId);
             setPageIndicatorAlign(align);
+            return new CommonBuilder(mFlyBanner);
+        }
+    }
+
+    public class CommonBuilder {
+        private FlyBanner mFlyBanner;
+
+        public CommonBuilder(FlyBanner flyBanner) {
+            mFlyBanner = flyBanner;
+        }
+
+        /**
+         * 设置指示器偏移
+         *
+         * @param leftMargin
+         * @param topMargin
+         * @param rightMargin
+         * @param bottomMargin
+         * @return
+         */
+        public CommonBuilder setIndicatorMargin(@Nullable Integer leftMargin, @Nullable Integer topMargin,
+                                                @Nullable Integer rightMargin, @Nullable Integer bottomMargin) {
+            final ViewGroup.MarginLayoutParams layoutParams
+                    = (MarginLayoutParams) mLoPageTurningPoint.getLayoutParams();
+            if (leftMargin != null && leftMargin >= 0) {
+                layoutParams.leftMargin = leftMargin;
+            }
+            if (topMargin != null && topMargin >= 0) {
+                layoutParams.topMargin = topMargin;
+            }
+            if (rightMargin != null && rightMargin >= 0) {
+                layoutParams.rightMargin = rightMargin;
+            }
+            if (bottomMargin != null && bottomMargin >= 0) {
+                layoutParams.bottomMargin = bottomMargin;
+            }
+            mLoPageTurningPoint.setLayoutParams(layoutParams);
+            return this;
+        }
+
+        /**
+         * 设置翻页效果
+         */
+        public CommonBuilder setLayoutManager(@NonNull RecyclerView.LayoutManager layoutManager) {
+            mLoopViewPager.setLayoutManager(layoutManager);
+            return this;
+        }
+
+        /**
+         * 设置 viewPager 圆角
+         */
+        public CommonBuilder setRadius(@NonNull Integer radius) {
+            setRadius(radius, radius, radius, radius);
+            return this;
+        }
+
+        /**
+         * 设置 viewPager 圆角
+         */
+        public CommonBuilder setRadius(@Nullable Integer topLeftRadius, @Nullable Integer topRightRadius,
+                                       @Nullable Integer bottomLeftRadius, @Nullable Integer bottomRightRadius) {
+            topLeftRadius = (topLeftRadius == null || topLeftRadius < 0) ? 0 : topLeftRadius;
+            topRightRadius = (topRightRadius == null || topRightRadius < 0) ? 0 : topRightRadius;
+            bottomLeftRadius = (bottomLeftRadius == null || bottomLeftRadius < 0) ? 0 : bottomLeftRadius;
+            bottomRightRadius = (bottomRightRadius == null || bottomRightRadius < 0) ? 0 : bottomRightRadius;
+
+            final RecyclerViewCornerRadius cornerRadius = new RecyclerViewCornerRadius(mLoopViewPager);
+            cornerRadius.setCornerRadius(topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius);
+            mLoopViewPager.addItemDecoration(cornerRadius);
+            return this;
+        }
+
+        /**
+         * 开始执行，最后一步调用
+         */
+        public FlyBanner start(long autoTurningTime) {
+            startTurning(autoTurningTime);
             return mFlyBanner;
         }
     }
@@ -158,11 +252,10 @@ public class FlyBanner<T> extends RelativeLayout {
      *              居中 （RelativeLayout.CENTER_HORIZONTAL），
      *              居右 （RelativeLayout.ALIGN_PARENT_RIGHT）
      */
-    private void setPageIndicatorAlign(PageIndicatorAlign align) {
+    private void setPageIndicatorAlign(@Nullable PageIndicatorAlign align) {
         if (mDatas.isEmpty() || mPageIndicatorId == null || mPageIndicatorId.length < 2) {
             return;
         }
-
         align = align != null ? align : PageIndicatorAlign.ALIGN_PARENT_RIGHT;
 
         final RelativeLayout.LayoutParams layoutParams
@@ -177,37 +270,8 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     /**
-     * 设置指示器偏移
-     *
-     * @param leftMargin
-     * @param topMargin
-     * @param rightMargin
-     * @param bottomMargin
-     * @return
+     * 设置是否自动轮播
      */
-    public FlyBanner setIndicatorMargin(Integer leftMargin, Integer topMargin, Integer rightMargin, Integer bottomMargin) {
-        final ViewGroup.MarginLayoutParams layoutParams = (MarginLayoutParams) mLoPageTurningPoint.getLayoutParams();
-        if (leftMargin != null) {
-            layoutParams.leftMargin = leftMargin;
-        }
-        if (topMargin != null) {
-            layoutParams.topMargin = topMargin;
-        }
-        if (rightMargin != null) {
-            layoutParams.rightMargin = rightMargin;
-        }
-        if (bottomMargin != null) {
-            layoutParams.bottomMargin = bottomMargin;
-        }
-        mLoPageTurningPoint.setLayoutParams(layoutParams);
-        return this;
-    }
-
-    public FlyBanner setLayoutManager(RecyclerView.LayoutManager layoutManager) {
-        mLoopViewPager.setLayoutManager(layoutManager);
-        return this;
-    }
-
     public FlyBanner setCanLoop(boolean canLoop) {
         this.mCanLoop = canLoop;
         if (!canLoop) {
@@ -257,7 +321,7 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     /**
-     * 监听item点击
+     * 设置 item 点击事件监听
      */
     public FlyBanner setOnItemClickListener(final OnItemClickListener onItemClickListener) {
         if (mPageAdapter != null) {
@@ -267,7 +331,7 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     /**
-     * 设置当前页对应的position
+     * 设置当前页对应的 position
      */
     public FlyBanner setCurrentItem(int position, boolean smoothScroll) {
         mLoopScaleHelper.setCurrentItem(mCanLoop ? mDataSize + position : position, smoothScroll);
@@ -275,14 +339,14 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     /**
-     * 获取ViewPager
+     * 获取 viewPager
      */
     public FBLoopViewPager getLoopViewPager() {
         return mLoopViewPager;
     }
 
     /**
-     * 获取当前页对应的position
+     * 获取当前页对应的 position
      */
     public int getCurrentItem() {
         return mLoopScaleHelper.getRealCurrentItem();
@@ -296,20 +360,13 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     /***
-     * 是否开启了翻页
-     */
-    public boolean isTurning() {
-        return mTurning;
-    }
-
-    /***
      * 开始翻页
      * @param autoTurningTime 自动翻页时间
      */
-    public FlyBanner startTurning(long autoTurningTime) {
+    public void startTurning(long autoTurningTime) {
         this.mAutoTurningTime = autoTurningTime;
-        if (autoTurningTime < 0 || !mCanLoop || mDataSize < 1) {
-            return this;
+        if (autoTurningTime < 0 || !mCanLoop || mDataSize <= 1) {
+            return;
         }
         //如果是正在翻页的话先停掉
         if (mTurning) {
@@ -319,7 +376,6 @@ public class FlyBanner<T> extends RelativeLayout {
         mCanTurn = true;
         mTurning = true;
         postDelayed(mAdSwitchTask, autoTurningTime);
-        return this;
     }
 
     public void startTurning() {
@@ -327,6 +383,7 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     public void stopTurning() {
+        mCanTurn = false;
         mTurning = false;
         removeCallbacks(mAdSwitchTask);
     }

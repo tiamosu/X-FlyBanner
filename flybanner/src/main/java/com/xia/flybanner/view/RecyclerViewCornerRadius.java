@@ -36,7 +36,6 @@ public class RecyclerViewCornerRadius extends RecyclerView.ItemDecoration {
                         currentVto.removeOnGlobalLayoutListener(this);
                     }
                     mRectF = new RectF(0, 0, recyclerView.getMeasuredWidth(), recyclerView.getMeasuredHeight());
-
                     mPath = new Path();
                     mPath.reset();
                     mPath.addRoundRect(mRectF, new float[]{

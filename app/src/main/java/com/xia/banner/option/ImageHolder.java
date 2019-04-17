@@ -1,10 +1,11 @@
 package com.xia.banner.option;
 
+import android.content.Context;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.xia.banner.R;
-import com.xia.fly.imageloader.ImageConfigImpl;
-import com.xia.fly.ui.imageloader.ImageLoader;
 import com.xia.flybanner.holder.FBHolder;
 
 import androidx.appcompat.widget.AppCompatImageView;
@@ -27,11 +28,12 @@ public class ImageHolder extends FBHolder<Integer> {
 
     @Override
     public void updateUI(Integer data) {
-        ImageLoader.loadImage(
-                ImageConfigImpl.load(data)
-                        .crossFade()
-                        .into(mAppCompatImageView)
-                        .build()
-        );
+        if (mAppCompatImageView != null) {
+            final Context context = mAppCompatImageView.getContext();
+            Glide.with(context)
+                    .load(data)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(mAppCompatImageView);
+        }
     }
 }

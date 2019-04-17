@@ -28,6 +28,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':flybanner')
 
-    implementation 'me.xia:fly:2.7.6'
-    implementation 'me.xia:fly-imageloader-glide:2.7.6'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
 }

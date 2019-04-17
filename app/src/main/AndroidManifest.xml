@@ -19,10 +19,5 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <!-- 全局初始化配置 -->
-        <meta-data
-            android:name="com.xia.banner.config.GlobalConfiguration"
-            android:value="ConfigModule"/>
     </application>
 </manifest>

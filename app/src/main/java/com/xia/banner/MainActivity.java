@@ -6,8 +6,6 @@ import android.util.Log;
 import com.xia.banner.option.BannerCreator;
 import com.xia.flybanner.FlyBanner;
 import com.xia.flybanner.listener.OnPageChangeListener;
-import com.xia.flybanner.view.FBLoopViewPager;
-import com.xia.flybanner.view.RecyclerViewCornerRadius;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -26,12 +24,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mFlyBanner = findViewById(R.id.banner);
-
-        //设置 RecyclerView 圆角
-        final FBLoopViewPager viewPager = mFlyBanner.getLoopViewPager();
-        final RecyclerViewCornerRadius recyclerViewCornerRadius = new RecyclerViewCornerRadius(viewPager);
-        recyclerViewCornerRadius.setCornerRadius(50);
-        viewPager.addItemDecoration(recyclerViewCornerRadius);
 
         loadTestDatas();
         BannerCreator.setDefault(mFlyBanner, mLocalImages, position -> Log.e("weixi", "onItemClick: " + position),
