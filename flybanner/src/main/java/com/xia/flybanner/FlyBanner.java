@@ -212,7 +212,7 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     private void setPageIndicator(@Nullable @IdRes int[] indicatorId,
-                                  @PageIndicatorAlign.IndicatorAlign int align) {
+                                  @Nullable @PageIndicatorAlign.IndicatorAlign Integer align) {
         mPointViews.clear();
         mIndicatorView.removeAllViews();
 
@@ -245,10 +245,14 @@ public class FlyBanner<T> extends RelativeLayout {
     /**
      * 指示器的方向
      */
-    private void setPageIndicatorAlign(@PageIndicatorAlign.IndicatorAlign int align) {
+    private void setPageIndicatorAlign(@Nullable @PageIndicatorAlign.IndicatorAlign Integer align) {
         final ViewGroup.LayoutParams params;
         if ((params = mIndicatorView.getLayoutParams()) instanceof RelativeLayout.LayoutParams) {
+            if (align == null) {
+                align = PageIndicatorAlign.ALIGN_PARENT_RIGHT;
+            }
             final LayoutParams layoutParams = (LayoutParams) params;
+
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT,
                     align == PageIndicatorAlign.ALIGN_PARENT_LEFT ? RelativeLayout.TRUE : 0);
 //            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP,
