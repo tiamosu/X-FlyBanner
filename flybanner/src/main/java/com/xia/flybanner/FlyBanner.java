@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.xia.flybanner.adapter.FBPageAdapter;
 import com.xia.flybanner.constant.PageIndicatorAlign;
+import com.xia.flybanner.constant.PageIndicatorOrientation;
 import com.xia.flybanner.helper.FBLoopScaleHelper;
 import com.xia.flybanner.holder.FBViewHolderCreator;
 import com.xia.flybanner.listener.FBPageChangeListener;
@@ -95,26 +96,18 @@ public class FlyBanner<T> extends RelativeLayout {
 
     public class IndicatorBuilder {
         private FlyBanner mFlyBanner;
-        private Integer mIndicatorAlign;
         private int[] mIndicatorId;
+        private Integer mIndicatorAlign;
 
         IndicatorBuilder(FlyBanner flyBanner) {
             mFlyBanner = flyBanner;
         }
 
         /**
-         * 设置指示器是否可见
+         * 设置指示器是否可见，默认为可见
          */
         public IndicatorBuilder setIndicatorVisible(boolean visible) {
             mIndicatorView.setVisibility(visible ? View.VISIBLE : View.GONE);
-            return this;
-        }
-
-        /**
-         * 设置指示器位置
-         */
-        public IndicatorBuilder setIndicatorAlign(@PageIndicatorAlign.IndicatorAlign int align) {
-            mIndicatorAlign = align;
             return this;
         }
 
@@ -123,6 +116,34 @@ public class FlyBanner<T> extends RelativeLayout {
          */
         public IndicatorBuilder setIndicatorId(@IdRes int[] indicatorId) {
             mIndicatorId = indicatorId;
+            return this;
+        }
+
+        /**
+         * 设置指示器位置，默认为右下角
+         */
+        public IndicatorBuilder setIndicatorAlign(@PageIndicatorAlign.IndicatorAlign int align) {
+            mIndicatorAlign = align;
+            return this;
+        }
+
+        /**
+         * 设置指示器方向：横向（HORIZONTAL）、竖向（VERTICAL），默认为横向
+         */
+        public IndicatorBuilder setIndicatorOrientation(@PageIndicatorOrientation.OrientationMode int orientation) {
+            if (orientation == PageIndicatorOrientation.VERTICAL) {
+                mIndicatorView.setOrientation(LinearLayout.VERTICAL);
+            } else {
+                mIndicatorView.setOrientation(LinearLayout.HORIZONTAL);
+            }
+            return this;
+        }
+
+        /**
+         * 设置指示器偏移
+         */
+        public IndicatorBuilder setIndicatorMargin(@Nullable Integer margin) {
+            setIndicatorMargin(margin, margin, margin, margin);
             return this;
         }
 
@@ -226,7 +247,11 @@ public class FlyBanner<T> extends RelativeLayout {
         for (int count = 0; count < mDataSize; count++) {
             // 翻页指示的点
             final ImageView pointView = new ImageView(getContext());
-            pointView.setPadding(5, 0, 5, 0);
+            if (mIndicatorView.getOrientation() == LinearLayout.HORIZONTAL) {
+                pointView.setPadding(5, 0, 5, 0);
+            } else {
+                pointView.setPadding(0, 5, 0, 5);
+            }
             if (mLoopScaleHelper.getFirstItemPos() % mDataSize == count) {
                 pointView.setImageResource(indicatorId[1]);
             } else {
@@ -243,32 +268,54 @@ public class FlyBanner<T> extends RelativeLayout {
     }
 
     /**
-     * 指示器的方向
+     * 指示器的位置
      */
     private void setPageIndicatorAlign(@Nullable @PageIndicatorAlign.IndicatorAlign Integer align) {
         final ViewGroup.LayoutParams params;
-        if ((params = mIndicatorView.getLayoutParams()) instanceof RelativeLayout.LayoutParams) {
-            if (align == null) {
-                align = PageIndicatorAlign.ALIGN_PARENT_RIGHT;
-            }
-            final LayoutParams layoutParams = (LayoutParams) params;
-
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT,
-                    align == PageIndicatorAlign.ALIGN_PARENT_LEFT ? RelativeLayout.TRUE : 0);
-//            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP,
-//                    align == PageIndicatorAlign.ALIGN_PARENT_TOP ? RelativeLayout.TRUE : 0);
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,
-                    align == PageIndicatorAlign.ALIGN_PARENT_RIGHT ? RelativeLayout.TRUE : 0);
-//            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
-//                    align == PageIndicatorAlign.ALIGN_PARENT_BOTTOM ? RelativeLayout.TRUE : 0);
-//            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT,
-//                    align == PageIndicatorAlign.CENTER_IN_PARENT ? RelativeLayout.TRUE : 0);
-            layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL,
-                    align == PageIndicatorAlign.CENTER_HORIZONTAL ? RelativeLayout.TRUE : 0);
-//            layoutParams.addRule(RelativeLayout.CENTER_VERTICAL,
-//                    align == PageIndicatorAlign.CENTER_VERTICAL ? RelativeLayout.TRUE : 0);
-            mIndicatorView.setLayoutParams(layoutParams);
+        if (!((params = mIndicatorView.getLayoutParams()) instanceof RelativeLayout.LayoutParams)) {
+            return;
         }
+        final LayoutParams layoutParams = (LayoutParams) params;
+        if (align == null) {
+            align = PageIndicatorAlign.ALIGN_RIGHT_BOTTOM;
+        }
+        switch (align) {
+            case PageIndicatorAlign.ALIGN_LEFT_TOP:
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                break;
+            case PageIndicatorAlign.ALIGN_LEFT_CENTER:
+                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                break;
+            case PageIndicatorAlign.ALIGN_LEFT_BOTTOM:
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                break;
+            case PageIndicatorAlign.ALIGN_TOP_CENTER:
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+                break;
+            case PageIndicatorAlign.ALIGN_IN_CENTER:
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+                break;
+            case PageIndicatorAlign.ALIGN_BOTTOM_CENTER:
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+                break;
+            case PageIndicatorAlign.ALIGN_RIGHT_TOP:
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                break;
+            case PageIndicatorAlign.ALIGN_RIGHT_CENTER:
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                break;
+            case PageIndicatorAlign.ALIGN_RIGHT_BOTTOM:
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                break;
+            default:
+                break;
+        }
+        mIndicatorView.setLayoutParams(layoutParams);
     }
 
     /**

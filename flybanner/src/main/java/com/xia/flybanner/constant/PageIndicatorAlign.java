@@ -10,17 +10,19 @@ import androidx.annotation.IntDef;
  * @date 2019/4/17.
  */
 public final class PageIndicatorAlign {
-    public static final int ALIGN_PARENT_LEFT = 9;
-    public static final int ALIGN_PARENT_TOP = 10;
-    public static final int ALIGN_PARENT_RIGHT = 11;
-    public static final int ALIGN_PARENT_BOTTOM = 12;
-    public static final int CENTER_IN_PARENT = 13;
-    public static final int CENTER_HORIZONTAL = 14;
-    public static final int CENTER_VERTICAL = 15;
+    public static final int ALIGN_LEFT_TOP = 10;
+    public static final int ALIGN_LEFT_CENTER = 11;
+    public static final int ALIGN_LEFT_BOTTOM = 12;
+    public static final int ALIGN_TOP_CENTER = 13;
+    public static final int ALIGN_IN_CENTER = 14;
+    public static final int ALIGN_BOTTOM_CENTER = 15;
+    public static final int ALIGN_RIGHT_TOP = 16;
+    public static final int ALIGN_RIGHT_CENTER = 17;
+    public static final int ALIGN_RIGHT_BOTTOM = 18;
 
-    @IntDef({ALIGN_PARENT_LEFT, ALIGN_PARENT_TOP, ALIGN_PARENT_RIGHT,
-            ALIGN_PARENT_BOTTOM, CENTER_IN_PARENT, CENTER_HORIZONTAL,
-            CENTER_VERTICAL})
+    @IntDef({ALIGN_LEFT_TOP, ALIGN_LEFT_CENTER, ALIGN_LEFT_BOTTOM,
+            ALIGN_TOP_CENTER, ALIGN_IN_CENTER, ALIGN_BOTTOM_CENTER,
+            ALIGN_RIGHT_TOP, ALIGN_RIGHT_CENTER, ALIGN_RIGHT_BOTTOM})
     @Retention(RetentionPolicy.SOURCE)
     public @interface IndicatorAlign {
     }
