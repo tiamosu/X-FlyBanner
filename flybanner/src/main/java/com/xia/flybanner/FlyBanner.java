@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.xia.flybanner.adapter.FBPageAdapter;
+import com.xia.flybanner.constant.PageIndicatorAlign;
 import com.xia.flybanner.helper.FBLoopScaleHelper;
 import com.xia.flybanner.holder.FBViewHolderCreator;
 import com.xia.flybanner.listener.FBPageChangeListener;
@@ -39,7 +40,6 @@ public class FlyBanner<T> extends RelativeLayout {
     private final ArrayList<ImageView> mPointViews = new ArrayList<>();
     private List<T> mDatas = new ArrayList<>();
     private int mDataSize;
-    private int[] mPageIndicatorId;
     private long mAutoTurningTime;
     private boolean mCanLoop;
     private boolean mTurning;
@@ -47,14 +47,10 @@ public class FlyBanner<T> extends RelativeLayout {
 
     private FBPageAdapter mPageAdapter;
     private FBLoopViewPager mLoopViewPager;
-    private LinearLayout mLoPageTurningPoint;
+    private LinearLayout mIndicatorView;
     private final FBLoopScaleHelper mLoopScaleHelper = new FBLoopScaleHelper();
     private FBPageChangeListener mPageChangeListener;
     private AdSwitchTask mAdSwitchTask;
-
-    public enum PageIndicatorAlign {
-        ALIGN_PARENT_LEFT, ALIGN_PARENT_RIGHT, CENTER_HORIZONTAL
-    }
 
     public FlyBanner(Context context) {
         this(context, null);
@@ -73,8 +69,8 @@ public class FlyBanner<T> extends RelativeLayout {
     private void init(Context context) {
         final View view = LayoutInflater.from(context)
                 .inflate(R.layout.fb_include_viewpager, this, true);
-        mLoopViewPager = view.findViewById(R.id.fb_loopViewPager);
-        mLoPageTurningPoint = view.findViewById(R.id.fb_loPageTurningPoint);
+        mLoopViewPager = view.findViewById(R.id.fb_loop_vp);
+        mIndicatorView = view.findViewById(R.id.fb_indicator_ll);
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.HORIZONTAL, false);
@@ -99,46 +95,70 @@ public class FlyBanner<T> extends RelativeLayout {
 
     public class IndicatorBuilder {
         private FlyBanner mFlyBanner;
+        private Integer mIndicatorAlign;
+        private int[] mIndicatorId;
 
         IndicatorBuilder(FlyBanner flyBanner) {
             mFlyBanner = flyBanner;
         }
 
         /**
-         * 默认使用指示器样式及位置（右下角）
+         * 设置指示器是否可见
+         */
+        public IndicatorBuilder setIndicatorVisible(boolean visible) {
+            mIndicatorView.setVisibility(visible ? View.VISIBLE : View.GONE);
+            return this;
+        }
+
+        /**
+         * 设置指示器位置
+         */
+        public IndicatorBuilder setIndicatorAlign(@PageIndicatorAlign.IndicatorAlign int align) {
+            mIndicatorAlign = align;
+            return this;
+        }
+
+        /**
+         * 设置指示器样式
+         */
+        public IndicatorBuilder setIndicatorId(@IdRes int[] indicatorId) {
+            mIndicatorId = indicatorId;
+            return this;
+        }
+
+        /**
+         * 设置指示器偏移
+         */
+        public IndicatorBuilder setIndicatorMargin(@Nullable Integer leftMargin, @Nullable Integer topMargin,
+                                                   @Nullable Integer rightMargin, @Nullable Integer bottomMargin) {
+
+            if (mIndicatorView.getVisibility() == VISIBLE) {
+                final ViewGroup.MarginLayoutParams layoutParams
+                        = (MarginLayoutParams) mIndicatorView.getLayoutParams();
+                if (leftMargin != null && leftMargin >= 0) {
+                    layoutParams.leftMargin = leftMargin;
+                }
+                if (topMargin != null && topMargin >= 0) {
+                    layoutParams.topMargin = topMargin;
+                }
+                if (rightMargin != null && rightMargin >= 0) {
+                    layoutParams.rightMargin = rightMargin;
+                }
+                if (bottomMargin != null && bottomMargin >= 0) {
+                    layoutParams.bottomMargin = bottomMargin;
+                }
+                mIndicatorView.setLayoutParams(layoutParams);
+            }
+            return this;
+        }
+
+        /**
+         * 指示器配置
          */
         public CommonBuilder useIndicator() {
-            useIndicator(null, null);
-            return new CommonBuilder(mFlyBanner);
-        }
-
-        /**
-         * 设置指示器样式及默认位置（右下角）
-         */
-        public CommonBuilder useIndicator(@NonNull @IdRes int[] indicatorId) {
-            useIndicator(indicatorId, null);
-            return new CommonBuilder(mFlyBanner);
-        }
-
-        /**
-         * 默认使用指示器样式及自定义位置
-         */
-        public CommonBuilder useIndicator(@NonNull PageIndicatorAlign align) {
-            useIndicator(null, align);
-            return new CommonBuilder(mFlyBanner);
-        }
-
-        /**
-         * 设置指示器样式及位置
-         */
-        public CommonBuilder useIndicator(@Nullable @IdRes int[] indicatorId,
-                                          @Nullable PageIndicatorAlign align) {
-            indicatorId = indicatorId != null ? indicatorId
-                    : new int[]{R.drawable.indicator_gray_radius, R.drawable.indicator_white_radius};
-            this.mFlyBanner.mPageIndicatorId = indicatorId;
-
-            setPageIndicator(indicatorId);
-            setPageIndicatorAlign(align);
+            if (mIndicatorView.getVisibility() == VISIBLE) {
+                setPageIndicator(mIndicatorId, mIndicatorAlign);
+            }
             return new CommonBuilder(mFlyBanner);
         }
     }
@@ -148,35 +168,6 @@ public class FlyBanner<T> extends RelativeLayout {
 
         public CommonBuilder(FlyBanner flyBanner) {
             mFlyBanner = flyBanner;
-        }
-
-        /**
-         * 设置指示器偏移
-         *
-         * @param leftMargin
-         * @param topMargin
-         * @param rightMargin
-         * @param bottomMargin
-         * @return
-         */
-        public CommonBuilder setIndicatorMargin(@Nullable Integer leftMargin, @Nullable Integer topMargin,
-                                                @Nullable Integer rightMargin, @Nullable Integer bottomMargin) {
-            final ViewGroup.MarginLayoutParams layoutParams
-                    = (MarginLayoutParams) mLoPageTurningPoint.getLayoutParams();
-            if (leftMargin != null && leftMargin >= 0) {
-                layoutParams.leftMargin = leftMargin;
-            }
-            if (topMargin != null && topMargin >= 0) {
-                layoutParams.topMargin = topMargin;
-            }
-            if (rightMargin != null && rightMargin >= 0) {
-                layoutParams.rightMargin = rightMargin;
-            }
-            if (bottomMargin != null && bottomMargin >= 0) {
-                layoutParams.bottomMargin = bottomMargin;
-            }
-            mLoPageTurningPoint.setLayoutParams(layoutParams);
-            return this;
         }
 
         /**
@@ -220,9 +211,14 @@ public class FlyBanner<T> extends RelativeLayout {
         }
     }
 
-    private void setPageIndicator(@Nullable @IdRes int[] indicatorId) {
+    private void setPageIndicator(@Nullable @IdRes int[] indicatorId,
+                                  @PageIndicatorAlign.IndicatorAlign int align) {
         mPointViews.clear();
-        mLoPageTurningPoint.removeAllViews();
+        mIndicatorView.removeAllViews();
+
+        if (indicatorId == null) {
+            indicatorId = new int[]{R.drawable.indicator_gray_radius, R.drawable.indicator_white_radius};
+        }
         if (mDatas.isEmpty() || indicatorId.length < 2) {
             return;
         }
@@ -237,36 +233,38 @@ public class FlyBanner<T> extends RelativeLayout {
                 pointView.setImageResource(indicatorId[0]);
             }
             mPointViews.add(pointView);
-            mLoPageTurningPoint.addView(pointView);
+            mIndicatorView.addView(pointView);
         }
 
         mPageChangeListener = new FBPageChangeListener(mPointViews, indicatorId);
         mLoopScaleHelper.setOnPageChangeListener(mPageChangeListener);
+
+        setPageIndicatorAlign(align);
     }
 
     /**
      * 指示器的方向
-     *
-     * @param align 三个方向：
-     *              居左 （RelativeLayout.ALIGN_PARENT_LEFT），
-     *              居中 （RelativeLayout.CENTER_HORIZONTAL），
-     *              居右 （RelativeLayout.ALIGN_PARENT_RIGHT）
      */
-    private void setPageIndicatorAlign(@Nullable PageIndicatorAlign align) {
-        if (mDatas.isEmpty() || mPageIndicatorId == null || mPageIndicatorId.length < 2) {
-            return;
+    private void setPageIndicatorAlign(@PageIndicatorAlign.IndicatorAlign int align) {
+        final ViewGroup.LayoutParams params;
+        if ((params = mIndicatorView.getLayoutParams()) instanceof RelativeLayout.LayoutParams) {
+            final LayoutParams layoutParams = (LayoutParams) params;
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT,
+                    align == PageIndicatorAlign.ALIGN_PARENT_LEFT ? RelativeLayout.TRUE : 0);
+//            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP,
+//                    align == PageIndicatorAlign.ALIGN_PARENT_TOP ? RelativeLayout.TRUE : 0);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,
+                    align == PageIndicatorAlign.ALIGN_PARENT_RIGHT ? RelativeLayout.TRUE : 0);
+//            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
+//                    align == PageIndicatorAlign.ALIGN_PARENT_BOTTOM ? RelativeLayout.TRUE : 0);
+//            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT,
+//                    align == PageIndicatorAlign.CENTER_IN_PARENT ? RelativeLayout.TRUE : 0);
+            layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL,
+                    align == PageIndicatorAlign.CENTER_HORIZONTAL ? RelativeLayout.TRUE : 0);
+//            layoutParams.addRule(RelativeLayout.CENTER_VERTICAL,
+//                    align == PageIndicatorAlign.CENTER_VERTICAL ? RelativeLayout.TRUE : 0);
+            mIndicatorView.setLayoutParams(layoutParams);
         }
-        align = align != null ? align : PageIndicatorAlign.ALIGN_PARENT_RIGHT;
-
-        final RelativeLayout.LayoutParams layoutParams
-                = (RelativeLayout.LayoutParams) mLoPageTurningPoint.getLayoutParams();
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT,
-                align == PageIndicatorAlign.ALIGN_PARENT_LEFT ? RelativeLayout.TRUE : 0);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,
-                align == PageIndicatorAlign.ALIGN_PARENT_RIGHT ? RelativeLayout.TRUE : 0);
-        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL,
-                align == PageIndicatorAlign.CENTER_HORIZONTAL ? RelativeLayout.TRUE : 0);
-        mLoPageTurningPoint.setLayoutParams(layoutParams);
     }
 
     /**
@@ -282,14 +280,6 @@ public class FlyBanner<T> extends RelativeLayout {
             return this;
         }
         startTurning();
-        return this;
-    }
-
-    /**
-     * 设置底部指示器是否可见
-     */
-    public FlyBanner setPointViewVisible(boolean visible) {
-        mLoPageTurningPoint.setVisibility(visible ? View.VISIBLE : View.GONE);
         return this;
     }
 
