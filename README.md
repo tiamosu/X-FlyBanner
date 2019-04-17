@@ -25,7 +25,7 @@
 //                .setIndicatorOrientation(PageIndicatorOrientation.HORIZONTAL)
                 //设置指示器偏移
 //                .setIndicatorMargin(30)
-                //指示器配置
+                //指示器配置使用
                 .useIndicator()
                 //设置翻页效果
 //                .setLayoutManager(new LinearLayoutManager(flyBanner.getContext()))
@@ -81,5 +81,7 @@
         setDataSize(mLocalImages.size());
     }
 ```
+
+#### 详情请见 demo
 
 *感谢原作者的贡献*
