@@ -407,7 +407,7 @@ public class FlyBanner<T> extends RelativeLayout {
         return super.dispatchTouchEvent(ev);
     }
 
-    static class AdSwitchTask implements Runnable {
+    private static class AdSwitchTask implements Runnable {
 
         private final WeakReference<FlyBanner> mReference;
 

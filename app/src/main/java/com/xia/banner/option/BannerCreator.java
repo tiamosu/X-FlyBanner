@@ -33,7 +33,7 @@ public final class BannerCreator {
                 //设置指示器偏移
                 .setIndicatorMargin(null, null, 100, null)
                 //设置翻页效果
-//                .setLayoutManager(new LinearLayoutManager(context))
+                .setLayoutManager(new LinearLayoutManager(context))
                 //设置 viewPager 圆角
                 .setRadius(50)
                 //设置自动轮播时间

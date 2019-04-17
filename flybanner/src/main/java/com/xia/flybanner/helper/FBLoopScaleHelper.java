@@ -73,7 +73,6 @@ public class FBLoopScaleHelper {
                 if (onPageChangeListener != null) {
                     onPageChangeListener.onScrolled(recyclerView, dx, dy);
                 }
-                onScrolledChangedCallback();
             }
         });
     }
@@ -92,7 +91,7 @@ public class FBLoopScaleHelper {
                     if (currentVto.isAlive()) {
                         currentVto.removeOnGlobalLayoutListener(this);
                     }
-                    scrollToPosition(mFirstItemPos);
+                    setCurrentItem(mFirstItemPos);
                 }
             });
         }
@@ -119,24 +118,11 @@ public class FBLoopScaleHelper {
                 && (layoutManager = mLoopViewPager.getLayoutManager()) instanceof LinearLayoutManager) {
             final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
             linearLayoutManager.scrollToPositionWithOffset(pos, (mPagePadding + mShowLeftCardWidth));
-            mLoopViewPager.post(new Runnable() {
-                @Override
-                public void run() {
-                    onScrolledChangedCallback();
-                }
-            });
         }
     }
 
     public void setFirstItemPos(int firstItemPos) {
         this.mFirstItemPos = firstItemPos;
-    }
-
-    /**
-     * RecyclerView位移事件监听, view大小随位移事件变化
-     */
-    private void onScrolledChangedCallback() {
-
     }
 
     public int getCurrentItem() {
