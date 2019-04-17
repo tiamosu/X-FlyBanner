@@ -19,9 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 @SuppressWarnings("unchecked")
 public class MainActivity extends AppCompatActivity {
+    private final ArrayList<Integer> mLocalImages = new ArrayList<>();
+
     private FlyBanner mFlyBanner;
     private AppCompatTextView mLoopStatusTv;
-    private ArrayList<Integer> mLocalImages = new ArrayList<>();
+    private AppCompatTextView mCurrentItemPosTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +37,17 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         mFlyBanner = findViewById(R.id.banner);
         mLoopStatusTv = findViewById(R.id.main_loop_status_tv);
+        mCurrentItemPosTv = findViewById(R.id.main_current_item_position_tv);
     }
 
     private void loadData() {
         mLocalImages.clear();
+        final int min = 1;
+        final int max = 7;
+        final int randomNum = new Random().nextInt(max - min) + min;
+
         //本地图片集合
-        for (int position = 0; position < 7; position++) {
+        for (int position = 0; position < randomNum; position++) {
             final int imgResId = getResId("ic_test_" + position, R.drawable.class);
             if (imgResId != -1) {
                 mLocalImages.add(imgResId);
@@ -61,9 +68,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onPageSelected(int index, boolean isLastPage) {
                         Toast.makeText(MainActivity.this, "onPageSelected: " + index, Toast.LENGTH_SHORT).show();
+                        setCurItemPos(index, isLastPage);
                     }
                 });
+
         setLoopStatus();
+        setCurItemPos(0, mLocalImages.size() <= 1);
     }
 
     /**
@@ -81,7 +91,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setLoopStatus() {
-        mLoopStatusTv.setText(mFlyBanner.isCanLoop() ? "开" : "关");
+        final String text = "是否自动翻页：" + (mFlyBanner.isCanLoop() ? "是" : "否");
+        mLoopStatusTv.setText(text);
+    }
+
+    private void setCurItemPos(final int index, final boolean isLastPage) {
+        final String text = "当前页position：" + index + "，是否处于最后一页：" + (isLastPage ? "true" : "false");
+        mCurrentItemPosTv.setText(text);
     }
 
     @Override
@@ -106,11 +122,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshData(View view) {
         loadData();
+        Toast.makeText(this, "数据已刷新", Toast.LENGTH_SHORT).show();
     }
 
     public void setCurrentItem(View view) {
-        int min = 0;
-        int max = mLocalImages.size();
+        final int min = 0;
+        final int max = mLocalImages.size();
         final int randomNum = new Random().nextInt(max - min) + min;
         Log.e("weixi", "setCurrentItem: " + randomNum);
         mFlyBanner.setCurrentItem(randomNum);

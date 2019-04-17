@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatButton
@@ -30,18 +31,35 @@
             android:text="控制自动轮播"/>
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:text="自动轮播状态："
-            android:textSize="18sp"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/main_loop_status_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            tools:text="开"/>
+            android:layout_marginLeft="15dp"
+            android:text="是否自动翻页：否"
+            android:textSize="16dp"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/main_set_item_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setCurrentItem"
+            android:text="随机设定页面显示"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/main_current_item_position_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="当前页position：0，是否处于最后一页：false"
+            android:textSize="16dp"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.AppCompatButton
@@ -50,13 +68,5 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:onClick="refreshData"
-        android:text="刷新数据"/>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/main_set_item_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:onClick="setCurrentItem"
-        android:text="随机设定页面显示"/>
+        android:text="随机刷新数据"/>
 </androidx.appcompat.widget.LinearLayoutCompat>
