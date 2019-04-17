@@ -35,8 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:text="是否自动翻页：否"
-            android:textSize="16dp"/>
+            android:textSize="16dp"
+            tools:text="是否自动翻页：否"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -58,15 +58,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:text="当前页position：0，是否处于最后一页：false"
-            android:textSize="16dp"/>
+            android:textSize="16dp"
+            tools:text="当前页position：0，是否处于最后一页：false"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/main_refresh_data_btn"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:onClick="refreshData"
-        android:text="随机刷新数据"/>
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/main_refresh_data_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="refreshData"
+            android:text="随机刷新数据"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/main_data_size_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textSize="16dp"
+            tools:text="总数据条数：5"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>

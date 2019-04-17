@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private FlyBanner mFlyBanner;
     private AppCompatTextView mLoopStatusTv;
     private AppCompatTextView mCurrentItemPosTv;
+    private AppCompatTextView mDataSizeTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         mFlyBanner = findViewById(R.id.banner);
         mLoopStatusTv = findViewById(R.id.main_loop_status_tv);
         mCurrentItemPosTv = findViewById(R.id.main_current_item_position_tv);
+        mDataSizeTv = findViewById(R.id.main_data_size_tv);
     }
 
     private void loadData() {
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         setLoopStatus();
         setCurItemPos(0, mLocalImages.size() <= 1);
+        setDataSize(mLocalImages.size());
     }
 
     /**
@@ -98,6 +101,11 @@ public class MainActivity extends AppCompatActivity {
     private void setCurItemPos(final int index, final boolean isLastPage) {
         final String text = "当前页position：" + index + "，是否处于最后一页：" + (isLastPage ? "true" : "false");
         mCurrentItemPosTv.setText(text);
+    }
+
+    private void setDataSize(final int dataSize) {
+        final String text = "总数据条数：" + dataSize;
+        mDataSizeTv.setText(text);
     }
 
     @Override
