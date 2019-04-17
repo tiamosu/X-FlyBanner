@@ -1,6 +1,26 @@
 # X-FlyBanner
 ## 本项目fork自([Bigkoo/Android-ConvenientBanner](https://github.com/Bigkoo/Android-ConvenientBanner))，在此基础上进行了相关优化及实现项目中需求。
 
+## Download
+
+Gradle:
+```groovy
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        //添加maven地址
+        maven { url 'https://dl.bintray.com/weixia/maven' }
+    }
+}
+```
+
+### fly-banner
+[ ![Download](https://api.bintray.com/packages/weixia/maven/x-flybanner/images/download.svg) ](https://bintray.com/weixia/maven/x-flybanner/_latestVersion)
+```groovy
+compile 'me.xia:x-flybanner:1.0.0'
+```
+
 ### 效果图：
 
 ![Image text](screenshot/pic_1.png)
