@@ -280,6 +280,16 @@ public class FlyBanner<T> extends RelativeLayout {
         if (align == null) {
             align = PageIndicatorAlign.ALIGN_RIGHT_BOTTOM;
         }
+        final int[] verbs = {
+                RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.CENTER_VERTICAL,
+                RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.CENTER_HORIZONTAL,
+                RelativeLayout.CENTER_IN_PARENT, RelativeLayout.ALIGN_PARENT_RIGHT,
+        };
+        final int verbsLength = verbs.length;
+        for (int i = 0; i < verbsLength; i++) {
+            layoutParams.removeRule(verbs[i]);
+        }
+
         switch (align) {
             case PageIndicatorAlign.ALIGN_LEFT_TOP:
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
