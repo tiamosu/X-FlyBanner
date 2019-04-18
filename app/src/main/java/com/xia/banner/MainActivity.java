@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AppCompatTextView mCurrentItemPosTv;
     private AppCompatButton mRefreshDataBtn;
     private AppCompatTextView mDataSizeTv;
+    private AppCompatButton mIndicatorOrientationBtn;
+    private AppCompatTextView mIndicatorOrientationTv;
 
     private final ArrayList<Integer> mLocalImages = new ArrayList<>();
     private boolean mIsHorizontal = true;
@@ -66,12 +68,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mCurrentItemPosTv = findViewById(R.id.main_current_item_position_tv);
         mRefreshDataBtn = findViewById(R.id.main_refresh_data_btn);
         mDataSizeTv = findViewById(R.id.main_data_size_tv);
+        mIndicatorOrientationBtn = findViewById(R.id.main_indicator_orientation_btn);
+        mIndicatorOrientationTv = findViewById(R.id.main_indicator_orientation_tv);
     }
 
     private void initEvent() {
         mLoopControlBtn.setOnClickListener(this);
         mSetCurrentItemPosBtn.setOnClickListener(this);
         mRefreshDataBtn.setOnClickListener(this);
+        mIndicatorOrientationBtn.setOnClickListener(this);
     }
 
     private void refreshData() {
@@ -104,13 +109,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onPageSelected(int index, boolean isLastPage) {
                         Toast.makeText(MainActivity.this, "onPageSelected: " + index, Toast.LENGTH_SHORT).show();
-                        setCurItemPos(index, isLastPage);
+                        setCurrentItemPosition(index, isLastPage);
                     }
                 });
 
         setLoopStatus();
-        setCurItemPos(0, mLocalImages.size() <= 1);
+        setCurrentItemPosition(0, mLocalImages.size() <= 1);
         setDataSize(mLocalImages.size());
+        setIndicatorOrientation();
     }
 
     /**
@@ -132,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mLoopStatusTv.setText(text);
     }
 
-    private void setCurItemPos(final int index, final boolean isLastPage) {
+    private void setCurrentItemPosition(final int index, final boolean isLastPage) {
         final String text = "position：" + index + "，是否最后一页：" + (isLastPage ? "true" : "false");
         mCurrentItemPosTv.setText(text);
     }
@@ -140,6 +146,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setDataSize(final int dataSize) {
         final String text = "总数据条数：" + dataSize;
         mDataSizeTv.setText(text);
+    }
+
+    private void setIndicatorOrientation() {
+        final String text = "翻页方向：" + (mIsHorizontal ? "横向" : "竖向");
+        mIndicatorOrientationTv.setText(text);
     }
 
     @Override
@@ -161,6 +172,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             refreshData();
             start();
             Toast.makeText(this, "数据已刷新", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (v == mIndicatorOrientationBtn) {
+            mIsHorizontal = !mIsHorizontal;
+            start();
         }
     }
 }

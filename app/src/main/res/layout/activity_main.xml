@@ -74,4 +74,21 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/main_refresh_data_btn"
         app:layout_constraintLeft_toRightOf="@+id/main_refresh_data_btn"
         tools:text="总数据条数：5"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/main_indicator_orientation_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="横竖向翻页切换"
+        app:layout_constraintLeft_toLeftOf="@+id/main_refresh_data_btn"
+        app:layout_constraintTop_toBottomOf="@+id/main_refresh_data_btn"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/main_indicator_orientation_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/main_indicator_orientation_btn"
+        app:layout_constraintLeft_toRightOf="@+id/main_indicator_orientation_btn"
+        tools:text="翻页方向：横向"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
