@@ -55,7 +55,7 @@
         android:textSize="16dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/main_set_current_item_pos_btn"
         app:layout_constraintLeft_toRightOf="@+id/main_set_current_item_pos_btn"
-        tools:text="position：0，是否最后一页：false"/>
+        tools:text="position：0，最后一页：false"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/main_refresh_data_btn"

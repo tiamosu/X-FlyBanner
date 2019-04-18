@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setCurrentItemPosition(final int index, final boolean isLastPage) {
-        final String text = "position：" + index + "，是否最后一页：" + (isLastPage ? "true" : "false");
+        final String text = "position：" + index + "，最后一页：" + (isLastPage ? "true" : "false");
         mCurrentItemPosTv.setText(text);
     }
 
