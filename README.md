@@ -18,7 +18,7 @@ allprojects {
 ### fly-banner
 [ ![Download](https://api.bintray.com/packages/weixia/maven/x-flybanner/images/download.svg) ](https://bintray.com/weixia/maven/x-flybanner/_latestVersion)
 ```groovy
-compile 'me.xia:x-flybanner:1.0.0'
+compile 'me.xia:x-flybanner:1.0.1'
 ```
 
 ### 效果图：
