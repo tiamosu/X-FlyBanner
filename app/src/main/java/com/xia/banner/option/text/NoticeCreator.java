@@ -20,9 +20,14 @@ public final class NoticeCreator {
 
     public static void setDefault(final FlyBanner flyBanner,
                                   final List datas,
+                                  final boolean isHorizontal,
                                   final OnItemClickListener onItemClickListener,
                                   final OnPageChangeListener onPageChangeListener) {
 
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(
+                flyBanner.getContext(), (isHorizontal ? LinearLayoutManager.HORIZONTAL
+                : LinearLayoutManager.VERTICAL), false
+        );
         flyBanner
                 //设置视图数据初始化
                 .setPages(new NoticeHolderCreator(), datas)
@@ -31,9 +36,7 @@ public final class NoticeCreator {
                 //指示器配置使用
                 .useIndicator()
                 //设置翻页效果
-                .setLayoutManager(new LinearLayoutManager(flyBanner.getContext()))
-                //设置 vie wPager 圆角
-                .setRadius(50)
+                .setLayoutManager(layoutManager)
                 //设置自动轮播时间
                 .start(3000)
                 //设置是否进行自动轮播

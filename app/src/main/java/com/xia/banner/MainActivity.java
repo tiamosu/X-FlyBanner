@@ -20,7 +20,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private FlyBanner mFlyBanner, mNoticeView;
+    private FlyBanner mFlyBanner, mNoticeView, mNoticeView1;
     private AppCompatButton mLoopControlBtn, mSetCurrentItemPosBtn,
             mRefreshDataBtn, mIndicatorOrientationBtn;
     private AppCompatTextView mLoopStatusTv, mCurrentItemPosTv,
@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
         initEvent();
         refreshData();
-        startImg();
-        startText();
+        start();
+        notice();
     }
 
     @Override
@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initView() {
         mFlyBanner = findViewById(R.id.main_banner);
         mNoticeView = findViewById(R.id.main_notice);
+        mNoticeView1 = findViewById(R.id.main_notice1);
         mLoopControlBtn = findViewById(R.id.main_loop_control_btn);
         mLoopStatusTv = findViewById(R.id.main_loop_status_tv);
         mSetCurrentItemPosBtn = findViewById(R.id.main_set_current_item_pos_btn);
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void startImg() {
+    private void start() {
         BannerCreator.setDefault(mFlyBanner, mLocalImages, mIsHorizontal, position ->
                         Toast.makeText(MainActivity.this, "onItemClick: " + position, Toast.LENGTH_SHORT).show(),
                 new OnPageChangeListener() {
@@ -119,12 +120,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setIndicatorOrientation();
     }
 
-    private void startText() {
+    private void notice() {
         final List<String> list = new ArrayList<>();
         list.add("大促销下单拆福袋，亿万新年红包随便拿");
         list.add("家电五折团，抢十亿无门槛现金红包");
         list.add("星球大战剃须刀首发送200元代金券");
-        NoticeCreator.setDefault(mNoticeView, list, position -> {
+        NoticeCreator.setDefault(mNoticeView, list, false, position -> {
+            final String text = list.get(position);
+            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+        }, null);
+
+        NoticeCreator.setDefault(mNoticeView1, list, true, position -> {
             final String text = list.get(position);
             Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
         }, null);
@@ -181,13 +187,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (v == mRefreshDataBtn) {
             refreshData();
-            startImg();
+            start();
             Toast.makeText(this, "数据已刷新", Toast.LENGTH_SHORT).show();
             return;
         }
         if (v == mIndicatorOrientationBtn) {
             mIsHorizontal = !mIsHorizontal;
-            startImg();
+            start();
         }
     }
 }
