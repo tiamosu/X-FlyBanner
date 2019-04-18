@@ -56,20 +56,20 @@ public class FBLoopScaleHelper {
                 if (count <= 0 && newState != RecyclerView.SCROLL_STATE_IDLE) {
                     return;
                 }
-                int position = getCurrentItem();
-                if (position < count) {
-                    position = count + position;
-                } else if (position >= 2 * count) {
-                    position = position - count;
+                int currentItem = getCurrentItem();
+                if (currentItem < count) {
+                    currentItem = count + currentItem;
+                } else if (currentItem >= 2 * count) {
+                    currentItem = currentItem - count;
                 }
-                final int index = position % count;
-                if (lastPosition != index) {
-                    lastPosition = index;
-                    setCurrentItem(position);
+                final int position = currentItem % count;
+                if (lastPosition != position) {
+                    lastPosition = position;
+                    setCurrentItem(currentItem);
 
                     if (mOnPageChangeListener != null) {
-                        final boolean isLastPage = index == count - 1;
-                        mOnPageChangeListener.onPageSelected(index, isLastPage);
+                        final boolean isLastPage = position == count - 1;
+                        mOnPageChangeListener.onPageSelected(position, isLastPage);
                     }
                 }
             }
@@ -131,6 +131,18 @@ public class FBLoopScaleHelper {
         this.mFirstItemPos = firstItemPos;
     }
 
+    public void setPagePadding(int pagePadding) {
+        this.mPagePadding = pagePadding;
+    }
+
+    public void setShowLeftCardWidth(int showLeftCardWidth) {
+        this.mShowLeftCardWidth = showLeftCardWidth;
+    }
+
+    public int getFirstItemPos() {
+        return mFirstItemPos;
+    }
+
     public int getCurrentItem() {
         final RecyclerView.LayoutManager layoutManager;
         final View view;
@@ -142,26 +154,11 @@ public class FBLoopScaleHelper {
     }
 
     public int getRealCurrentItem() {
-        final RecyclerView.Adapter adapter;
-        if (mLoopViewPager != null
-                && (adapter = mLoopViewPager.getAdapter()) instanceof FBPageAdapter) {
-            final FBPageAdapter pageAdapter = (FBPageAdapter) adapter;
-            final int count = pageAdapter.getRealItemCount();
+        final int count = getRealItemCount();
+        if (count != 0) {
             return getCurrentItem() % count;
         }
         return 0;
-    }
-
-    public void setPagePadding(int pagePadding) {
-        mPagePadding = pagePadding;
-    }
-
-    public void setShowLeftCardWidth(int showLeftCardWidth) {
-        mShowLeftCardWidth = showLeftCardWidth;
-    }
-
-    public int getFirstItemPos() {
-        return mFirstItemPos;
     }
 
     public int getRealItemCount() {

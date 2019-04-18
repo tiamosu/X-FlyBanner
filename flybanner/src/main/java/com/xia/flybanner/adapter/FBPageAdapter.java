@@ -24,13 +24,11 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
     private final FBViewHolderCreator mCreator;
     private final List<T> mDatas;
     private final int mDataSize;
-    private boolean mCanLoop;
     private OnItemClickListener mOnItemClickListener;
 
-    public FBPageAdapter(FBViewHolderCreator creator, List<T> datas, boolean canLoop) {
+    public FBPageAdapter(FBViewHolderCreator creator, List<T> datas) {
         this.mCreator = creator;
         this.mDatas = datas;
-        this.mCanLoop = canLoop;
         this.mDataSize = mDatas.size();
     }
 
@@ -65,16 +63,8 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
         return 3 * mDataSize;
     }
 
-    public void setCanLoop(boolean canLoop) {
-        this.mCanLoop = canLoop;
-    }
-
     public int getRealItemCount() {
         return mDataSize;
-    }
-
-    public boolean isCanLoop() {
-        return mCanLoop;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -82,25 +72,17 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
     }
 
     private class OnPageClickListener implements View.OnClickListener {
-        private int position;
+        private int mPosition;
 
         OnPageClickListener(int position) {
-            this.position = position;
+            this.mPosition = position;
         }
 
         @Override
         public void onClick(View v) {
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(position);
+                mOnItemClickListener.onItemClick(mPosition);
             }
-        }
-
-        public int getPosition() {
-            return position;
-        }
-
-        public void setPosition(int position) {
-            this.position = position;
         }
     }
 }
