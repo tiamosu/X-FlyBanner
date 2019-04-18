@@ -74,7 +74,8 @@ public class FlyBanner<T> extends RelativeLayout {
         mIndicatorView = view.findViewById(R.id.fb_indicator_ll);
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
-                context, LinearLayoutManager.HORIZONTAL, false);
+                context, LinearLayoutManager.VERTICAL, false
+        );
         mLoopViewPager.setLayoutManager(linearLayoutManager);
         mAdSwitchTask = new AdSwitchTask(this);
     }

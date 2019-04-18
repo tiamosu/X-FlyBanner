@@ -14,7 +14,7 @@ import androidx.appcompat.widget.AppCompatImageView;
  * @author weixia
  * @date 2019/4/16.
  */
-public class ImageHolder extends FBHolder<Integer> {
+public class ImageHolder extends FBHolder {
     private AppCompatImageView mAppCompatImageView;
 
     ImageHolder(View itemView) {
@@ -27,11 +27,15 @@ public class ImageHolder extends FBHolder<Integer> {
     }
 
     @Override
-    public void updateUI(Integer data) {
-        if (mAppCompatImageView != null) {
-            final Context context = mAppCompatImageView.getContext();
+    public void updateUI(Object data) {
+        if (mAppCompatImageView == null) {
+            return;
+        }
+        final Context context = mAppCompatImageView.getContext();
+        if (data instanceof Integer) {
+            final int resId = (int) data;
             Glide.with(context)
-                    .load(data)
+                    .load(resId)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(mAppCompatImageView);
         }

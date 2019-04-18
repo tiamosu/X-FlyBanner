@@ -1,86 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:ignore="all">
 
     <com.xia.flybanner.FlyBanner
-        android:id="@+id/banner"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:padding="15dp"
+        android:id="@+id/main_banner"
+        android:layout_width="0pt"
+        android:layout_height="0pt"
+        android:layout_margin="15dp"
         app:fb_autoTurningTime="3000"
-        app:fb_canLoop="true"/>
+        app:fb_canLoop="true"
+        app:layout_constraintDimensionRatio="h,8:4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/main_loop_control_btn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginTop="20dp"
+        android:text="控制自动轮播"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_banner"/>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/main_loop_control_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="loopControl"
-            android:text="控制自动轮播"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/main_loop_status_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:textSize="16dp"
-            tools:text="是否自动翻页：否"/>
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/main_loop_status_tv"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:textSize="16dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/main_loop_control_btn"
+        app:layout_constraintLeft_toRightOf="@+id/main_loop_control_btn"
+        tools:text="是否自动翻页：否"/>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/main_set_item_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="setCurrentItem"
-            android:text="随机设定页面显示"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/main_set_current_item_pos_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="随机指定页面"
+        app:layout_constraintLeft_toLeftOf="@+id/main_loop_control_btn"
+        app:layout_constraintTop_toBottomOf="@+id/main_loop_control_btn"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/main_current_item_position_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:textSize="16dp"
-            tools:text="当前页position：0，是否处于最后一页：false"/>
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/main_current_item_position_tv"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:orientation="horizontal">
+        android:textSize="16dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/main_set_current_item_pos_btn"
+        app:layout_constraintLeft_toRightOf="@+id/main_set_current_item_pos_btn"
+        tools:text="position：0，是否最后一页：false"/>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/main_refresh_data_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="refreshData"
-            android:text="随机刷新数据"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/main_refresh_data_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="随机刷新数据"
+        app:layout_constraintLeft_toLeftOf="@+id/main_set_current_item_pos_btn"
+        app:layout_constraintTop_toBottomOf="@+id/main_set_current_item_pos_btn"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/main_data_size_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:textSize="16dp"
-            tools:text="总数据条数：5"/>
-    </androidx.appcompat.widget.LinearLayoutCompat>
-</androidx.appcompat.widget.LinearLayoutCompat>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/main_data_size_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:textSize="16dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/main_refresh_data_btn"
+        app:layout_constraintLeft_toRightOf="@+id/main_refresh_data_btn"
+        tools:text="总数据条数：5"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
