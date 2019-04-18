@@ -56,7 +56,7 @@ compile 'me.xia:x-flybanner:1.0.2'
                 .useIndicator(dataSize > 1)
                 //设置翻页效果
                 .setLayoutManager(layoutManager)
-                //设置 vie wPager 圆角
+                //设置 viewPager 圆角
                 .setRadius(50)
                 //设置自动轮播时间
                 .start(3000)
