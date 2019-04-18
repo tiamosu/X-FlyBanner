@@ -9,7 +9,7 @@ import androidx.annotation.IntDef;
  * @author weixia
  * @date 2019/4/17.
  */
-public final class PageIndicatorAlign {
+public final class IndicatorAlign {
     public static final int ALIGN_LEFT_TOP = 10;
     public static final int ALIGN_LEFT_CENTER = 11;
     public static final int ALIGN_LEFT_BOTTOM = 12;
@@ -24,6 +24,6 @@ public final class PageIndicatorAlign {
             ALIGN_TOP_CENTER, ALIGN_IN_CENTER, ALIGN_BOTTOM_CENTER,
             ALIGN_RIGHT_TOP, ALIGN_RIGHT_CENTER, ALIGN_RIGHT_BOTTOM})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface IndicatorAlign {
+    public @interface Align {
     }
 }

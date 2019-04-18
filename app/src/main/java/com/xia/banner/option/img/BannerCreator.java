@@ -5,8 +5,8 @@ import android.content.Context;
 
 import com.xia.banner.R;
 import com.xia.flybanner.FlyBanner;
-import com.xia.flybanner.constant.PageIndicatorAlign;
-import com.xia.flybanner.constant.PageIndicatorOrientation;
+import com.xia.flybanner.constant.IndicatorAlign;
+import com.xia.flybanner.constant.IndicatorOrientation;
 import com.xia.flybanner.listener.OnItemClickListener;
 import com.xia.flybanner.listener.OnPageChangeListener;
 
@@ -30,8 +30,8 @@ public final class BannerCreator {
 
         final Context context = flyBanner.getContext();
         final int dataSize = datas.size();
-        final int indicatorAlign = isHorizontal ? PageIndicatorAlign.ALIGN_RIGHT_BOTTOM : PageIndicatorAlign.ALIGN_RIGHT_CENTER;
-        final int indicatorOrientation = isHorizontal ? PageIndicatorOrientation.HORIZONTAL : PageIndicatorOrientation.VERTICAL;
+        final int indicatorAlign = isHorizontal ? IndicatorAlign.ALIGN_RIGHT_BOTTOM : IndicatorAlign.ALIGN_RIGHT_CENTER;
+        final int indicatorOrientation = isHorizontal ? IndicatorOrientation.HORIZONTAL : IndicatorOrientation.VERTICAL;
         final LinearLayoutManager layoutManager = new LinearLayoutManager(
                 context, (isHorizontal ? LinearLayoutManager.HORIZONTAL : LinearLayoutManager.VERTICAL), false
         );
@@ -58,7 +58,7 @@ public final class BannerCreator {
                 //设置自动轮播时间
                 .start(3000)
                 //设置是否进行自动轮播
-//                .setCanLoop(dataSize > 1)
+                .setCanLoop(dataSize > 1)
                 //设置点击事件监听
                 .setOnItemClickListener(onItemClickListener)
                 //设置页面切换事件监听
