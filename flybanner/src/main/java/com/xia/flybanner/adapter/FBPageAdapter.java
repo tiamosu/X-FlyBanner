@@ -20,9 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 @SuppressWarnings("unused")
 public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
-    private final List<T> mDatas;
+    private final FBPageAdapterHelper mHelper = new FBPageAdapterHelper();
     private final FBViewHolderCreator mCreator;
-    private final FBPageAdapterHelper mHelper;
+    private final List<T> mDatas;
+    private final int mDataSize;
     private boolean mCanLoop;
     private OnItemClickListener mOnItemClickListener;
 
@@ -30,7 +31,7 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
         this.mCreator = creator;
         this.mDatas = datas;
         this.mCanLoop = canLoop;
-        mHelper = new FBPageAdapterHelper();
+        this.mDataSize = mDatas.size();
     }
 
     @NonNull
@@ -47,7 +48,7 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
     @Override
     public void onBindViewHolder(@NonNull FBHolder holder, int position) {
         mHelper.onBindViewHolder(holder.itemView, position, getItemCount());
-        final int realPosition = position % mDatas.size();
+        final int realPosition = position % mDataSize;
         holder.updateUI(mDatas.get(realPosition));
 
         if (mOnItemClickListener != null) {
@@ -58,10 +59,10 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
     @Override
     public int getItemCount() {
         //根据模式决定长度
-        if (mDatas.size() == 0) {
+        if (mDataSize == 0) {
             return 0;
         }
-        return mCanLoop ? 3 * mDatas.size() : mDatas.size();
+        return 3 * mDataSize;
     }
 
     public void setCanLoop(boolean canLoop) {
@@ -69,7 +70,7 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
     }
 
     public int getRealItemCount() {
-        return mDatas.size();
+        return mDataSize;
     }
 
     public boolean isCanLoop() {

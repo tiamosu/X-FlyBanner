@@ -42,6 +42,10 @@ public class FBLoopScaleHelper {
 
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (mOnPageChangeListener != null) {
+                    mOnPageChangeListener.onScrollStateChanged(recyclerView, newState);
+                }
+
                 //这里变换位置实现循环
                 final RecyclerView.Adapter adapter;
                 if (!((adapter = loopViewPager.getAdapter()) instanceof FBPageAdapter)) {
@@ -49,27 +53,23 @@ public class FBLoopScaleHelper {
                 }
                 final FBPageAdapter pagerAdapter = (FBPageAdapter) adapter;
                 final int count = pagerAdapter.getRealItemCount();
-                int position = getCurrentItem();
-                if (pagerAdapter.isCanLoop()) {
-                    if (position < count) {
-                        position = count + position;
-                        setCurrentItem(position);
-                    } else if (position >= 2 * count) {
-                        position = position - count;
-                        setCurrentItem(position);
-                    }
+                if (count <= 0 && newState != RecyclerView.SCROLL_STATE_IDLE) {
+                    return;
                 }
+                int position = getCurrentItem();
+                if (position < count) {
+                    position = count + position;
+                } else if (position >= 2 * count) {
+                    position = position - count;
+                }
+                final int index = position % count;
+                if (lastPosition != index) {
+                    lastPosition = index;
+                    setCurrentItem(position);
 
-                if (mOnPageChangeListener != null) {
-                    mOnPageChangeListener.onScrollStateChanged(recyclerView, newState);
-                    //停止滚动
-                    if (count > 0 && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        final int index = position % count;
-                        if (lastPosition != index) {
-                            lastPosition = index;
-                            final boolean isLastPage = index == count - 1;
-                            mOnPageChangeListener.onPageSelected(index, isLastPage);
-                        }
+                    if (mOnPageChangeListener != null) {
+                        final boolean isLastPage = index == count - 1;
+                        mOnPageChangeListener.onPageSelected(index, isLastPage);
                     }
                 }
             }
