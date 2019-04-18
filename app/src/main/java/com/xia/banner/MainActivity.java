@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.xia.banner.option.BannerCreator;
+import com.xia.banner.option.img.BannerCreator;
+import com.xia.banner.option.text.NoticeCreator;
 import com.xia.flybanner.FlyBanner;
 import com.xia.flybanner.listener.OnPageChangeListener;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,15 +20,11 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private FlyBanner mFlyBanner;
-    private AppCompatButton mLoopControlBtn;
-    private AppCompatTextView mLoopStatusTv;
-    private AppCompatButton mSetCurrentItemPosBtn;
-    private AppCompatTextView mCurrentItemPosTv;
-    private AppCompatButton mRefreshDataBtn;
-    private AppCompatTextView mDataSizeTv;
-    private AppCompatButton mIndicatorOrientationBtn;
-    private AppCompatTextView mIndicatorOrientationTv;
+    private FlyBanner mFlyBanner, mNoticeView;
+    private AppCompatButton mLoopControlBtn, mSetCurrentItemPosBtn,
+            mRefreshDataBtn, mIndicatorOrientationBtn;
+    private AppCompatTextView mLoopStatusTv, mCurrentItemPosTv,
+            mDataSizeTv, mIndicatorOrientationTv;
 
     private final ArrayList<Integer> mLocalImages = new ArrayList<>();
     private boolean mIsHorizontal = true;
@@ -39,7 +37,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
         initEvent();
         refreshData();
-        start();
+        startImg();
+        startText();
     }
 
     @Override
@@ -62,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
         mFlyBanner = findViewById(R.id.main_banner);
+        mNoticeView = findViewById(R.id.main_notice);
         mLoopControlBtn = findViewById(R.id.main_loop_control_btn);
         mLoopStatusTv = findViewById(R.id.main_loop_status_tv);
         mSetCurrentItemPosBtn = findViewById(R.id.main_set_current_item_pos_btn);
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void start() {
+    private void startImg() {
         BannerCreator.setDefault(mFlyBanner, mLocalImages, mIsHorizontal, position ->
                         Toast.makeText(MainActivity.this, "onItemClick: " + position, Toast.LENGTH_SHORT).show(),
                 new OnPageChangeListener() {
@@ -117,6 +117,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setCurrentItemPosition(0, mLocalImages.size() <= 1);
         setDataSize(mLocalImages.size());
         setIndicatorOrientation();
+    }
+
+    private void startText() {
+        final List<String> list = new ArrayList<>();
+        list.add("大促销下单拆福袋，亿万新年红包随便拿");
+        list.add("家电五折团，抢十亿无门槛现金红包");
+        list.add("星球大战剃须刀首发送200元代金券");
+        NoticeCreator.setDefault(mNoticeView, list, position -> {
+            final String text = list.get(position);
+            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+        }, null);
     }
 
     /**
@@ -170,13 +181,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (v == mRefreshDataBtn) {
             refreshData();
-            start();
+            startImg();
             Toast.makeText(this, "数据已刷新", Toast.LENGTH_SHORT).show();
             return;
         }
         if (v == mIndicatorOrientationBtn) {
             mIsHorizontal = !mIsHorizontal;
-            start();
+            startImg();
         }
     }
 }

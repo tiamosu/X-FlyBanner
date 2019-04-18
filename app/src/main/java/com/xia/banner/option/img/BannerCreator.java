@@ -1,4 +1,4 @@
-package com.xia.banner.option;
+package com.xia.banner.option.img;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

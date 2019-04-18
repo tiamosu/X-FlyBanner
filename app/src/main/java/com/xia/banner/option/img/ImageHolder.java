@@ -1,4 +1,4 @@
-package com.xia.banner.option;
+package com.xia.banner.option.img;
 
 import android.content.Context;
 import android.view.View;
@@ -32,12 +32,9 @@ public class ImageHolder extends FBHolder {
             return;
         }
         final Context context = mAppCompatImageView.getContext();
-        if (data instanceof Integer) {
-            final int resId = (int) data;
-            Glide.with(context)
-                    .load(resId)
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(mAppCompatImageView);
-        }
+        Glide.with(context)
+                .load(data)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(mAppCompatImageView);
     }
 }

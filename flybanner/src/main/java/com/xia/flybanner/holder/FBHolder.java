@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
  * @author weixia
  * @date 2019/4/16.
  */
-@SuppressWarnings("WeakerAccess")
 public abstract class FBHolder<T> extends RecyclerView.ViewHolder {
 
     public FBHolder(View itemView) {

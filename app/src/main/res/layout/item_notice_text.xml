@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.AppCompatTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_notice_tv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:textColor="@android:color/white"
+    android:textSize="15dp"
+    tools:ignore="all"
+    tools:text="@string/app_name"
+    tools:textColor="@color/colorPrimary"/>
