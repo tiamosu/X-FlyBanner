@@ -402,10 +402,11 @@ public class FlyBanner<T> extends RelativeLayout {
      */
     public void startTurning(long autoTurningTime) {
         this.mAutoTurningTime = autoTurningTime;
+
+        stopTurning();
         if (autoTurningTime < 0 || !mCanLoop || mDataSize <= 1) {
             return;
         }
-        stopTurning();
         //设置可以翻页并开启翻页
         mCanTurn = true;
         mTurning = true;
