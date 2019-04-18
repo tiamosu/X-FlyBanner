@@ -25,7 +25,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':flybanner')
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
