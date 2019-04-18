@@ -22,8 +22,8 @@ compile 'me.xia:x-flybanner:1.0.0'
 ```
 
 ### 效果图：
-
-![Image text](screenshot/pic_1.png)
+![](screenshot/GIF_1.gif)
+//![](screenshot/pic_1.png)
 
 #### 配置：
 ```java
