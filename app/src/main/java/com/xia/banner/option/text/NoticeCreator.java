@@ -31,10 +31,8 @@ public final class NoticeCreator {
         flyBanner
                 //设置视图数据初始化
                 .setPages(new NoticeHolderCreator(), datas)
-                //设置指示器可见性，默认为可见状态
-                .setIndicatorVisible(false)
                 //指示器配置使用
-                .useIndicator()
+                .useIndicator(false)
                 //设置翻页效果
                 .setLayoutManager(layoutManager)
                 //设置自动轮播时间

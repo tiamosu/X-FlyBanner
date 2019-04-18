@@ -39,8 +39,6 @@ public final class BannerCreator {
         flyBanner
                 //设置视图数据初始化
                 .setPages(new HolderCreator(), datas)
-                //设置指示器可见性，默认为可见状态
-                .setIndicatorVisible(dataSize > 1)
                 //设置指示器样式
                 .setIndicatorId(new int[]{R.drawable.indicator_gray_radius, R.drawable.indicator_white_radius})
                 //设置指示器位置，默认为右下角
@@ -50,7 +48,7 @@ public final class BannerCreator {
                 //设置指示器偏移
                 .setIndicatorMargin(30)
                 //指示器配置使用
-                .useIndicator()
+                .useIndicator(dataSize > 1)
                 //设置翻页效果
                 .setLayoutManager(layoutManager)
                 //设置 vie wPager 圆角
