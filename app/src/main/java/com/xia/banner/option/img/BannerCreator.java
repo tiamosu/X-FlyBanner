@@ -1,18 +1,16 @@
 package com.xia.banner.option.img;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 
 import com.xia.banner.R;
 import com.xia.flybanner.FlyBanner;
 import com.xia.flybanner.constant.PageIndicatorAlign;
 import com.xia.flybanner.constant.PageIndicatorOrientation;
+import com.xia.flybanner.constant.PageOrientation;
 import com.xia.flybanner.listener.OnItemClickListener;
 import com.xia.flybanner.listener.OnPageChangeListener;
 
 import java.util.List;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
  * @author weixia
@@ -28,17 +26,18 @@ public final class BannerCreator {
                                   final OnItemClickListener onItemClickListener,
                                   final OnPageChangeListener onPageChangeListener) {
 
-        final Context context = flyBanner.getContext();
         final int dataSize = datas.size();
         final int indicatorAlign = isHorizontal ? PageIndicatorAlign.ALIGN_RIGHT_BOTTOM : PageIndicatorAlign.ALIGN_RIGHT_CENTER;
         final int indicatorOrientation = isHorizontal ? PageIndicatorOrientation.HORIZONTAL : PageIndicatorOrientation.VERTICAL;
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(
-                context, (isHorizontal ? LinearLayoutManager.HORIZONTAL : LinearLayoutManager.VERTICAL), false
-        );
+        final int orientation = isHorizontal ? PageOrientation.HORIZONTAL : PageOrientation.VERTICAL;
 
         flyBanner
-                //设置视图数据初始化
+                //设置 banner 视图数据初始化
                 .setPages(new HolderCreator(), datas)
+                //设置 banner 翻页方向
+                .setOrientation(orientation)
+                //指示器配置使用
+                .useIndicator(dataSize > 1)
                 //设置指示器样式
                 .setIndicatorId(new int[]{R.drawable.indicator_gray_radius, R.drawable.indicator_white_radius})
                 //设置指示器位置，默认为右下角
@@ -47,10 +46,8 @@ public final class BannerCreator {
                 .setIndicatorOrientation(indicatorOrientation)
                 //设置指示器偏移
                 .setIndicatorMargin(30)
-                //指示器配置使用
-                .useIndicator(dataSize > 1)
-                //设置翻页效果
-                .setLayoutManager(layoutManager)
+                //指示器生成
+                .indicatorBuild()
                 //设置 viewPager 圆角
                 .setRadius(50)
                 //设置自动轮播时间

@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import com.xia.flybanner.adapter.FBPageAdapter;
 import com.xia.flybanner.constant.PageIndicatorAlign;
 import com.xia.flybanner.constant.PageIndicatorOrientation;
+import com.xia.flybanner.constant.PageOrientation;
 import com.xia.flybanner.helper.FBLoopScaleHelper;
 import com.xia.flybanner.holder.FBViewHolderCreator;
 import com.xia.flybanner.listener.FBPageChangeListener;
@@ -76,8 +77,8 @@ public class FlyBanner<T> extends RelativeLayout {
     /**
      * 设置视图数据初始化，必须第一步调用
      */
-    public IndicatorBuilder setPages(@NonNull final FBViewHolderCreator holderCreator,
-                                     @NonNull final List<T> datas) {
+    public FlyBuilder setPages(@NonNull final FBViewHolderCreator holderCreator,
+                               @NonNull final List<T> datas) {
         this.mDatas.clear();
         this.mDatas.addAll(datas);
         this.mDataSize = datas.size();
@@ -86,14 +87,28 @@ public class FlyBanner<T> extends RelativeLayout {
 
         mLoopScaleHelper.setFirstItemPos(mDataSize);
         mLoopScaleHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter);
-        return new IndicatorBuilder(this);
+        return new FlyBuilder(this);
     }
 
     public class FlyBuilder {
         private FlyBanner mFlyBanner;
+        private int mOrientation = PageOrientation.HORIZONTAL;
 
         public FlyBuilder(FlyBanner flyBanner) {
             mFlyBanner = flyBanner;
+        }
+
+        public FlyBuilder setOrientation(final @PageOrientation.Orientation int orientation) {
+            mOrientation = orientation;
+            return this;
+        }
+
+        public IndicatorBuilder useIndicator(final boolean isVisible) {
+            setPageOrientation(mOrientation);
+
+            final int visible = isVisible ? VISIBLE : GONE;
+            mIndicatorView.setVisibility(visible);
+            return new IndicatorBuilder(mFlyBanner);
         }
     }
 
@@ -158,8 +173,7 @@ public class FlyBanner<T> extends RelativeLayout {
         /**
          * 指示器配置
          */
-        public CommonBuilder useIndicator(final boolean isVisible) {
-            mIndicatorView.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        public CommonBuilder indicatorBuild() {
             setPageIndicator(mIndicatorId, mIndicatorAlign, mIndicatorOrientation,
                     mLeftMargin, mTopMargin, mRightMargin, mBottomMargin);
             return new CommonBuilder(mFlyBanner);
@@ -168,18 +182,9 @@ public class FlyBanner<T> extends RelativeLayout {
 
     public class CommonBuilder {
         private FlyBanner mFlyBanner;
-        private RecyclerView.LayoutManager mLayoutManager;
 
         public CommonBuilder(FlyBanner flyBanner) {
             mFlyBanner = flyBanner;
-        }
-
-        /**
-         * 设置翻页效果
-         */
-        public CommonBuilder setLayoutManager(final RecyclerView.LayoutManager layoutManager) {
-            this.mLayoutManager = layoutManager;
-            return this;
         }
 
         /**
@@ -216,14 +221,22 @@ public class FlyBanner<T> extends RelativeLayout {
          * 开始执行，最后一步调用
          */
         public FlyBanner start(final long autoTurningTime) {
-            if (mLayoutManager == null) {
-                mLayoutManager = new LinearLayoutManager(
-                        getContext(), LinearLayoutManager.HORIZONTAL, false);
-            }
-            mLoopViewPager.setLayoutManager(mLayoutManager);
             startTurning(autoTurningTime);
             return mFlyBanner;
         }
+    }
+
+    /**
+     * 配置 banner 翻页方向
+     * <p>
+     * PageOrientation.HORIZONTAL: 横向，
+     * PageOrientation.VERTICAL: 竖向（默认为横向）
+     */
+    private void setPageOrientation(final int orientation) {
+        final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
+                getContext(), (orientation == PageOrientation.HORIZONTAL
+                ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL), false);
+        mLoopViewPager.setLayoutManager(layoutManager);
     }
 
     /**
@@ -264,6 +277,9 @@ public class FlyBanner<T> extends RelativeLayout {
 
     /**
      * 设置指示器方向
+     * <p>
+     * PageIndicatorOrientation.HORIZONTAL: 横向，
+     * PageIndicatorOrientation.VERTICAL: 竖向（默认为横向）
      */
     private void setIndicatorOrientation(final int indicatorOrientation) {
         if (indicatorOrientation == PageIndicatorOrientation.HORIZONTAL) {
@@ -275,6 +291,16 @@ public class FlyBanner<T> extends RelativeLayout {
 
     /**
      * 指示器的位置
+     * <p>
+     * ALIGN_LEFT_TOP: 左上角
+     * ALIGN_LEFT_CENTER: 左竖向中间
+     * ALIGN_LEFT_BOTTOM: 左下角
+     * ALIGN_TOP_CENTER: 上横向中间
+     * ALIGN_IN_CENTER: 中间
+     * ALIGN_BOTTOM_CENTER: 下横向中间
+     * ALIGN_RIGHT_TOP: 右上角
+     * ALIGN_RIGHT_CENTER: 右竖向中间
+     * ALIGN_RIGHT_BOTTOM: 右下角
      */
     private void setPageIndicatorAlign(final int indicatorAlign) {
         final LayoutParams layoutParams = (LayoutParams) mIndicatorView.getLayoutParams();
@@ -327,6 +353,9 @@ public class FlyBanner<T> extends RelativeLayout {
         mIndicatorView.setLayoutParams(layoutParams);
     }
 
+    /**
+     * 设置指示器 margin
+     */
     private void setIndicatorMargin(final int leftMargin, final int topMargin,
                                     final int rightMargin, final int bottomMargin) {
         final ViewGroup.MarginLayoutParams layoutParams
