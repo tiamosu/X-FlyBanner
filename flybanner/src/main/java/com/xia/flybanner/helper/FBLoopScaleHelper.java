@@ -23,23 +23,26 @@ public class FBLoopScaleHelper {
     private int mPagePadding = 0; // 卡片的padding, 卡片间的距离等于2倍的mPagePadding
     private int mShowLeftCardWidth = 0;   // 左边卡片显示大小
     private int mFirstItemPos;
+    private int mLastPosition;
 
     private final PagerSnapHelper mPagerSnapHelper = new PagerSnapHelper();
     private FBLoopViewPager mLoopViewPager;
+    private RecyclerView.OnScrollListener mOnScrollListener;
     private OnPageChangeListener mOnPageChangeListener;
 
     public void attachToRecyclerView(final FBLoopViewPager loopViewPager) {
         this.mLoopViewPager = loopViewPager;
+        this.mLastPosition = -1;
         if (loopViewPager == null) {
             return;
         }
 
         initWidth();
         mPagerSnapHelper.attachToRecyclerView(loopViewPager);
-
-        loopViewPager.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int lastPosition = -1;
-
+        if (mOnScrollListener != null) {
+            loopViewPager.removeOnScrollListener(mOnScrollListener);
+        }
+        mOnScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (mOnPageChangeListener != null) {
@@ -63,8 +66,8 @@ public class FBLoopScaleHelper {
                     currentItem = currentItem - count;
                 }
                 final int position = currentItem % count;
-                if (lastPosition != position) {
-                    lastPosition = position;
+                if (mLastPosition != position) {
+                    mLastPosition = position;
                     setCurrentItem(currentItem);
 
                     if (mOnPageChangeListener != null) {
@@ -80,7 +83,8 @@ public class FBLoopScaleHelper {
                     mOnPageChangeListener.onScrolled(recyclerView, dx, dy);
                 }
             }
-        });
+        };
+        loopViewPager.addOnScrollListener(mOnScrollListener);
     }
 
     /**
