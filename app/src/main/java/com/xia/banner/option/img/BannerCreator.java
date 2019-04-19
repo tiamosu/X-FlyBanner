@@ -52,7 +52,7 @@ public final class BannerCreator {
                 //设置翻页效果
                 .setLayoutManager(layoutManager)
                 //设置 viewPager 圆角
-                .setRadius(50)
+//                .setRadius(50)
                 //设置自动轮播时间
                 .start(3000)
                 //设置是否进行自动轮播

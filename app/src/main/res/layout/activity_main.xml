@@ -7,6 +7,17 @@
     android:layout_height="match_parent"
     tools:ignore="all">
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/main_blur_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#3F000000"
+        android:scaleType="fitXY"
+        app:layout_constraintDimensionRatio="h,8:4.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <com.xia.flybanner.FlyBanner
         android:id="@+id/main_banner"
         android:layout_width="0pt"
@@ -14,10 +25,11 @@
         android:layout_margin="15dp"
         app:fb_autoTurningTime="3000"
         app:fb_canLoop="true"
+        app:layout_constraintBottom_toBottomOf="@+id/main_blur_view"
         app:layout_constraintDimensionRatio="h,8:4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="@+id/main_blur_view"/>
 
     <View
         android:id="@+id/main_notice_view"
@@ -29,7 +41,7 @@
         android:background="@drawable/bg_notice"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_banner"/>
+        app:layout_constraintTop_toBottomOf="@+id/main_blur_view"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/main_notice_iv"
