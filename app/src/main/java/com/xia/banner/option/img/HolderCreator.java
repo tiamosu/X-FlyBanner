@@ -19,6 +19,7 @@ public class HolderCreator implements FBViewHolderCreator {
 
     @Override
     public int getLayoutId() {
-        return R.layout.item_banner_img;
+//        return R.layout.item_banner_img;
+        return R.layout.item_banner_img_scale;
     }
 }
