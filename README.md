@@ -24,6 +24,8 @@ compile 'me.xia:x-flybanner:1.0.4'
 ### 效果图：
 ![](screenshot/GIF_1.gif)
 
+![](screenshot/GIF_2.gif)
+
 ### 配置：
 ```java
     public static void setDefault(final FlyBanner flyBanner,
