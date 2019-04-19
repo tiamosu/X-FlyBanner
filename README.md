@@ -18,7 +18,7 @@ allprojects {
 ### fly-banner
 [ ![Download](https://api.bintray.com/packages/weixia/maven/x-flybanner/images/download.svg) ](https://bintray.com/weixia/maven/x-flybanner/_latestVersion)
 ```groovy
-compile 'me.xia:x-flybanner:1.0.3'
+compile 'me.xia:x-flybanner:1.0.4'
 ```
 
 ### 效果图：
@@ -29,6 +29,7 @@ compile 'me.xia:x-flybanner:1.0.3'
     public static void setDefault(final FlyBanner flyBanner,
                                   final List datas,
                                   final boolean isHorizontal,
+                                  final boolean isGuidePage,
                                   final OnItemClickListener onItemClickListener,
                                   final OnPageChangeListener onPageChangeListener) {
 
@@ -42,8 +43,10 @@ compile 'me.xia:x-flybanner:1.0.3'
                 .setPages(new HolderCreator(), datas)
                 //设置 banner 翻页方向
                 .setOrientation(orientation)
-                //指示器配置使用
-                .useIndicator(dataSize > 1)
+                //是否为引导页
+                .setGuidePage(isGuidePage)
+                //banner 生成
+                .pageBuild()
                 //设置指示器样式
                 .setIndicatorId(new int[]{R.drawable.indicator_gray_radius, R.drawable.indicator_white_radius})
                 //设置指示器位置，默认为右下角
@@ -53,13 +56,13 @@ compile 'me.xia:x-flybanner:1.0.3'
                 //设置指示器偏移
                 .setIndicatorMargin(30)
                 //指示器生成
-                .indicatorBuild()
+                .indicatorBuild(dataSize > 1)
                 //设置 viewPager 圆角
                 .setRadius(50)
                 //设置自动轮播时间
                 .start(3000)
                 //设置是否进行自动轮播
-                .setCanLoop(dataSize > 1)
+                .setCanLoop(dataSize > 1 && !isGuidePage)
                 //设置点击事件监听
                 .setOnItemClickListener(onItemClickListener)
                 //设置页面切换事件监听
