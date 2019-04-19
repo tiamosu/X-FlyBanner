@@ -326,8 +326,7 @@ public class FlyBanner<T> extends RelativeLayout {
 
     private void setIndicatorMargin(Integer leftMargin, Integer topMargin,
                                     Integer rightMargin, Integer bottomMargin) {
-        final ViewGroup.MarginLayoutParams layoutParams
-                = (MarginLayoutParams) mIndicatorView.getLayoutParams();
+        final ViewGroup.MarginLayoutParams layoutParams = (MarginLayoutParams) mIndicatorView.getLayoutParams();
         if (leftMargin != null && leftMargin >= 0) {
             layoutParams.leftMargin = leftMargin;
         }

@@ -92,7 +92,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mLocalImages.clear();
         final int min = 1;
         final int max = 7;
-        final int randomNum = new Random().nextInt(max - min) + min;
+        int randomNum = new Random().nextInt(max - min) + min;
+        randomNum = 7;
 
         //本地图片集合
         for (int position = 0; position < randomNum; position++) {

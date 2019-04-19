@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     app:cardCornerRadius="8dp"
     app:cardElevation="6dp"
-    app:cardMaxElevation="12dp">
+    app:cardMaxElevation="12dp"
+    app:cardUseCompatPadding="true">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/item_banner_iv"
