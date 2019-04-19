@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initEvent();
         refreshData();
         start();
-//        notice();
+        notice();
     }
 
     @Override
