@@ -20,8 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class FBLoopScaleHelper {
-    private int mPagePadding = 0; // 卡片的padding, 卡片间的距离等于2倍的mPagePadding
-    private int mShowLeftCardWidth = 0;   // 左边卡片显示大小
     private int mFirstItemPos;
     private int mLastPosition;
 
@@ -125,20 +123,12 @@ public class FBLoopScaleHelper {
         if (mLoopViewPager != null
                 && (layoutManager = mLoopViewPager.getLayoutManager()) instanceof LinearLayoutManager) {
             final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
-            linearLayoutManager.scrollToPositionWithOffset(pos, (mPagePadding + mShowLeftCardWidth));
+            linearLayoutManager.scrollToPositionWithOffset(pos, 0);
         }
     }
 
     public void setFirstItemPos(int firstItemPos) {
         this.mFirstItemPos = firstItemPos;
-    }
-
-    public void setPagePadding(int pagePadding) {
-        this.mPagePadding = pagePadding;
-    }
-
-    public void setShowLeftCardWidth(int showLeftCardWidth) {
-        this.mShowLeftCardWidth = showLeftCardWidth;
     }
 
     public int getFirstItemPos() {
