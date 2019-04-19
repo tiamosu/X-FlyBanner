@@ -36,9 +36,6 @@ public class FBLoopScaleHelper {
         if (loopViewPager == null) {
             return;
         }
-
-        initWidth();
-        mPagerSnapHelper.attachToRecyclerView(loopViewPager);
         if (mOnScrollListener != null) {
             loopViewPager.removeOnScrollListener(mOnScrollListener);
         }
@@ -85,6 +82,9 @@ public class FBLoopScaleHelper {
             }
         };
         loopViewPager.addOnScrollListener(mOnScrollListener);
+
+        initWidth();
+        mPagerSnapHelper.attachToRecyclerView(loopViewPager);
     }
 
     /**
