@@ -1,8 +1,13 @@
 package com.xia.flybanner.helper;
 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
+import com.xia.flybanner.constant.FBConfig;
 import com.xia.flybanner.utils.ScreenUtil;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,49 +17,56 @@ import androidx.recyclerview.widget.RecyclerView;
  * @date 2019/4/16.
  */
 public class FBPageAdapterHelper {
-    private static int sPagePadding = 0;
-    private static int sShowLeftCardWidth = 0;
 
     public void onCreateViewHolder(final ViewGroup parent, final View itemView) {
-        final RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) itemView.getLayoutParams();
-        final int parentWidth = parent.getMeasuredWidth();
-        if (parentWidth != 0) {
-            lp.width = parentWidth - ScreenUtil.dip2px(
-                    itemView.getContext(), 2 * (sPagePadding + sShowLeftCardWidth));
-            itemView.setLayoutParams(lp);
-            return;
+        final ViewTreeObserver vto = parent.getViewTreeObserver();
+        if (vto.isAlive()) {
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onGlobalLayout() {
+                    final ViewTreeObserver currentVto = parent.getViewTreeObserver();
+                    if (currentVto.isAlive()) {
+                        currentVto.removeOnGlobalLayoutListener(this);
+                    }
+                    final RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) itemView.getLayoutParams();
+                    final Context context = itemView.getContext();
+                    final int pagePadding = ScreenUtil.dip2px(context,
+                            2 * (FBConfig.PAGE_PADDING + FBConfig.SHOW_LEFT_CARD_WIDTH));
+                    layoutParams.width = parent.getMeasuredWidth() - pagePadding;
+                    itemView.setLayoutParams(layoutParams);
+                }
+            });
         }
-        parent.post(new Runnable() {
-            @Override
-            public void run() {
-                lp.width = parent.getMeasuredWidth() - ScreenUtil.dip2px(
-                        itemView.getContext(), 2 * (sPagePadding + sShowLeftCardWidth));
-                itemView.setLayoutParams(lp);
-            }
-        });
     }
 
-    public void onBindViewHolder(View itemView, final int position, int itemCount) {
-        final int padding = ScreenUtil.dip2px(itemView.getContext(), sPagePadding);
+    public void onBindViewHolder(final View itemView, final int position, final int itemCount) {
+        final Context context = itemView.getContext();
+        final int padding = ScreenUtil.dip2px(context, FBConfig.PAGE_PADDING);
         itemView.setPadding(padding, 0, padding, 0);
-        final int leftMarin = position == 0 ? padding + ScreenUtil.dip2px(itemView.getContext(), sShowLeftCardWidth) : 0;
-        final int rightMarin = position == itemCount - 1 ? padding + ScreenUtil.dip2px(itemView.getContext(), sShowLeftCardWidth) : 0;
+
+        final int margin = padding + ScreenUtil.dip2px(context, FBConfig.SHOW_LEFT_CARD_WIDTH);
+        final int leftMarin = position == 0 ? margin : 0;
+        final int rightMarin = position == itemCount - 1 ? margin : 0;
         setViewMargin(itemView, leftMarin, 0, rightMarin, 0);
     }
 
-    private void setViewMargin(View view, int left, int top, int right, int bottom) {
-        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-        if (lp.leftMargin != left || lp.topMargin != top || lp.rightMargin != right || lp.bottomMargin != bottom) {
-            lp.setMargins(left, top, right, bottom);
-            view.setLayoutParams(lp);
+    @SuppressWarnings("SameParameterValue")
+    private void setViewMargin(final View view, final int leftMargin, final int topMargin,
+                               final int rightMargin, final int bottomMargin) {
+        final ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        if (layoutParams.leftMargin != leftMargin) {
+            layoutParams.leftMargin = leftMargin;
         }
-    }
-
-    public void setPagePadding(int pagePadding) {
-        sPagePadding = pagePadding;
-    }
-
-    public void setShowLeftCardWidth(int showLeftCardWidth) {
-        sShowLeftCardWidth = showLeftCardWidth;
+        if (layoutParams.topMargin != topMargin) {
+            layoutParams.topMargin = topMargin;
+        }
+        if (layoutParams.rightMargin != rightMargin) {
+            layoutParams.rightMargin = rightMargin;
+        }
+        if (layoutParams.bottomMargin != bottomMargin) {
+            layoutParams.bottomMargin = bottomMargin;
+        }
+        view.setLayoutParams(layoutParams);
     }
 }
