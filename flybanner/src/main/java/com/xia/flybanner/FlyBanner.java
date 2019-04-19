@@ -39,19 +39,19 @@ import androidx.recyclerview.widget.RecyclerView;
 @SuppressWarnings("all")
 public class FlyBanner<T> extends RelativeLayout {
     private final ArrayList<ImageView> mPointViews = new ArrayList<>();
-    private List<T> mDatas = new ArrayList<>();
+    private final List<T> mDatas = new ArrayList<>();
     private int mDataSize;
     private long mAutoTurningTime;
     private boolean mCanLoop;
     private boolean mTurning;
     private boolean mCanTurn;
 
+    private final FBLoopScaleHelper mLoopScaleHelper = new FBLoopScaleHelper();
+    private final AdSwitchTask mAdSwitchTask = new AdSwitchTask(this);
     private FBPageAdapter mPageAdapter;
     private FBLoopViewPager mLoopViewPager;
     private LinearLayout mIndicatorView;
-    private final FBLoopScaleHelper mLoopScaleHelper = new FBLoopScaleHelper();
     private FBPageChangeListener mPageChangeListener;
-    private AdSwitchTask mAdSwitchTask;
 
     public FlyBanner(Context context) {
         this(context, null);
@@ -72,12 +72,6 @@ public class FlyBanner<T> extends RelativeLayout {
                 .inflate(R.layout.fb_include_viewpager, this, true);
         mLoopViewPager = view.findViewById(R.id.fb_loop_vp);
         mIndicatorView = view.findViewById(R.id.fb_indicator_ll);
-
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
-                context, LinearLayoutManager.VERTICAL, false
-        );
-        mLoopViewPager.setLayoutManager(linearLayoutManager);
-        mAdSwitchTask = new AdSwitchTask(this);
     }
 
     /**
@@ -85,7 +79,8 @@ public class FlyBanner<T> extends RelativeLayout {
      */
     public IndicatorBuilder setPages(@NonNull FBViewHolderCreator holderCreator,
                                      @NonNull List<T> datas) {
-        this.mDatas = datas;
+        this.mDatas.clear();
+        this.mDatas.addAll(datas);
         this.mDataSize = datas.size();
         mPageAdapter = new FBPageAdapter(holderCreator, datas);
         mLoopViewPager.setAdapter(mPageAdapter);
@@ -165,6 +160,7 @@ public class FlyBanner<T> extends RelativeLayout {
 
     public class CommonBuilder {
         private FlyBanner mFlyBanner;
+        private RecyclerView.LayoutManager mLayoutManager;
 
         public CommonBuilder(FlyBanner flyBanner) {
             mFlyBanner = flyBanner;
@@ -174,7 +170,7 @@ public class FlyBanner<T> extends RelativeLayout {
          * 设置翻页效果
          */
         public CommonBuilder setLayoutManager(@NonNull RecyclerView.LayoutManager layoutManager) {
-            mLoopViewPager.setLayoutManager(layoutManager);
+            this.mLayoutManager = layoutManager;
             return this;
         }
 
@@ -206,6 +202,11 @@ public class FlyBanner<T> extends RelativeLayout {
          * 开始执行，最后一步调用
          */
         public FlyBanner start(long autoTurningTime) {
+            if (mLayoutManager == null) {
+                mLayoutManager = new LinearLayoutManager(
+                        getContext(), LinearLayoutManager.HORIZONTAL, false);
+            }
+            mLoopViewPager.setLayoutManager(mLayoutManager);
             startTurning(autoTurningTime);
             return mFlyBanner;
         }
