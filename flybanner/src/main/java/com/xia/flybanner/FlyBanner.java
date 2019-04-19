@@ -85,7 +85,7 @@ public class FlyBanner<T> extends RelativeLayout {
         mPageAdapter = new FBPageAdapter(holderCreator, datas);
         mLoopViewPager.setAdapter(mPageAdapter);
 
-        mLoopScaleHelper.setFirstItemPos(mCanLoop ? mDataSize : 0);
+        mLoopScaleHelper.setFirstItemPos(mDataSize);
         mLoopScaleHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter);
         return new IndicatorBuilder(this);
     }
