@@ -234,7 +234,7 @@ public class FlyBanner<T> extends RelativeLayout {
         for (int count = 0; count < mDataSize; count++) {
             // 翻页指示的点
             final ImageView pointView = new ImageView(getContext());
-            if (mIndicatorView.getOrientation() == LinearLayout.HORIZONTAL) {
+            if (orientation == LinearLayout.HORIZONTAL) {
                 pointView.setPadding(5, 0, 5, 0);
             } else {
                 pointView.setPadding(0, 5, 0, 5);
@@ -387,7 +387,7 @@ public class FlyBanner<T> extends RelativeLayout {
      */
     public FlyBanner setCurrentItem(int position) {
         stopTurning();
-        final int page = mCanLoop ? mDataSize + position : position;
+        final int page = mDataSize + position;
         mLoopScaleHelper.setCurrentItem(page, true);
         startTurning();
         return this;
