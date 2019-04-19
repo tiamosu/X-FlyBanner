@@ -27,11 +27,14 @@ public class FBLoopScaleHelper {
 
     private final PagerSnapHelper mPagerSnapHelper = new PagerSnapHelper();
     private FBLoopViewPager mLoopViewPager;
+    private FBPageAdapter mPageAdapter;
     private RecyclerView.OnScrollListener mOnScrollListener;
     private OnPageChangeListener mOnPageChangeListener;
 
-    public void attachToRecyclerView(final FBLoopViewPager loopViewPager) {
+    public void attachToRecyclerView(final FBLoopViewPager loopViewPager,
+                                     final FBPageAdapter pageAdapter) {
         this.mLoopViewPager = loopViewPager;
+        this.mPageAdapter = pageAdapter;
         this.mLastPosition = -1;
         if (loopViewPager == null) {
             return;
@@ -47,12 +50,7 @@ public class FBLoopScaleHelper {
                 }
 
                 //这里变换位置实现循环
-                final RecyclerView.Adapter adapter;
-                if (!((adapter = loopViewPager.getAdapter()) instanceof FBPageAdapter)) {
-                    return;
-                }
-                final FBPageAdapter pagerAdapter = (FBPageAdapter) adapter;
-                final int count = pagerAdapter.getRealItemCount();
+                final int count = mPageAdapter.getRealItemCount();
                 if (count <= 0 && newState != RecyclerView.SCROLL_STATE_IDLE) {
                     return;
                 }
@@ -166,11 +164,8 @@ public class FBLoopScaleHelper {
     }
 
     public int getRealItemCount() {
-        final RecyclerView.Adapter adapter;
-        if (mLoopViewPager != null
-                && (adapter = mLoopViewPager.getAdapter()) instanceof FBPageAdapter) {
-            final FBPageAdapter pageAdapter = (FBPageAdapter) adapter;
-            return pageAdapter.getRealItemCount();
+        if (mPageAdapter != null) {
+            return mPageAdapter.getRealItemCount();
         }
         return 0;
     }

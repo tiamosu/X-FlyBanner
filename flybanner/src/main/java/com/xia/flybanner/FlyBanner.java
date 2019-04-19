@@ -86,7 +86,7 @@ public class FlyBanner<T> extends RelativeLayout {
         mLoopViewPager.setAdapter(mPageAdapter);
 
         mLoopScaleHelper.setFirstItemPos(mDataSize);
-        mLoopScaleHelper.attachToRecyclerView(mLoopViewPager);
+        mLoopScaleHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter);
         return new IndicatorBuilder(this);
     }
 
@@ -429,7 +429,7 @@ public class FlyBanner<T> extends RelativeLayout {
         this.mAutoTurningTime = autoTurningTime;
 
         stopTurning();
-        if (autoTurningTime < 0 || !mCanLoop) {
+        if (autoTurningTime < 0 || !mCanLoop || mDataSize <= 1) {
             return;
         }
         //设置可以翻页并开启翻页
