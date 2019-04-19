@@ -36,8 +36,10 @@ public final class BannerCreator {
                 .setPages(new HolderCreator(), datas)
                 //设置 banner 翻页方向
                 .setOrientation(orientation)
-                //指示器配置使用
-                .useIndicator(dataSize > 1)
+                //是否为引导页
+                .setGuidePage(true)
+                //banner 生成
+                .pageBuild()
                 //设置指示器样式
                 .setIndicatorId(new int[]{R.drawable.indicator_gray_radius, R.drawable.indicator_white_radius})
                 //设置指示器位置，默认为右下角
@@ -47,7 +49,7 @@ public final class BannerCreator {
                 //设置指示器偏移
                 .setIndicatorMargin(30)
                 //指示器生成
-                .indicatorBuild()
+                .indicatorBuild(dataSize > 1)
                 //设置 viewPager 圆角
                 .setRadius(50)
                 //设置自动轮播时间

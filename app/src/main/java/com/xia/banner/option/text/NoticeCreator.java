@@ -30,10 +30,10 @@ public final class NoticeCreator {
                 .setPages(new NoticeHolderCreator(), datas)
                 //设置 banner 翻页方向
                 .setOrientation(orientation)
-                //指示器配置使用
-                .useIndicator(false)
+                //banner 生成
+                .pageBuild()
                 //指示器生成
-                .indicatorBuild()
+                .indicatorBuild(false)
                 //设置自动轮播时间
                 .start(3000)
                 //设置是否进行自动轮播

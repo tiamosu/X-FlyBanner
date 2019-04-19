@@ -39,12 +39,14 @@ import androidx.recyclerview.widget.RecyclerView;
 @SuppressWarnings("all")
 public class FlyBanner<T> extends RelativeLayout {
     private final ArrayList<ImageView> mPointViews = new ArrayList<>();
-    private final List<T> mDatas = new ArrayList<>();
+    private List<T> mDatas = new ArrayList<>();
+    private FBViewHolderCreator mHolderCreator;
     private int mDataSize;
     private long mAutoTurningTime;
     private boolean mCanLoop;
     private boolean mTurning;
     private boolean mCanTurn;
+    private boolean mIsGuidePage;
 
     private final FBLoopScaleHelper mLoopScaleHelper = new FBLoopScaleHelper();
     private final AdSwitchTask mAdSwitchTask = new AdSwitchTask(this);
@@ -79,14 +81,9 @@ public class FlyBanner<T> extends RelativeLayout {
      */
     public FlyBuilder setPages(@NonNull final FBViewHolderCreator holderCreator,
                                @NonNull final List<T> datas) {
-        this.mDatas.clear();
-        this.mDatas.addAll(datas);
+        this.mDatas = datas;
         this.mDataSize = datas.size();
-        mPageAdapter = new FBPageAdapter(holderCreator, datas);
-        mLoopViewPager.setAdapter(mPageAdapter);
-
-        mLoopScaleHelper.setFirstItemPos(mDataSize);
-        mLoopScaleHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter);
+        this.mHolderCreator = holderCreator;
         return new FlyBuilder(this);
     }
 
@@ -95,19 +92,22 @@ public class FlyBanner<T> extends RelativeLayout {
         private int mOrientation = PageOrientation.HORIZONTAL;
 
         public FlyBuilder(FlyBanner flyBanner) {
-            mFlyBanner = flyBanner;
+            this.mFlyBanner = flyBanner;
         }
 
         public FlyBuilder setOrientation(final @PageOrientation.Orientation int orientation) {
-            mOrientation = orientation;
+            this.mOrientation = orientation;
             return this;
         }
 
-        public IndicatorBuilder useIndicator(final boolean isVisible) {
-            setPageOrientation(mOrientation);
+        public FlyBuilder setGuidePage(final boolean isGuidePage) {
+            this.mFlyBanner.mIsGuidePage = isGuidePage;
+            return this;
+        }
 
-            final int visible = isVisible ? VISIBLE : GONE;
-            mIndicatorView.setVisibility(visible);
+        public IndicatorBuilder pageBuild() {
+            setPageOrientation(mOrientation);
+            setPageAdapter();
             return new IndicatorBuilder(mFlyBanner);
         }
     }
@@ -121,8 +121,8 @@ public class FlyBanner<T> extends RelativeLayout {
         private int mIndicatorOrientation = PageIndicatorOrientation.HORIZONTAL;
         private int mLeftMargin, mTopMargin, mRightMargin, mBottomMargin;
 
-        IndicatorBuilder(FlyBanner flyBanner) {
-            mFlyBanner = flyBanner;
+        public IndicatorBuilder(FlyBanner flyBanner) {
+            this.mFlyBanner = flyBanner;
         }
 
         /**
@@ -173,7 +173,10 @@ public class FlyBanner<T> extends RelativeLayout {
         /**
          * 指示器配置
          */
-        public CommonBuilder indicatorBuild() {
+        public CommonBuilder indicatorBuild(final boolean isVisible) {
+            final int visible = isVisible ? VISIBLE : GONE;
+            mIndicatorView.setVisibility(visible);
+
             setPageIndicator(mIndicatorId, mIndicatorAlign, mIndicatorOrientation,
                     mLeftMargin, mTopMargin, mRightMargin, mBottomMargin);
             return new CommonBuilder(mFlyBanner);
@@ -184,7 +187,7 @@ public class FlyBanner<T> extends RelativeLayout {
         private FlyBanner mFlyBanner;
 
         public CommonBuilder(FlyBanner flyBanner) {
-            mFlyBanner = flyBanner;
+            this.mFlyBanner = flyBanner;
         }
 
         /**
@@ -237,6 +240,13 @@ public class FlyBanner<T> extends RelativeLayout {
                 getContext(), (orientation == PageOrientation.HORIZONTAL
                 ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL), false);
         mLoopViewPager.setLayoutManager(layoutManager);
+    }
+
+    private void setPageAdapter() {
+        mPageAdapter = new FBPageAdapter(mHolderCreator, mDatas, mIsGuidePage);
+        mLoopViewPager.setAdapter(mPageAdapter);
+        mLoopScaleHelper.setFirstItemPos(mIsGuidePage ? 0 : mDataSize);
+        mLoopScaleHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter);
     }
 
     /**
@@ -419,7 +429,7 @@ public class FlyBanner<T> extends RelativeLayout {
      */
     public FlyBanner setCurrentItem(int position) {
         stopTurning();
-        final int page = mDataSize + position;
+        final int page = mIsGuidePage ? position : mDataSize + position;
         mLoopScaleHelper.setCurrentItem(page, true);
         startTurning();
         return this;

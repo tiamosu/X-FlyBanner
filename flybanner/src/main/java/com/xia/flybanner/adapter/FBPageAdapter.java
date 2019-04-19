@@ -22,12 +22,15 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
     private final FBViewHolderCreator mCreator;
     private final List<T> mDatas;
     private final int mDataSize;
+    private final boolean mIsGuidePage;
     private OnItemClickListener mOnItemClickListener;
 
-    public FBPageAdapter(FBViewHolderCreator creator, List<T> datas) {
+    public FBPageAdapter(final FBViewHolderCreator creator,
+                         final List<T> datas, final boolean isGuidePage) {
         this.mCreator = creator;
         this.mDatas = datas;
         this.mDataSize = mDatas.size();
+        this.mIsGuidePage = isGuidePage;
     }
 
     @NonNull
@@ -56,7 +59,7 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
         if (mDataSize == 0 || mDataSize == 1) {
             return mDataSize;
         }
-        return 3 * mDataSize;
+        return mIsGuidePage ? mDataSize : 3 * mDataSize;
     }
 
     public int getRealItemCount() {
