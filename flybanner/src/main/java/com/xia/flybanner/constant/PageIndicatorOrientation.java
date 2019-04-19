@@ -9,12 +9,12 @@ import androidx.annotation.IntDef;
  * @author weixia
  * @date 2019/4/17.
  */
-public final class IndicatorOrientation {
+public final class PageIndicatorOrientation {
     public static final int HORIZONTAL = 0;
     public static final int VERTICAL = 1;
 
     @IntDef({HORIZONTAL, VERTICAL})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface OrientationMode {
+    public @interface IndicatorOrientation {
     }
 }
