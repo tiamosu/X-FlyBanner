@@ -25,15 +25,16 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private FlyBanner mFlyBanner, mNoticeView, mNoticeView1;
+    private FlyBanner mFlyBanner, mNoticeView;
     private AppCompatButton mLoopControlBtn, mSetCurrentItemPosBtn,
-            mRefreshDataBtn, mIndicatorOrientationBtn;
+            mRefreshDataBtn, mIndicatorOrientationBtn, mGuidePageBtn;
     private AppCompatTextView mLoopStatusTv, mCurrentItemPosTv,
-            mDataSizeTv, mIndicatorOrientationTv;
+            mDataSizeTv, mIndicatorOrientationTv, mGuidePageTv;
     private AppCompatImageView mBlurIv;
 
     private final ArrayList<Integer> mLocalImages = new ArrayList<>();
     private boolean mIsHorizontal = true;
+    private boolean mIsGuidePage;
     private Runnable mBlurRunnable;
 
     @Override
@@ -69,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initView() {
         mFlyBanner = findViewById(R.id.main_banner);
         mNoticeView = findViewById(R.id.main_notice);
-        mNoticeView1 = findViewById(R.id.main_notice1);
         mLoopControlBtn = findViewById(R.id.main_loop_control_btn);
         mLoopStatusTv = findViewById(R.id.main_loop_status_tv);
         mSetCurrentItemPosBtn = findViewById(R.id.main_set_current_item_pos_btn);
@@ -79,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mIndicatorOrientationBtn = findViewById(R.id.main_indicator_orientation_btn);
         mIndicatorOrientationTv = findViewById(R.id.main_indicator_orientation_tv);
         mBlurIv = findViewById(R.id.main_blur_view);
+        mGuidePageBtn = findViewById(R.id.main_guide_page_btn);
+        mGuidePageTv = findViewById(R.id.main_guide_page_tv);
     }
 
     private void initEvent() {
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSetCurrentItemPosBtn.setOnClickListener(this);
         mRefreshDataBtn.setOnClickListener(this);
         mIndicatorOrientationBtn.setOnClickListener(this);
+        mGuidePageBtn.setOnClickListener(this);
     }
 
     private void refreshData() {
@@ -105,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void start() {
-        BannerCreator.setDefault(mFlyBanner, mLocalImages, mIsHorizontal, position ->
-                        showToast("onItemClick: " + position),
+        BannerCreator.setDefault(mFlyBanner, mLocalImages, mIsHorizontal, mIsGuidePage,
+                position -> showToast("onItemClick: " + position),
                 new OnPageChangeListener() {
                     @Override
                     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -120,15 +123,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onPageSelected(int index, boolean isLastPage) {
                         notifyBackgroundChange(index);
                         showToast("onPageSelected: " + index);
-                        setCurrentItemPosition(index, isLastPage);
+                        setPosition(index, isLastPage);
                     }
                 });
 
         notifyBackgroundChange(0);
         setLoopStatus();
-        setCurrentItemPosition(0, mLocalImages.size() <= 1);
+        setPosition(0, mLocalImages.size() <= 1);
         setDataSize(mLocalImages.size());
         setIndicatorOrientation();
+        setGuidePageStatus();
     }
 
     private void notice() {
@@ -137,11 +141,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         list.add("家电五折团，抢十亿无门槛现金红包");
         list.add("星球大战剃须刀首发送200元代金券");
         NoticeCreator.setDefault(mNoticeView, list, false, position -> {
-            final String text = list.get(position);
-            showToast(text);
-        }, null);
-
-        NoticeCreator.setDefault(mNoticeView1, list, true, position -> {
             final String text = list.get(position);
             showToast(text);
         }, null);
@@ -162,12 +161,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setLoopStatus() {
-        final String text = "是否自动翻页：" + (mFlyBanner.isCanLoop() ? "是" : "否");
+        final String text = "是否自动翻页：" + mFlyBanner.isCanLoop();
         mLoopStatusTv.setText(text);
     }
 
-    private void setCurrentItemPosition(final int index, final boolean isLastPage) {
-        final String text = "position：" + index + "，最后一页：" + (isLastPage ? "true" : "false");
+    private void setPosition(final int index, final boolean isLastPage) {
+        final String text = "position：" + index + "，最后一页：" + isLastPage;
         mCurrentItemPosTv.setText(text);
     }
 
@@ -179,6 +178,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setIndicatorOrientation() {
         final String text = "翻页方向：" + (mIsHorizontal ? "横向" : "竖向");
         mIndicatorOrientationTv.setText(text);
+    }
+
+    private void setGuidePageStatus() {
+        final String text = "是否为引导页：" + mIsGuidePage;
+        mGuidePageTv.setText(text);
     }
 
     private void showToast(final String text) {
@@ -219,6 +223,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (v == mIndicatorOrientationBtn) {
             mIsHorizontal = !mIsHorizontal;
+            start();
+            return;
+        }
+        if (v == mGuidePageBtn) {
+            mIsGuidePage = !mIsGuidePage;
             start();
         }
     }

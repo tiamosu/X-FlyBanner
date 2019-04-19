@@ -23,6 +23,7 @@ public final class BannerCreator {
     public static void setDefault(final FlyBanner flyBanner,
                                   final List datas,
                                   final boolean isHorizontal,
+                                  final boolean isGuidePage,
                                   final OnItemClickListener onItemClickListener,
                                   final OnPageChangeListener onPageChangeListener) {
 
@@ -37,7 +38,7 @@ public final class BannerCreator {
                 //设置 banner 翻页方向
                 .setOrientation(orientation)
                 //是否为引导页
-                .setGuidePage(true)
+                .setGuidePage(isGuidePage)
                 //banner 生成
                 .pageBuild()
                 //设置指示器样式
@@ -55,7 +56,7 @@ public final class BannerCreator {
                 //设置自动轮播时间
                 .start(3000)
                 //设置是否进行自动轮播
-                .setCanLoop(dataSize > 1)
+                .setCanLoop(dataSize > 1 && !isGuidePage)
                 //设置点击事件监听
                 .setOnItemClickListener(onItemClickListener)
                 //设置页面切换事件监听

@@ -56,10 +56,10 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
     @Override
     public int getItemCount() {
         //根据模式决定长度
-        if (mDataSize == 0 || mDataSize == 1) {
+        if (mDataSize == 0 || mDataSize == 1 || mIsGuidePage) {
             return mDataSize;
         }
-        return mIsGuidePage ? mDataSize : 3 * mDataSize;
+        return 3 * mDataSize;
     }
 
     public int getRealItemCount() {
