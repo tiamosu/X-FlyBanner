@@ -36,7 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * @author weixia
  * @date 2019/4/16.
  */
-@SuppressWarnings("all")
+@SuppressWarnings({"WeakerAccess", "unchecked", "UnusedReturnValue"})
 public class FlyBanner<T> extends RelativeLayout {
     private final ArrayList<ImageView> mPointViews = new ArrayList<>();
     private final List<T> mDatas = new ArrayList<>();
@@ -280,9 +280,8 @@ public class FlyBanner<T> extends RelativeLayout {
                 RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.CENTER_HORIZONTAL,
                 RelativeLayout.CENTER_IN_PARENT, RelativeLayout.ALIGN_PARENT_RIGHT,
         };
-        final int verbsLength = verbs.length;
-        for (int i = 0; i < verbsLength; i++) {
-            layoutParams.removeRule(verbs[i]);
+        for (int verb : verbs) {
+            layoutParams.addRule(verb, 0);
         }
 
         switch (align) {
@@ -397,13 +396,6 @@ public class FlyBanner<T> extends RelativeLayout {
      */
     public FBLoopViewPager getLoopViewPager() {
         return mLoopViewPager;
-    }
-
-    /**
-     * 获取 viewPager 布局管理
-     */
-    public RecyclerView.LayoutManager getLayoutManager() {
-        return mLoopViewPager.getLayoutManager();
     }
 
     /**
