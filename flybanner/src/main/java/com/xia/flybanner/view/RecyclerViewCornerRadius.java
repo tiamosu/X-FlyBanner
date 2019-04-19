@@ -19,10 +19,10 @@ public class RecyclerViewCornerRadius extends RecyclerView.ItemDecoration {
     private RectF mRectF;
     private Path mPath;
 
-    private int mTopLeftRadius = 0;
-    private int mTopRightRadius = 0;
-    private int mBottomLeftRadius = 0;
-    private int mBottomRightRadius = 0;
+    public int mTopLeftRadius = 0;
+    public int mTopRightRadius = 0;
+    public int mBottomLeftRadius = 0;
+    public int mBottomRightRadius = 0;
 
     public RecyclerViewCornerRadius(final RecyclerView recyclerView) {
         final ViewTreeObserver vto = recyclerView.getViewTreeObserver();

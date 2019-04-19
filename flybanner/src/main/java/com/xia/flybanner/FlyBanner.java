@@ -28,7 +28,6 @@ import java.util.List;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -178,7 +177,7 @@ public class FlyBanner<T> extends RelativeLayout {
         /**
          * 设置翻页效果
          */
-        public CommonBuilder setLayoutManager(final @NonNull RecyclerView.LayoutManager layoutManager) {
+        public CommonBuilder setLayoutManager(final RecyclerView.LayoutManager layoutManager) {
             this.mLayoutManager = layoutManager;
             return this;
         }
@@ -186,7 +185,7 @@ public class FlyBanner<T> extends RelativeLayout {
         /**
          * 设置 viewPager 圆角
          */
-        public CommonBuilder setRadius(final @NonNull Integer radius) {
+        public CommonBuilder setRadius(final int radius) {
             setRadius(radius, radius, radius, radius);
             return this;
         }
@@ -194,15 +193,21 @@ public class FlyBanner<T> extends RelativeLayout {
         /**
          * 设置 viewPager 圆角
          */
-        public CommonBuilder setRadius(@Nullable Integer topLeftRadius, @Nullable Integer topRightRadius,
-                                       @Nullable Integer bottomLeftRadius, @Nullable Integer bottomRightRadius) {
-            topLeftRadius = (topLeftRadius == null || topLeftRadius < 0) ? 0 : topLeftRadius;
-            topRightRadius = (topRightRadius == null || topRightRadius < 0) ? 0 : topRightRadius;
-            bottomLeftRadius = (bottomLeftRadius == null || bottomLeftRadius < 0) ? 0 : bottomLeftRadius;
-            bottomRightRadius = (bottomRightRadius == null || bottomRightRadius < 0) ? 0 : bottomRightRadius;
-
+        public CommonBuilder setRadius(int topLeftRadius, int topRightRadius,
+                                       int bottomLeftRadius, int bottomRightRadius) {
             final RecyclerViewCornerRadius cornerRadius = new RecyclerViewCornerRadius(mLoopViewPager);
-            cornerRadius.setCornerRadius(topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius);
+            if (topLeftRadius >= 0) {
+                cornerRadius.mTopLeftRadius = topLeftRadius;
+            }
+            if (topRightRadius >= 0) {
+                cornerRadius.mTopRightRadius = topRightRadius;
+            }
+            if (bottomLeftRadius >= 0) {
+                cornerRadius.mBottomLeftRadius = bottomLeftRadius;
+            }
+            if (bottomRightRadius >= 0) {
+                cornerRadius.mBottomRightRadius = bottomRightRadius;
+            }
             mLoopViewPager.addItemDecoration(cornerRadius);
             return this;
         }
