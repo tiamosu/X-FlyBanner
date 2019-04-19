@@ -36,7 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * @author weixia
  * @date 2019/4/16.
  */
-@SuppressWarnings("all")
+@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
 public class FlyBanner<T> extends RelativeLayout {
     private final ArrayList<ImageView> mPointViews = new ArrayList<>();
     private List<T> mDatas = new ArrayList<>();
@@ -242,6 +242,7 @@ public class FlyBanner<T> extends RelativeLayout {
         mLoopViewPager.setLayoutManager(layoutManager);
     }
 
+    @SuppressWarnings("unchecked")
     private void setPageAdapter() {
         mPageAdapter = new FBPageAdapter(mHolderCreator, mDatas, mIsGuidePage);
         mLoopViewPager.setAdapter(mPageAdapter);
@@ -319,9 +320,8 @@ public class FlyBanner<T> extends RelativeLayout {
                 RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.CENTER_HORIZONTAL,
                 RelativeLayout.CENTER_IN_PARENT, RelativeLayout.ALIGN_PARENT_RIGHT,
         };
-        final int verbsLength = verbs.length;
-        for (int i = 0; i < verbsLength; i++) {
-            layoutParams.removeRule(verbs[i]);
+        for (int verb : verbs) {
+            layoutParams.addRule(verb, 0);
         }
 
         switch (indicatorAlign) {
