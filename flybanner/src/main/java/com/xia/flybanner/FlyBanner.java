@@ -15,7 +15,7 @@ import com.xia.flybanner.adapter.FBPageAdapter;
 import com.xia.flybanner.constant.PageIndicatorAlign;
 import com.xia.flybanner.constant.PageIndicatorOrientation;
 import com.xia.flybanner.constant.PageOrientation;
-import com.xia.flybanner.helper.FBLoopScaleHelper;
+import com.xia.flybanner.helper.FBLoopHelper;
 import com.xia.flybanner.holder.FBViewHolderCreator;
 import com.xia.flybanner.listener.FBPageChangeListener;
 import com.xia.flybanner.listener.OnItemClickListener;
@@ -48,7 +48,7 @@ public class FlyBanner<T> extends RelativeLayout {
     private boolean mCanTurn;
     private boolean mIsGuidePage;
 
-    private final FBLoopScaleHelper mLoopScaleHelper = new FBLoopScaleHelper();
+    private final FBLoopHelper mLoopHelper = new FBLoopHelper();
     private final AdSwitchTask mAdSwitchTask = new AdSwitchTask(this);
     private FBPageAdapter mPageAdapter;
     private FBLoopViewPager mLoopViewPager;
@@ -90,10 +90,6 @@ public class FlyBanner<T> extends RelativeLayout {
     public class FlyBuilder {
         private FlyBanner mFlyBanner;
         private int mOrientation = PageOrientation.HORIZONTAL;
-        private boolean mIsPageMode;
-        private int mSecondaryExposed;
-        private float mSecondaryExposedWeight;
-        private float mScaleGap;
 
         public FlyBuilder(FlyBanner flyBanner) {
             this.mFlyBanner = flyBanner;
@@ -118,55 +114,10 @@ public class FlyBanner<T> extends RelativeLayout {
             return this;
         }
 
-        /**
-         * 是否是 ViewPager 模式，如果是，那么将一次只能翻动1页
-         */
-        public FlyBuilder setPageMode(final boolean isPageMode) {
-            this.mIsPageMode = isPageMode;
-            return this;
-        }
-
-        /**
-         * 次要方块的露出距离，此处单位为px
-         * <p>
-         * {@link PageOrientation.HORIZONTAL}时，表示左右侧 item 的露出距离
-         * {@link PageOrientation.VERTICAL}时，表示上下方 item 的露出距离
-         */
-        public FlyBuilder setSecondaryExposed(final int secondaryExposed) {
-            this.mSecondaryExposed = secondaryExposed;
-            return this;
-        }
-
-        /**
-         * 次要方块的露出距离的权重
-         * 注意，只有当{@link #mSecondaryExposed = 0}时，才会使用此属性
-         * 此权重为相对{@link RecyclerView}而言，并且分别针对左右两侧。
-         * 即：当{@link #mSecondaryExposedWeight = 0.1F}时，
-         * 那么主 item 的宽度为 RecyclerView.width * 0.8F
-         */
-        public FlyBuilder secondaryExposedWeight(final float secondaryExposedWeight) {
-            this.mSecondaryExposedWeight = secondaryExposedWeight;
-            return this;
-        }
-
-        /**
-         * 次 item 缩放量
-         * 表示当 item 位于次 item 位置时，显示尺寸相对于完整尺寸的量
-         */
-        public FlyBuilder scaleGap(final float scaleGap) {
-            this.mScaleGap = scaleGap;
-            return this;
-        }
-
         public IndicatorBuilder pageBuild() {
-            setPageLayoutManager();
             setPageOrientation();
             setPageAdapter();
             return new IndicatorBuilder(mFlyBanner);
-        }
-
-        private void setPageLayoutManager() {
-
         }
 
         private void setPageOrientation() {
@@ -180,8 +131,8 @@ public class FlyBanner<T> extends RelativeLayout {
         private void setPageAdapter() {
             mPageAdapter = new FBPageAdapter(mHolderCreator, mDatas, mIsGuidePage);
             mLoopViewPager.setAdapter(mPageAdapter);
-            mLoopScaleHelper.setFirstItemPos(mIsGuidePage ? 0 : mDataSize);
-            mLoopScaleHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter);
+            mLoopHelper.setFirstItemPos(mIsGuidePage ? 0 : mDataSize);
+            mLoopHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter);
         }
     }
 
@@ -285,7 +236,7 @@ public class FlyBanner<T> extends RelativeLayout {
                 } else {
                     pointView.setPadding(0, 5, 0, 5);
                 }
-                if (mLoopScaleHelper.getFirstItemPos() % mDataSize == count) {
+                if (mLoopHelper.getFirstItemPos() % mDataSize == count) {
                     pointView.setImageResource(mIndicatorId[1]);
                 } else {
                     pointView.setImageResource(mIndicatorId[0]);
@@ -295,7 +246,7 @@ public class FlyBanner<T> extends RelativeLayout {
             }
 
             mPageChangeListener = new FBPageChangeListener(mPointViews, mIndicatorId);
-            mLoopScaleHelper.setOnPageChangeListener(mPageChangeListener);
+            mLoopHelper.setOnPageChangeListener(mPageChangeListener);
         }
 
         private void setPageIndicatorOrientation() {
@@ -445,7 +396,7 @@ public class FlyBanner<T> extends RelativeLayout {
         if (mPageChangeListener != null) {
             mPageChangeListener.setOnPageChangeListener(onPageChangeListener);
         } else {
-            mLoopScaleHelper.setOnPageChangeListener(onPageChangeListener);
+            mLoopHelper.setOnPageChangeListener(onPageChangeListener);
         }
         return this;
     }
@@ -466,30 +417,16 @@ public class FlyBanner<T> extends RelativeLayout {
     public FlyBanner setCurrentItem(int position) {
         stopTurning();
         final int page = mIsGuidePage ? position : mDataSize + position;
-        mLoopScaleHelper.setCurrentItem(page, true);
+        mLoopHelper.setCurrentItem(page, true);
         startTurning();
         return this;
-    }
-
-    /**
-     * 获取 viewPager
-     */
-    public FBLoopViewPager getLoopViewPager() {
-        return mLoopViewPager;
-    }
-
-    /**
-     * 获取 viewPager 布局管理
-     */
-    public RecyclerView.LayoutManager getLayoutManager() {
-        return mLoopViewPager.getLayoutManager();
     }
 
     /**
      * 获取当前页对应的 position
      */
     public int getCurrentItem() {
-        return mLoopScaleHelper.getRealCurrentItem();
+        return mLoopHelper.getRealCurrentItem();
     }
 
     /**
@@ -559,8 +496,8 @@ public class FlyBanner<T> extends RelativeLayout {
         public void run() {
             final FlyBanner banner = mReference.get();
             if (banner != null && banner.mTurning) {
-                final int page = banner.mLoopScaleHelper.getCurrentItem() + 1;
-                banner.mLoopScaleHelper.setCurrentItem(page, true);
+                final int page = banner.mLoopHelper.getCurrentItem() + 1;
+                banner.mLoopHelper.setCurrentItem(page, true);
                 banner.postDelayed(banner.mAdSwitchTask, banner.mAutoTurningTime);
             }
         }

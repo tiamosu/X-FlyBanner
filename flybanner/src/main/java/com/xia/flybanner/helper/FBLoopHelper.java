@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * @date 2019/4/16.
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class FBLoopScaleHelper {
+public class FBLoopHelper {
     private int mFirstItemPos;
     private int mLastPosition;
 
