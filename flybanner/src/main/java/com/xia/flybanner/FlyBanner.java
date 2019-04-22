@@ -90,6 +90,10 @@ public class FlyBanner<T> extends RelativeLayout {
     public class FlyBuilder {
         private FlyBanner mFlyBanner;
         private int mOrientation = PageOrientation.HORIZONTAL;
+        private boolean mIsPageMode;
+        private int mSecondaryExposed;
+        private float mSecondaryExposedWeight;
+        private float mScaleGap;
 
         public FlyBuilder(FlyBanner flyBanner) {
             this.mFlyBanner = flyBanner;
@@ -115,20 +119,69 @@ public class FlyBanner<T> extends RelativeLayout {
         }
 
         /**
+         * 是否是 ViewPager 模式，如果是，那么将一次只能翻动1页
+         */
+        public FlyBuilder setPageMode(final boolean isPageMode) {
+            this.mIsPageMode = isPageMode;
+            return this;
+        }
+
+        /**
          * 次要方块的露出距离，此处单位为px
          * <p>
          * {@link PageOrientation.HORIZONTAL}时，表示左右侧Item的露出距离
          * {@link PageOrientation.VERTICAL}时，表示上下方Item的露出距离
          */
         public FlyBuilder setSecondaryExposed(final int secondaryExposed) {
+            this.mSecondaryExposed = secondaryExposed;
+            return this;
+        }
 
+        /**
+         * 次要方块的露出距离的权重
+         * 注意，只有当{@link #mSecondaryExposed = 0}时，才会使用此属性
+         * 此权重为相对{@link RecyclerView}而言，并且分别针对左右两侧。
+         * 即：当{@link #mSecondaryExposedWeight = 0.1F}时，
+         * 那么主 item 的宽度为 RecyclerView.width * 0.8F
+         */
+        public FlyBuilder secondaryExposedWeight(final float secondaryExposedWeight) {
+            this.mSecondaryExposedWeight = secondaryExposedWeight;
+            return this;
+        }
+
+        /**
+         * 次 item 缩放量
+         * 表示当 item 位于次 item 位置时，显示尺寸相对于完整尺寸的量
+         */
+        public FlyBuilder scaleGap(final float scaleGap) {
+            this.mScaleGap = scaleGap;
             return this;
         }
 
         public IndicatorBuilder pageBuild() {
+            setPageLayoutManager();
             setPageOrientation(mOrientation);
             setPageAdapter();
             return new IndicatorBuilder(mFlyBanner);
+        }
+
+        private void setPageLayoutManager() {
+
+        }
+
+        private void setPageOrientation(final int orientation) {
+            final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
+                    getContext(), (orientation == PageOrientation.HORIZONTAL
+                    ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL), false);
+            mLoopViewPager.setLayoutManager(layoutManager);
+        }
+
+        @SuppressWarnings("unchecked")
+        private void setPageAdapter() {
+            mPageAdapter = new FBPageAdapter(mHolderCreator, mDatas, mIsGuidePage);
+            mLoopViewPager.setAdapter(mPageAdapter);
+            mLoopScaleHelper.setFirstItemPos(mIsGuidePage ? 0 : mDataSize);
+            mLoopScaleHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter);
         }
     }
 
@@ -214,6 +267,116 @@ public class FlyBanner<T> extends RelativeLayout {
                     mLeftMargin, mTopMargin, mRightMargin, mBottomMargin);
             return new CommonBuilder(mFlyBanner);
         }
+
+        private void setPageIndicator(final int[] indicatorId, final int indicatorAlign,
+                                      final int indicatorOrientation, final int leftMargin,
+                                      final int topMargin, final int rightMargin, final int bottomMargin) {
+            mPointViews.clear();
+            mIndicatorView.removeAllViews();
+            if (mDatas.isEmpty() || indicatorId.length < 2 || mIndicatorView.getVisibility() != VISIBLE) {
+                return;
+            }
+            setPageIndicatorOrientation(indicatorOrientation);
+            setPageIndicatorAlign(indicatorAlign);
+            setPageIndicatorMargin(leftMargin, topMargin, rightMargin, bottomMargin);
+
+            for (int count = 0; count < mDataSize; count++) {
+                // 翻页指示的点
+                final ImageView pointView = new ImageView(getContext());
+                if (mIndicatorView.getOrientation() == LinearLayout.HORIZONTAL) {
+                    pointView.setPadding(5, 0, 5, 0);
+                } else {
+                    pointView.setPadding(0, 5, 0, 5);
+                }
+                if (mLoopScaleHelper.getFirstItemPos() % mDataSize == count) {
+                    pointView.setImageResource(indicatorId[1]);
+                } else {
+                    pointView.setImageResource(indicatorId[0]);
+                }
+                mPointViews.add(pointView);
+                mIndicatorView.addView(pointView);
+            }
+
+            mPageChangeListener = new FBPageChangeListener(mPointViews, indicatorId);
+            mLoopScaleHelper.setOnPageChangeListener(mPageChangeListener);
+        }
+
+        private void setPageIndicatorOrientation(final int indicatorOrientation) {
+            if (indicatorOrientation == PageIndicatorOrientation.HORIZONTAL) {
+                mIndicatorView.setOrientation(LinearLayout.HORIZONTAL);
+            } else {
+                mIndicatorView.setOrientation(LinearLayout.VERTICAL);
+            }
+        }
+
+        private void setPageIndicatorAlign(final int indicatorAlign) {
+            final LayoutParams layoutParams = (LayoutParams) mIndicatorView.getLayoutParams();
+            final int[] verbs = {
+                    RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.CENTER_VERTICAL,
+                    RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.CENTER_HORIZONTAL,
+                    RelativeLayout.CENTER_IN_PARENT, RelativeLayout.ALIGN_PARENT_RIGHT,
+            };
+            for (int verb : verbs) {
+                layoutParams.addRule(verb, 0);
+            }
+
+            switch (indicatorAlign) {
+                case PageIndicatorAlign.ALIGN_LEFT_TOP:
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                    break;
+                case PageIndicatorAlign.ALIGN_LEFT_CENTER:
+                    layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                    break;
+                case PageIndicatorAlign.ALIGN_LEFT_BOTTOM:
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                    break;
+                case PageIndicatorAlign.ALIGN_TOP_CENTER:
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                    layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+                    break;
+                case PageIndicatorAlign.ALIGN_IN_CENTER:
+                    layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+                    break;
+                case PageIndicatorAlign.ALIGN_BOTTOM_CENTER:
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                    layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+                    break;
+                case PageIndicatorAlign.ALIGN_RIGHT_TOP:
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                    break;
+                case PageIndicatorAlign.ALIGN_RIGHT_CENTER:
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                    layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                    break;
+                case PageIndicatorAlign.ALIGN_RIGHT_BOTTOM:
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                    break;
+                default:
+                    break;
+            }
+            mIndicatorView.setLayoutParams(layoutParams);
+        }
+
+        private void setPageIndicatorMargin(final int leftMargin, final int topMargin,
+                                            final int rightMargin, final int bottomMargin) {
+            final ViewGroup.MarginLayoutParams layoutParams
+                    = (MarginLayoutParams) mIndicatorView.getLayoutParams();
+            if (leftMargin >= 0) {
+                layoutParams.leftMargin = leftMargin;
+            }
+            if (topMargin >= 0) {
+                layoutParams.topMargin = topMargin;
+            }
+            if (rightMargin >= 0) {
+                layoutParams.rightMargin = rightMargin;
+            }
+            if (bottomMargin >= 0) {
+                layoutParams.bottomMargin = bottomMargin;
+            }
+            mIndicatorView.setLayoutParams(layoutParams);
+        }
     }
 
     public class CommonBuilder {
@@ -260,131 +423,6 @@ public class FlyBanner<T> extends RelativeLayout {
             startTurning(autoTurningTime);
             return mFlyBanner;
         }
-    }
-
-    private void setPageOrientation(final int orientation) {
-        final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
-                getContext(), (orientation == PageOrientation.HORIZONTAL
-                ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL), false);
-        mLoopViewPager.setLayoutManager(layoutManager);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void setPageAdapter() {
-        mPageAdapter = new FBPageAdapter(mHolderCreator, mDatas, mIsGuidePage);
-        mLoopViewPager.setAdapter(mPageAdapter);
-        mLoopScaleHelper.setFirstItemPos(mIsGuidePage ? 0 : mDataSize);
-        mLoopScaleHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter);
-    }
-
-    private void setPageIndicator(final int[] indicatorId, final int indicatorAlign,
-                                  final int indicatorOrientation, final int leftMargin,
-                                  final int topMargin, final int rightMargin, final int bottomMargin) {
-        mPointViews.clear();
-        mIndicatorView.removeAllViews();
-        if (mDatas.isEmpty() || indicatorId.length < 2 || mIndicatorView.getVisibility() != VISIBLE) {
-            return;
-        }
-        setIndicatorOrientation(indicatorOrientation);
-        setPageIndicatorAlign(indicatorAlign);
-        setIndicatorMargin(leftMargin, topMargin, rightMargin, bottomMargin);
-
-        for (int count = 0; count < mDataSize; count++) {
-            // 翻页指示的点
-            final ImageView pointView = new ImageView(getContext());
-            if (mIndicatorView.getOrientation() == LinearLayout.HORIZONTAL) {
-                pointView.setPadding(5, 0, 5, 0);
-            } else {
-                pointView.setPadding(0, 5, 0, 5);
-            }
-            if (mLoopScaleHelper.getFirstItemPos() % mDataSize == count) {
-                pointView.setImageResource(indicatorId[1]);
-            } else {
-                pointView.setImageResource(indicatorId[0]);
-            }
-            mPointViews.add(pointView);
-            mIndicatorView.addView(pointView);
-        }
-
-        mPageChangeListener = new FBPageChangeListener(mPointViews, indicatorId);
-        mLoopScaleHelper.setOnPageChangeListener(mPageChangeListener);
-    }
-
-    private void setIndicatorOrientation(final int indicatorOrientation) {
-        if (indicatorOrientation == PageIndicatorOrientation.HORIZONTAL) {
-            mIndicatorView.setOrientation(LinearLayout.HORIZONTAL);
-        } else {
-            mIndicatorView.setOrientation(LinearLayout.VERTICAL);
-        }
-    }
-
-    private void setPageIndicatorAlign(final int indicatorAlign) {
-        final LayoutParams layoutParams = (LayoutParams) mIndicatorView.getLayoutParams();
-        final int[] verbs = {
-                RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.CENTER_VERTICAL,
-                RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.CENTER_HORIZONTAL,
-                RelativeLayout.CENTER_IN_PARENT, RelativeLayout.ALIGN_PARENT_RIGHT,
-        };
-        for (int verb : verbs) {
-            layoutParams.addRule(verb, 0);
-        }
-
-        switch (indicatorAlign) {
-            case PageIndicatorAlign.ALIGN_LEFT_TOP:
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-                break;
-            case PageIndicatorAlign.ALIGN_LEFT_CENTER:
-                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                break;
-            case PageIndicatorAlign.ALIGN_LEFT_BOTTOM:
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                break;
-            case PageIndicatorAlign.ALIGN_TOP_CENTER:
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-                break;
-            case PageIndicatorAlign.ALIGN_IN_CENTER:
-                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-                break;
-            case PageIndicatorAlign.ALIGN_BOTTOM_CENTER:
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-                break;
-            case PageIndicatorAlign.ALIGN_RIGHT_TOP:
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-                break;
-            case PageIndicatorAlign.ALIGN_RIGHT_CENTER:
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                break;
-            case PageIndicatorAlign.ALIGN_RIGHT_BOTTOM:
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                break;
-            default:
-                break;
-        }
-        mIndicatorView.setLayoutParams(layoutParams);
-    }
-
-    private void setIndicatorMargin(final int leftMargin, final int topMargin,
-                                    final int rightMargin, final int bottomMargin) {
-        final ViewGroup.MarginLayoutParams layoutParams
-                = (MarginLayoutParams) mIndicatorView.getLayoutParams();
-        if (leftMargin >= 0) {
-            layoutParams.leftMargin = leftMargin;
-        }
-        if (topMargin >= 0) {
-            layoutParams.topMargin = topMargin;
-        }
-        if (rightMargin >= 0) {
-            layoutParams.rightMargin = rightMargin;
-        }
-        if (bottomMargin >= 0) {
-            layoutParams.bottomMargin = bottomMargin;
-        }
-        mIndicatorView.setLayoutParams(layoutParams);
     }
 
     /**
