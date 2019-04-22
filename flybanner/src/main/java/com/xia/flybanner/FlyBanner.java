@@ -46,7 +46,8 @@ public class FlyBanner<T> extends RelativeLayout {
     private boolean mCanLoop;
     private boolean mTurning;
     private boolean mCanTurn;
-    private boolean mIsGuidePage;
+    //普通版 banner 循环模式，默认为true
+    private boolean mIsNormalMode = true;
 
     private final FBLoopHelper mLoopHelper = new FBLoopHelper();
     private final AdSwitchTask mAdSwitchTask = new AdSwitchTask(this);
@@ -110,7 +111,7 @@ public class FlyBanner<T> extends RelativeLayout {
          * 配置 banner 是否为引导页面
          */
         public FlyBuilder setGuidePage(final boolean isGuidePage) {
-            this.mFlyBanner.mIsGuidePage = isGuidePage;
+            this.mFlyBanner.mIsNormalMode = !isGuidePage;
             return this;
         }
 
@@ -129,9 +130,9 @@ public class FlyBanner<T> extends RelativeLayout {
 
         @SuppressWarnings("unchecked")
         private void setPageAdapter() {
-            mPageAdapter = new FBPageAdapter(mHolderCreator, mDatas, mIsGuidePage);
+            mPageAdapter = new FBPageAdapter(mHolderCreator, mDatas, mIsNormalMode);
             mLoopViewPager.setAdapter(mPageAdapter);
-            mLoopHelper.setFirstItemPos(mIsGuidePage ? 0 : mDataSize);
+            mLoopHelper.setFirstItemPos(mIsNormalMode ? mDataSize : 0);
             mLoopHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter);
         }
     }
@@ -425,7 +426,7 @@ public class FlyBanner<T> extends RelativeLayout {
      */
     public FlyBanner setCurrentItem(int position) {
         stopTurning();
-        final int page = mIsGuidePage ? position : mDataSize + position;
+        final int page = mIsNormalMode ? mDataSize + position : position;
         mLoopHelper.setCurrentItem(page, true);
         startTurning();
         return this;
@@ -506,6 +507,10 @@ public class FlyBanner<T> extends RelativeLayout {
             final FlyBanner banner = mReference.get();
             if (banner != null && banner.mTurning) {
                 final int page = banner.mLoopHelper.getCurrentItem() + 1;
+                if (!banner.mIsNormalMode && page == banner.mDataSize) {
+                    banner.stopTurning();
+                    return;
+                }
                 banner.mLoopHelper.setCurrentItem(page, true);
                 banner.postDelayed(banner.mAdSwitchTask, banner.mAutoTurningTime);
             }

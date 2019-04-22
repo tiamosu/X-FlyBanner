@@ -22,15 +22,15 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
     private final FBViewHolderCreator mCreator;
     private final List<T> mDatas;
     private final int mDataSize;
-    private final boolean mIsGuidePage;
+    private final boolean mIsNormalMode;
     private OnItemClickListener mOnItemClickListener;
 
     public FBPageAdapter(final FBViewHolderCreator creator,
-                         final List<T> datas, final boolean isGuidePage) {
+                         final List<T> datas, final boolean mIsNormalMode) {
         this.mCreator = creator;
         this.mDatas = datas;
         this.mDataSize = mDatas.size();
-        this.mIsGuidePage = isGuidePage;
+        this.mIsNormalMode = mIsNormalMode;
     }
 
     @NonNull
@@ -56,7 +56,7 @@ public class FBPageAdapter<T> extends RecyclerView.Adapter<FBHolder> {
     @Override
     public int getItemCount() {
         //根据模式决定长度
-        if (mDataSize == 0 || mDataSize == 1 || mIsGuidePage) {
+        if (mDataSize == 0 || mDataSize == 1 || !mIsNormalMode) {
             return mDataSize;
         }
         return 3 * mDataSize;
