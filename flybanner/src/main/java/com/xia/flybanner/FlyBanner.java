@@ -36,7 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * @author weixia
  * @date 2019/4/16.
  */
-@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
+@SuppressWarnings({"WeakerAccess", "UnusedReturnValue", "JavadocReference"})
 public class FlyBanner<T> extends RelativeLayout {
     private final ArrayList<ImageView> mPointViews = new ArrayList<>();
     private List<T> mDatas = new ArrayList<>();
@@ -95,13 +95,33 @@ public class FlyBanner<T> extends RelativeLayout {
             this.mFlyBanner = flyBanner;
         }
 
+        /**
+         * 配置 banner 翻页方向，（默认为横向）
+         * <p>
+         * {@link PageOrientation.HORIZONTAL}: 横向
+         * {@link PageOrientation.VERTICAL}: 竖向
+         */
         public FlyBuilder setOrientation(final @PageOrientation.Orientation int orientation) {
             this.mOrientation = orientation;
             return this;
         }
 
+        /**
+         * 配置 banner 是否为引导页面
+         */
         public FlyBuilder setGuidePage(final boolean isGuidePage) {
             this.mFlyBanner.mIsGuidePage = isGuidePage;
+            return this;
+        }
+
+        /**
+         * 次要方块的露出距离，此处单位为px
+         * <p>
+         * {@link PageOrientation.HORIZONTAL}时，表示左右侧Item的露出距离
+         * {@link PageOrientation.VERTICAL}时，表示上下方Item的露出距离
+         */
+        public FlyBuilder setSecondaryExposed(final int secondaryExposed) {
+
             return this;
         }
 
@@ -134,7 +154,17 @@ public class FlyBanner<T> extends RelativeLayout {
         }
 
         /**
-         * 设置指示器位置，默认为右下角
+         * 指示器的位置，（默认为右下角）
+         * <p>
+         * {@link PageIndicatorAlign.ALIGN_LEFT_TOP}: 左上角
+         * {@link PageIndicatorAlign.ALIGN_LEFT_CENTER}: 左竖向中间
+         * {@link PageIndicatorAlign.ALIGN_LEFT_BOTTOM}: 左下角
+         * {@link PageIndicatorAlign.ALIGN_TOP_CENTER}: 上横向中间
+         * {@link PageIndicatorAlign.ALIGN_IN_CENTER}: 中间
+         * {@link PageIndicatorAlign.ALIGN_BOTTOM_CENTER}: 下横向中间
+         * {@link PageIndicatorAlign.ALIGN_RIGHT_TOP}: 右上角
+         * {@link PageIndicatorAlign.ALIGN_RIGHT_CENTER}: 右竖向中间
+         * {@link PageIndicatorAlign.ALIGN_RIGHT_BOTTOM}: 右下角
          */
         public IndicatorBuilder setIndicatorAlign(final @PageIndicatorAlign.IndicatorAlign int align) {
             this.mIndicatorAlign = align;
@@ -142,7 +172,10 @@ public class FlyBanner<T> extends RelativeLayout {
         }
 
         /**
-         * 设置指示器方向：横向（HORIZONTAL）、竖向（VERTICAL），默认为横向
+         * 设置指示器方向，（默认为横向）
+         * <p>
+         * {@link PageIndicatorOrientation.HORIZONTAL}: 横向，
+         * {@link PageIndicatorOrientation.VERTICAL}: 竖向
          */
         public IndicatorBuilder setIndicatorOrientation(
                 final @PageIndicatorOrientation.IndicatorOrientation int orientation) {
@@ -229,12 +262,6 @@ public class FlyBanner<T> extends RelativeLayout {
         }
     }
 
-    /**
-     * 配置 banner 翻页方向
-     * <p>
-     * PageOrientation.HORIZONTAL: 横向，
-     * PageOrientation.VERTICAL: 竖向（默认为横向）
-     */
     private void setPageOrientation(final int orientation) {
         final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
                 getContext(), (orientation == PageOrientation.HORIZONTAL
@@ -250,9 +277,6 @@ public class FlyBanner<T> extends RelativeLayout {
         mLoopScaleHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter);
     }
 
-    /**
-     * 指示器配置
-     */
     private void setPageIndicator(final int[] indicatorId, final int indicatorAlign,
                                   final int indicatorOrientation, final int leftMargin,
                                   final int topMargin, final int rightMargin, final int bottomMargin) {
@@ -286,12 +310,6 @@ public class FlyBanner<T> extends RelativeLayout {
         mLoopScaleHelper.setOnPageChangeListener(mPageChangeListener);
     }
 
-    /**
-     * 设置指示器方向
-     * <p>
-     * PageIndicatorOrientation.HORIZONTAL: 横向，
-     * PageIndicatorOrientation.VERTICAL: 竖向（默认为横向）
-     */
     private void setIndicatorOrientation(final int indicatorOrientation) {
         if (indicatorOrientation == PageIndicatorOrientation.HORIZONTAL) {
             mIndicatorView.setOrientation(LinearLayout.HORIZONTAL);
@@ -300,19 +318,6 @@ public class FlyBanner<T> extends RelativeLayout {
         }
     }
 
-    /**
-     * 指示器的位置
-     * <p>
-     * ALIGN_LEFT_TOP: 左上角
-     * ALIGN_LEFT_CENTER: 左竖向中间
-     * ALIGN_LEFT_BOTTOM: 左下角
-     * ALIGN_TOP_CENTER: 上横向中间
-     * ALIGN_IN_CENTER: 中间
-     * ALIGN_BOTTOM_CENTER: 下横向中间
-     * ALIGN_RIGHT_TOP: 右上角
-     * ALIGN_RIGHT_CENTER: 右竖向中间
-     * ALIGN_RIGHT_BOTTOM: 右下角
-     */
     private void setPageIndicatorAlign(final int indicatorAlign) {
         final LayoutParams layoutParams = (LayoutParams) mIndicatorView.getLayoutParams();
         final int[] verbs = {
@@ -363,9 +368,6 @@ public class FlyBanner<T> extends RelativeLayout {
         mIndicatorView.setLayoutParams(layoutParams);
     }
 
-    /**
-     * 设置指示器 margin
-     */
     private void setIndicatorMargin(final int leftMargin, final int topMargin,
                                     final int rightMargin, final int bottomMargin) {
         final ViewGroup.MarginLayoutParams layoutParams

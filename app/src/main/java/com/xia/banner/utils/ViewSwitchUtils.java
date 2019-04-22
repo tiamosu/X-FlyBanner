@@ -1,5 +1,6 @@
 package com.xia.banner.utils;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -28,15 +29,18 @@ public final class ViewSwitchUtils {
             oldBitmapDrawable = new ColorDrawable(0xffc2c2c2);
         }
 
+        final Resources resources = view.getResources();
+        final Drawable newBitmapDrawable = new BitmapDrawable(resources, bitmap);
         if (oldTransitionDrawable == null) {
-            oldTransitionDrawable = new TransitionDrawable(new Drawable[]{oldBitmapDrawable, new BitmapDrawable(bitmap)});
+            final Drawable[] drawables = new Drawable[]{oldBitmapDrawable, newBitmapDrawable};
+            oldTransitionDrawable = new TransitionDrawable(drawables);
             oldTransitionDrawable.setId(0, 0);
             oldTransitionDrawable.setId(1, 1);
             oldTransitionDrawable.setCrossFadeEnabled(true);
             view.setImageDrawable(oldTransitionDrawable);
         } else {
             oldTransitionDrawable.setDrawableByLayerId(oldTransitionDrawable.getId(0), oldBitmapDrawable);
-            oldTransitionDrawable.setDrawableByLayerId(oldTransitionDrawable.getId(1), new BitmapDrawable(bitmap));
+            oldTransitionDrawable.setDrawableByLayerId(oldTransitionDrawable.getId(1), newBitmapDrawable);
         }
         oldTransitionDrawable.startTransition(1000);
     }

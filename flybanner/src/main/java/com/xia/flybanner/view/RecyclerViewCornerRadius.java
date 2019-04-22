@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.os.Build;
 import android.view.ViewTreeObserver;
 
@@ -66,10 +65,6 @@ public class RecyclerViewCornerRadius extends RecyclerView.ItemDecoration {
     @Override
     public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         c.clipRect(mRectF);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            c.clipPath(mPath);
-        } else {
-            c.clipPath(mPath, Region.Op.REPLACE);
-        }
+        c.clipPath(mPath);
     }
 }
