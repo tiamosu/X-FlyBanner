@@ -18,7 +18,7 @@ allprojects {
 ### fly-banner
 [ ![Download](https://api.bintray.com/packages/weixia/maven/x-flybanner/images/download.svg) ](https://bintray.com/weixia/maven/x-flybanner/_latestVersion)
 ```groovy
-compile 'me.xia:x-flybanner:1.0.4'
+compile 'me.xia:x-flybanner:1.0.5'
 ```
 
 ### 效果图：
@@ -57,6 +57,8 @@ compile 'me.xia:x-flybanner:1.0.4'
                 .setIndicatorOrientation(indicatorOrientation)
                 //设置指示器偏移
                 .setIndicatorMargin(30)
+                //设置指示器间距
+                .setIndicatorSpacing(10)
                 //指示器生成
                 .indicatorBuild(dataSize > 1)
                 //设置 viewPager 圆角
