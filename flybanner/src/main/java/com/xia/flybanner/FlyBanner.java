@@ -144,6 +144,7 @@ public class FlyBanner<T> extends RelativeLayout {
         private int mIndicatorAlign = PageIndicatorAlign.ALIGN_RIGHT_BOTTOM;
         private int mIndicatorOrientation = PageIndicatorOrientation.HORIZONTAL;
         private int mLeftMargin, mTopMargin, mRightMargin, mBottomMargin;
+        private int mIndicatorSpacing = 5;
 
         public IndicatorBuilder(FlyBanner flyBanner) {
             this.mFlyBanner = flyBanner;
@@ -208,6 +209,14 @@ public class FlyBanner<T> extends RelativeLayout {
         }
 
         /**
+         * 设置指示器间距
+         */
+        public IndicatorBuilder setIndicatorSpacing(final int indicatorSpacing) {
+            this.mIndicatorSpacing = indicatorSpacing;
+            return this;
+        }
+
+        /**
          * 指示器配置
          */
         public CommonBuilder indicatorBuild(final boolean isVisible) {
@@ -231,10 +240,10 @@ public class FlyBanner<T> extends RelativeLayout {
             for (int count = 0; count < mDataSize; count++) {
                 // 翻页指示的点
                 final ImageView pointView = new ImageView(getContext());
-                if (mIndicatorView.getOrientation() == LinearLayout.HORIZONTAL) {
-                    pointView.setPadding(5, 0, 5, 0);
+                if (mIndicatorOrientation == LinearLayout.HORIZONTAL) {
+                    pointView.setPadding(mIndicatorSpacing, 0, mIndicatorSpacing, 0);
                 } else {
-                    pointView.setPadding(0, 5, 0, 5);
+                    pointView.setPadding(0, mIndicatorSpacing, 0, mIndicatorSpacing);
                 }
                 if (mLoopHelper.getFirstItemPos() % mDataSize == count) {
                     pointView.setImageResource(mIndicatorId[1]);

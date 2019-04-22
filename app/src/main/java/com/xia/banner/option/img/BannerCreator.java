@@ -49,6 +49,8 @@ public final class BannerCreator {
                 .setIndicatorOrientation(indicatorOrientation)
                 //设置指示器偏移
                 .setIndicatorMargin(30)
+                //设置指示器间距
+                .setIndicatorSpacing(10)
                 //指示器生成
                 .indicatorBuild(dataSize > 1)
                 //设置 viewPager 圆角
