@@ -2,7 +2,43 @@
 <resources>
 
     <declare-styleable name="FlyBanner">
-        <attr name="fb_canLoop" format="boolean"/>
-        <attr name="fb_autoTurningTime" format="integer"/>
+        <attr name="fb_pageType">
+            <enum name="normal" value="0"/>
+            <enum name="guide" value="1"/>
+        </attr>
+        <attr name="fb_pageOrientation">
+            <enum name="horizontal" value="0"/>
+            <enum name="vertical" value="1"/>
+        </attr>
+        <attr name="fb_pageCanLoop" format="boolean"/>
+        <attr name="fb_pageAutoTurningTime" format="integer"/>
+        <attr name="fb_pageRadius" format="integer"/>
+        <attr name="fb_pageRadiusTopLeft" format="integer"/>
+        <attr name="fb_pageRadiusTopRight" format="integer"/>
+        <attr name="fb_pageRadiusBottomLeft" format="integer"/>
+        <attr name="fb_pageRadiusBottomRight" format="integer"/>
+
+        <attr name="fb_indicatorShow" format="boolean"/>
+        <attr name="fb_indicatorOrientation">
+            <enum name="horizontal" value="0"/>
+            <enum name="vertical" value="1"/>
+        </attr>
+        <attr name="fb_indicatorAlign">
+            <enum name="align_leftTop" value="10"/>
+            <enum name="align_leftCenter" value="11"/>
+            <enum name="align_leftBottom" value="12"/>
+            <enum name="align_topCenter" value="13"/>
+            <enum name="align_inCenter" value="14"/>
+            <enum name="align_bottomCenter" value="15"/>
+            <enum name="align_rightTop" value="16"/>
+            <enum name="align_rightCenter" value="17"/>
+            <enum name="align_rightBottom" value="18"/>
+        </attr>
+        <attr name="fb_indicatorMargin" format="integer"/>
+        <attr name="fb_indicatorMarginLeft" format="integer"/>
+        <attr name="fb_indicatorMarginRight" format="integer"/>
+        <attr name="fb_indicatorMarginTop" format="integer"/>
+        <attr name="fb_indicatorMarginBottom" format="integer"/>
+        <attr name="fb_indicatorSpacing" format="integer"/>
     </declare-styleable>
 </resources>

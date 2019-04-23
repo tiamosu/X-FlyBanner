@@ -7,6 +7,7 @@ import com.xia.flybanner.FlyBanner;
 import com.xia.flybanner.constant.PageIndicatorAlign;
 import com.xia.flybanner.constant.PageIndicatorOrientation;
 import com.xia.flybanner.constant.PageOrientation;
+import com.xia.flybanner.constant.PageType;
 import com.xia.flybanner.listener.OnItemClickListener;
 import com.xia.flybanner.listener.OnPageChangeListener;
 
@@ -35,13 +36,13 @@ public final class BannerCreator {
         flyBanner
                 //设置 banner 视图数据初始化
                 .setPages(new HolderCreator(), datas)
+                //设置 banner 翻页类型，默认为普通循环翻页
+                .setType(PageType.TYPE_NORMAL)
                 //设置 banner 翻页方向
                 .setOrientation(orientation)
-                //是否为引导页
-                .setGuidePage(isGuidePage)
                 //设置 viewPager 圆角
                 .setRadius(50)
-                //banner 生成
+                //banner 配置生成
                 .pageBuild()
                 //设置指示器样式
                 .setIndicatorId(new int[]{R.drawable.indicator_gray_radius, R.drawable.indicator_white_radius})
@@ -53,8 +54,10 @@ public final class BannerCreator {
                 .setIndicatorMargin(30)
                 //设置指示器间距
                 .setIndicatorSpacing(10)
+                //设置指示器是否显示
+                .setIndicatorVisible(dataSize > 1)
                 //指示器生成
-                .indicatorBuild(dataSize > 1)
+                .indicatorBuild()
                 //设置自动轮播时间
                 .start(3000)
                 //设置是否进行自动轮播
