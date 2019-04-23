@@ -51,10 +51,10 @@ public class FlyBanner<T> extends RelativeLayout {
 
     private final FBLoopHelper mLoopHelper = new FBLoopHelper();
     private final AdSwitchTask mAdSwitchTask = new AdSwitchTask(this);
+    private final FBPageChangeListener mPageChangeListener = new FBPageChangeListener();
     private FBPageAdapter mPageAdapter;
     private FBLoopViewPager mLoopViewPager;
     private LinearLayout mIndicatorView;
-    private FBPageChangeListener mPageChangeListener;
 
     public FlyBanner(Context context) {
         this(context, null);
@@ -231,7 +231,8 @@ public class FlyBanner<T> extends RelativeLayout {
         private void setPageIndicator() {
             mPointViews.clear();
             mIndicatorView.removeAllViews();
-            if (mDatas.isEmpty() || mIndicatorId.length < 2 || mIndicatorView.getVisibility() != VISIBLE) {
+            if (mDatas.isEmpty() || mIndicatorId.length < 2
+                    || mIndicatorView.getVisibility() != VISIBLE) {
                 return;
             }
             setPageIndicatorOrientation();
@@ -255,7 +256,7 @@ public class FlyBanner<T> extends RelativeLayout {
                 mIndicatorView.addView(pointView);
             }
 
-            mPageChangeListener = new FBPageChangeListener(mPointViews, mIndicatorId);
+            mPageChangeListener.setPageIndicator(mPointViews, mIndicatorId);
             mLoopHelper.setOnPageChangeListener(mPageChangeListener);
         }
 
@@ -402,12 +403,7 @@ public class FlyBanner<T> extends RelativeLayout {
      * 设置翻页监听器
      */
     public FlyBanner setOnPageChangeListener(OnPageChangeListener onPageChangeListener) {
-        //如果有默认的监听器（即是使用了默认的翻页指示器）则把用户设置的依附到默认的上面，否则就直接设置
-        if (mPageChangeListener != null) {
-            mPageChangeListener.setOnPageChangeListener(onPageChangeListener);
-        } else {
-            mLoopHelper.setOnPageChangeListener(onPageChangeListener);
-        }
+        mPageChangeListener.setOnPageChangeListener(onPageChangeListener);
         return this;
     }
 

@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
  * @date 2019/4/16.
  */
 public class FBPageChangeListener implements OnPageChangeListener {
-    private final ArrayList<ImageView> mPointViews;
-    private final int[] mPageIndicatorId;
+    private ArrayList<ImageView> mPointViews;
+    private int[] mPageIndicatorId;
     private OnPageChangeListener mOnPageChangeListener;
 
-    public FBPageChangeListener(ArrayList<ImageView> pointViews, int[] pageIndicatorId) {
+    public void setPageIndicator(final ArrayList<ImageView> pointViews, final int[] pageIndicatorId) {
         this.mPointViews = pointViews;
         this.mPageIndicatorId = pageIndicatorId;
     }
@@ -36,11 +36,13 @@ public class FBPageChangeListener implements OnPageChangeListener {
 
     @Override
     public void onPageSelected(int index, boolean isLastPage) {
-        final int size = mPointViews.size();
-        for (int i = 0; i < size; i++) {
-            mPointViews.get(index).setImageResource(mPageIndicatorId[1]);
-            if (index != i) {
-                mPointViews.get(i).setImageResource(mPageIndicatorId[0]);
+        if (mPointViews != null && mPageIndicatorId != null) {
+            final int size = mPointViews.size();
+            for (int i = 0; i < size; i++) {
+                mPointViews.get(index).setImageResource(mPageIndicatorId[1]);
+                if (index != i) {
+                    mPointViews.get(i).setImageResource(mPageIndicatorId[0]);
+                }
             }
         }
         if (mOnPageChangeListener != null) {
