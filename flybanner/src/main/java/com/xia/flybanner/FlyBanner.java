@@ -75,7 +75,7 @@ public class FlyBanner<T> extends RelativeLayout {
     private boolean mTurning;
     //是否能够手动翻页
     private boolean mCanTurn;
-    //普通版 banner 翻页类型
+    //是否为普通翻页类型
     private boolean mIsNormalMode;
 
     private final FBLoopHelper mLoopHelper = new FBLoopHelper();
