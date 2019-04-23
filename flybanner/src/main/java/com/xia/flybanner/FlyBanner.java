@@ -63,11 +63,17 @@ public class FlyBanner<T> extends RelativeLayout {
     //设置指示器间距
     private int mIndicatorSpacing;
 
+    //指示器视图集
     private final ArrayList<ImageView> mPointViews = new ArrayList<>();
+    //数据集
     private List<T> mDatas = new ArrayList<>();
+    //视图构造
     private FBViewHolderCreator mHolderCreator;
+    //数据总数
     private int mDataSize;
+    //正在翻页
     private boolean mTurning;
+    //是否能够手动翻页
     private boolean mCanTurn;
     //普通版 banner 翻页类型
     private boolean mIsNormalMode;
