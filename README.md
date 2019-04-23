@@ -18,7 +18,7 @@ allprojects {
 ### fly-banner
 [ ![Download](https://api.bintray.com/packages/weixia/maven/x-flybanner/images/download.svg) ](https://bintray.com/weixia/maven/x-flybanner/_latestVersion)
 ```groovy
-compile 'me.xia:x-flybanner:1.0.6'
+compile 'me.xia:x-flybanner:1.0.7'
 ```
 
 ### 效果图：
@@ -28,10 +28,11 @@ compile 'me.xia:x-flybanner:1.0.6'
 
 ### 配置：
 ```java
-   public static void setDefault(final FlyBanner flyBanner,
+    public static void setDefault(final FlyBanner flyBanner,
                                   final List datas,
                                   final boolean isHorizontal,
                                   final boolean isGuidePage,
+                                  final boolean isScaleCardView,
                                   final OnItemClickListener onItemClickListener,
                                   final OnPageChangeListener onPageChangeListener) {
 
@@ -49,7 +50,9 @@ compile 'me.xia:x-flybanner:1.0.6'
                 //设置 banner 翻页方向
                 .setPageOrientation(orientation)
                 //设置 viewPager 圆角
-                .setPageRadius(50)
+                .setPageRadius(isScaleCardView ? 0 : 50)
+                //配置卡片式缩放视图
+                .setScaleCardView(isScaleCardView, 0.1f, 0.85f)
                 //banner 配置生成
                 .pageBuild()
                 //设置指示器样式
