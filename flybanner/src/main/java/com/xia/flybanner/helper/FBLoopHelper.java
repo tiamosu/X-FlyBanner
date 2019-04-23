@@ -29,14 +29,11 @@ public class FBLoopHelper {
     private RecyclerView.OnScrollListener mOnScrollListener;
     private OnPageChangeListener mOnPageChangeListener;
 
-    public void attachToRecyclerView(final FBLoopViewPager loopViewPager,
-                                     final FBPageAdapter pageAdapter) {
+    public void attachToRecyclerView(@NonNull final FBLoopViewPager loopViewPager,
+                                     @NonNull final FBPageAdapter pageAdapter) {
         this.mLoopViewPager = loopViewPager;
         this.mPageAdapter = pageAdapter;
         this.mLastPosition = -1;
-        if (loopViewPager == null) {
-            return;
-        }
         if (mOnScrollListener != null) {
             loopViewPager.removeOnScrollListener(mOnScrollListener);
         }
@@ -48,7 +45,7 @@ public class FBLoopHelper {
                 }
 
                 //这里变换位置实现循环
-                final int count = mPageAdapter.getRealItemCount();
+                final int count = pageAdapter.getRealItemCount();
                 if (count <= 0 && newState != RecyclerView.SCROLL_STATE_IDLE) {
                     return;
                 }
@@ -79,21 +76,21 @@ public class FBLoopHelper {
         };
         loopViewPager.addOnScrollListener(mOnScrollListener);
 
-        initWidth();
+        initWidth(loopViewPager);
         mPagerSnapHelper.attachToRecyclerView(loopViewPager);
     }
 
     /**
      * 初始化卡片宽度
      */
-    private void initWidth() {
-        final ViewTreeObserver vto = mLoopViewPager.getViewTreeObserver();
+    private void initWidth(final FBLoopViewPager loopViewPager) {
+        final ViewTreeObserver vto = loopViewPager.getViewTreeObserver();
         if (vto.isAlive()) {
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onGlobalLayout() {
-                    final ViewTreeObserver currentVto = mLoopViewPager.getViewTreeObserver();
+                    final ViewTreeObserver currentVto = loopViewPager.getViewTreeObserver();
                     if (currentVto.isAlive()) {
                         currentVto.removeOnGlobalLayoutListener(this);
                     }
@@ -108,10 +105,7 @@ public class FBLoopHelper {
     }
 
     public void setCurrentItem(int item, boolean smoothScroll) {
-        if (mLoopViewPager == null) {
-            return;
-        }
-        if (smoothScroll) {
+        if (smoothScroll && mLoopViewPager != null) {
             mLoopViewPager.smoothScrollToPosition(item);
         } else {
             scrollToPosition(item);
