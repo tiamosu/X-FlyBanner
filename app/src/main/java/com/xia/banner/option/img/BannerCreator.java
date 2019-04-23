@@ -25,6 +25,7 @@ public final class BannerCreator {
                                   final List datas,
                                   final boolean isHorizontal,
                                   final boolean isGuidePage,
+                                  final boolean isScaleCardView,
                                   final OnItemClickListener onItemClickListener,
                                   final OnPageChangeListener onPageChangeListener) {
 
@@ -42,7 +43,9 @@ public final class BannerCreator {
                 //设置 banner 翻页方向
                 .setPageOrientation(orientation)
                 //设置 viewPager 圆角
-                .setPageRadius(50)
+                .setPageRadius(isScaleCardView ? 0 : 50)
+                //配置卡片式缩放视图
+                .setScaleCardView(isScaleCardView, 0.1f, 0.85f)
                 //banner 配置生成
                 .pageBuild()
                 //设置指示器样式

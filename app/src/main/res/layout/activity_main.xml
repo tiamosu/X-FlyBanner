@@ -31,7 +31,7 @@
         app:fb_pageAutoTurningTime="3000"
         app:fb_pageCanLoop="false"
         app:fb_pageOrientation="vertical"
-        app:fb_pageRadius="50"
+        app:fb_pageRadius="0"
         app:fb_pageType="guide"
         app:layout_constraintBottom_toBottomOf="@+id/main_blur_view"
         app:layout_constraintDimensionRatio="h,8:4"
@@ -72,93 +72,124 @@
         app:layout_constraintRight_toRightOf="@+id/main_notice_view"
         app:layout_constraintTop_toTopOf="@+id/main_notice_view"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/main_loop_control_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="20dp"
-        android:text="控制自动轮播"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_notice_view"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_notice_view">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/main_loop_status_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:textSize="16dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/main_loop_control_btn"
-        app:layout_constraintLeft_toRightOf="@+id/main_loop_control_btn"
-        tools:text="是否自动翻页：否"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/main_set_current_item_pos_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="随机指定页面"
-        app:layout_constraintLeft_toLeftOf="@+id/main_loop_control_btn"
-        app:layout_constraintTop_toBottomOf="@+id/main_loop_control_btn"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/main_loop_control_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="控制自动轮播"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/main_current_item_position_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:textSize="16dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/main_set_current_item_pos_btn"
-        app:layout_constraintLeft_toRightOf="@+id/main_set_current_item_pos_btn"
-        tools:text="position：0，最后一页：false"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/main_loop_status_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:textSize="16dp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/main_loop_control_btn"
+                app:layout_constraintLeft_toRightOf="@+id/main_loop_control_btn"
+                tools:text="是否自动翻页：否"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/main_refresh_data_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="随机刷新数据"
-        app:layout_constraintLeft_toLeftOf="@+id/main_set_current_item_pos_btn"
-        app:layout_constraintTop_toBottomOf="@+id/main_set_current_item_pos_btn"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/main_set_current_item_pos_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="随机指定页面"
+                app:layout_constraintLeft_toLeftOf="@+id/main_loop_control_btn"
+                app:layout_constraintTop_toBottomOf="@+id/main_loop_control_btn"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/main_data_size_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:textSize="16dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/main_refresh_data_btn"
-        app:layout_constraintLeft_toRightOf="@+id/main_refresh_data_btn"
-        tools:text="总数据条数：5"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/main_current_item_position_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:textSize="16dp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/main_set_current_item_pos_btn"
+                app:layout_constraintLeft_toRightOf="@+id/main_set_current_item_pos_btn"
+                tools:text="position：0，最后一页：false"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/main_indicator_orientation_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="横竖向翻页切换"
-        app:layout_constraintLeft_toLeftOf="@+id/main_refresh_data_btn"
-        app:layout_constraintTop_toBottomOf="@+id/main_refresh_data_btn"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/main_refresh_data_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="随机刷新数据"
+                app:layout_constraintLeft_toLeftOf="@+id/main_set_current_item_pos_btn"
+                app:layout_constraintTop_toBottomOf="@+id/main_set_current_item_pos_btn"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/main_indicator_orientation_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/main_indicator_orientation_btn"
-        app:layout_constraintLeft_toRightOf="@+id/main_indicator_orientation_btn"
-        tools:text="翻页方向：横向"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/main_data_size_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:textSize="16dp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/main_refresh_data_btn"
+                app:layout_constraintLeft_toRightOf="@+id/main_refresh_data_btn"
+                tools:text="总数据条数：5"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/main_guide_page_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="引导页设置"
-        app:layout_constraintLeft_toLeftOf="@+id/main_indicator_orientation_btn"
-        app:layout_constraintTop_toBottomOf="@+id/main_indicator_orientation_btn"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/main_indicator_orientation_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="横竖向翻页切换"
+                app:layout_constraintLeft_toLeftOf="@+id/main_refresh_data_btn"
+                app:layout_constraintTop_toBottomOf="@+id/main_refresh_data_btn"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/main_guide_page_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/main_guide_page_btn"
-        app:layout_constraintLeft_toRightOf="@+id/main_guide_page_btn"
-        tools:text="是否为引导页：false"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/main_indicator_orientation_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/main_indicator_orientation_btn"
+                app:layout_constraintLeft_toRightOf="@+id/main_indicator_orientation_btn"
+                tools:text="翻页方向：横向"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/main_guide_page_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="引导页设置"
+                app:layout_constraintLeft_toLeftOf="@+id/main_indicator_orientation_btn"
+                app:layout_constraintTop_toBottomOf="@+id/main_indicator_orientation_btn"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/main_guide_page_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/main_guide_page_btn"
+                app:layout_constraintLeft_toRightOf="@+id/main_guide_page_btn"
+                tools:text="是否为引导页：false"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/main_scale_card_view_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="卡片式缩放视图"
+                app:layout_constraintLeft_toLeftOf="@+id/main_guide_page_btn"
+                app:layout_constraintTop_toBottomOf="@+id/main_guide_page_btn"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/main_scale_card_view_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/main_scale_card_view_btn"
+                app:layout_constraintLeft_toRightOf="@+id/main_scale_card_view_btn"
+                tools:text="是否为卡片式缩放视图：false"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,6 +22,7 @@ import com.xia.flybanner.listener.FBPageChangeListener;
 import com.xia.flybanner.listener.OnItemClickListener;
 import com.xia.flybanner.listener.OnPageChangeListener;
 import com.xia.flybanner.view.FBLoopViewPager;
+import com.xia.flybanner.view.FBScaleLayoutManager;
 import com.xia.flybanner.view.RecyclerViewCornerRadius;
 
 import java.lang.ref.WeakReference;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -77,6 +79,20 @@ public class FlyBanner<T> extends RelativeLayout {
     private boolean mCanTurn;
     //是否为普通翻页类型
     private boolean mIsNormalMode;
+
+    //banner 是否使用卡片式缩放视图
+    private boolean mIsScaleCardView;
+    /**
+     * 次要方块的露出距离的权重
+     * 此权重为相对RecyclerView而言，并且分别针对左右两侧。
+     * 即：当 {@link mSecondaryExposedWeight} = 0.1F,那么主Item的宽度为RecyclerView.width * 0.8F
+     */
+    private float mSecondaryExposedWeight;
+    /**
+     * 次item缩放量
+     * 表示当Item位于次Item位置时，显示尺寸相对于完整尺寸的量
+     */
+    private float mScaleGap;
 
     private final FBLoopHelper mLoopHelper = new FBLoopHelper();
     private final AdSwitchTask mAdSwitchTask = new AdSwitchTask(this);
@@ -194,6 +210,22 @@ public class FlyBanner<T> extends RelativeLayout {
             return this;
         }
 
+        /**
+         * 设置缩放卡片式视图
+         */
+        public PageBuilder setScaleCardView(final boolean isScaleCardView,
+                                            @Nullable final Float secondaryExposedWeight,
+                                            @Nullable final Float scaleGap) {
+            this.mFlyBanner.mIsScaleCardView = isScaleCardView;
+            if (secondaryExposedWeight != null) {
+                this.mFlyBanner.mSecondaryExposedWeight = secondaryExposedWeight;
+            }
+            if (scaleGap != null) {
+                this.mFlyBanner.mScaleGap = scaleGap;
+            }
+            return this;
+        }
+
         public IndicatorBuilder pageBuild() {
             setPageOrientation();
             setPageRadius();
@@ -204,8 +236,14 @@ public class FlyBanner<T> extends RelativeLayout {
         private void setPageOrientation() {
             final int orientation = mPageOrientation == PageOrientation.HORIZONTAL
                     ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL;
-            final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
-                    getContext(), orientation, false);
+            final RecyclerView.LayoutManager layoutManager;
+            if (mIsScaleCardView) {
+                layoutManager = new FBScaleLayoutManager(getContext(), orientation);
+                ((FBScaleLayoutManager) layoutManager).mSecondaryExposedWeight = mSecondaryExposedWeight;
+                ((FBScaleLayoutManager) layoutManager).mScaleGap = mScaleGap;
+            } else {
+                layoutManager = new LinearLayoutManager(getContext(), orientation, false);
+            }
             mLoopViewPager.setLayoutManager(layoutManager);
         }
 
@@ -565,6 +603,8 @@ public class FlyBanner<T> extends RelativeLayout {
     private static class AdSwitchTask implements Runnable {
 
         private final WeakReference<FlyBanner> mReference;
+        //是否从左向右翻页
+        private boolean mIsScrollRight = true;
 
         AdSwitchTask(FlyBanner convenientBanner) {
             this.mReference = new WeakReference<>(convenientBanner);
@@ -574,10 +614,23 @@ public class FlyBanner<T> extends RelativeLayout {
         public void run() {
             final FlyBanner banner = mReference.get();
             if (banner != null && banner.mTurning) {
-                final int page = banner.mLoopHelper.getCurrentItem() + 1;
+                final int currentItem = banner.mLoopHelper.getCurrentItem();
+                int page = currentItem + 1;
                 if (!banner.mIsNormalMode && page == banner.mDataSize) {
                     banner.stopTurning();
                     return;
+                }
+                if (banner.mIsScaleCardView) {
+                    if (page == 3 * banner.mDataSize && mIsScrollRight) {
+                        mIsScrollRight = false;
+                    }
+                    if (!mIsScrollRight) {
+                        page = currentItem - 1;
+                        if (page == -1) {
+                            page = currentItem + 1;
+                            mIsScrollRight = true;
+                        }
+                    }
                 }
                 banner.mLoopHelper.setCurrentItem(page, true);
                 banner.postDelayed(banner.mAdSwitchTask, banner.mAutoTurningTime);

@@ -27,14 +27,17 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private FlyBanner mFlyBanner, mNoticeView;
     private AppCompatButton mLoopControlBtn, mSetCurrentItemPosBtn,
-            mRefreshDataBtn, mIndicatorOrientationBtn, mGuidePageBtn;
+            mRefreshDataBtn, mIndicatorOrientationBtn, mGuidePageBtn,
+            mScaleCardViewBtn;
     private AppCompatTextView mLoopStatusTv, mCurrentItemPosTv,
-            mDataSizeTv, mIndicatorOrientationTv, mGuidePageTv;
+            mDataSizeTv, mIndicatorOrientationTv, mGuidePageTv,
+            mScaleCardViewTv;
     private AppCompatImageView mBlurIv;
 
     private final ArrayList<Integer> mLocalImages = new ArrayList<>();
     private boolean mIsHorizontal = true;
     private boolean mIsGuidePage;
+    private boolean mIsScaleCardView;
     private Runnable mBlurRunnable;
 
     @Override
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initEvent();
         refreshData();
         start();
-//        notice();
+        notice();
     }
 
     @Override
@@ -81,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBlurIv = findViewById(R.id.main_blur_view);
         mGuidePageBtn = findViewById(R.id.main_guide_page_btn);
         mGuidePageTv = findViewById(R.id.main_guide_page_tv);
+        mScaleCardViewBtn = findViewById(R.id.main_scale_card_view_btn);
+        mScaleCardViewTv = findViewById(R.id.main_scale_card_view_tv);
     }
 
     private void initEvent() {
@@ -89,14 +94,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRefreshDataBtn.setOnClickListener(this);
         mIndicatorOrientationBtn.setOnClickListener(this);
         mGuidePageBtn.setOnClickListener(this);
+        mScaleCardViewBtn.setOnClickListener(this);
     }
 
     private void refreshData() {
         mLocalImages.clear();
         final int min = 1;
         final int max = 7;
-        int randomNum = new Random().nextInt(max - min) + min;
-//        randomNum = 1;
+        final int randomNum = new Random().nextInt(max - min) + min;
 
         //本地图片集合
         for (int position = 0; position < randomNum; position++) {
@@ -109,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void start() {
         BannerCreator.setDefault(mFlyBanner, mLocalImages, mIsHorizontal, mIsGuidePage,
-                position -> showToast("onItemClick: " + position),
+                mIsScaleCardView, position -> showToast("onItemClick: " + position),
                 new OnPageChangeListener() {
                     @Override
                     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -133,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setDataSize(mLocalImages.size());
         setIndicatorOrientation();
         setGuidePageStatus();
+        setScaleCardViewStatus();
     }
 
     private void notice() {
@@ -185,6 +191,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGuidePageTv.setText(text);
     }
 
+    private void setScaleCardViewStatus() {
+        final String text = "是否为卡片式缩放视图：" + mIsScaleCardView;
+        mScaleCardViewTv.setText(text);
+    }
+
     private void showToast(final String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
@@ -228,6 +239,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (v == mGuidePageBtn) {
             mIsGuidePage = !mIsGuidePage;
+            start();
+            return;
+        }
+        if (v == mScaleCardViewBtn) {
+            mIsScaleCardView = !mIsScaleCardView;
             start();
         }
     }
