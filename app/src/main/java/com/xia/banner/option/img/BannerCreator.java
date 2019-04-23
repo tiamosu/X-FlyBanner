@@ -32,16 +32,17 @@ public final class BannerCreator {
         final int indicatorAlign = isHorizontal ? PageIndicatorAlign.ALIGN_RIGHT_BOTTOM : PageIndicatorAlign.ALIGN_RIGHT_CENTER;
         final int indicatorOrientation = isHorizontal ? PageIndicatorOrientation.HORIZONTAL : PageIndicatorOrientation.VERTICAL;
         final int orientation = isHorizontal ? PageOrientation.HORIZONTAL : PageOrientation.VERTICAL;
+        final int pageType = isGuidePage ? PageType.TYPE_GUIDE : PageType.TYPE_NORMAL;
 
         flyBanner
                 //设置 banner 视图数据初始化
                 .setPages(new HolderCreator(), datas)
                 //设置 banner 翻页类型，默认为普通循环翻页
-                .setType(PageType.TYPE_NORMAL)
+                .setPageType(pageType)
                 //设置 banner 翻页方向
-                .setOrientation(orientation)
+                .setPageOrientation(orientation)
                 //设置 viewPager 圆角
-                .setRadius(50)
+                .setPageRadius(50)
                 //banner 配置生成
                 .pageBuild()
                 //设置指示器样式

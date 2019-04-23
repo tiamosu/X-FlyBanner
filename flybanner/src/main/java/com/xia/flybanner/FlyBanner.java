@@ -157,7 +157,7 @@ public class FlyBanner<T> extends RelativeLayout {
             this.mFlyBanner = flyBanner;
         }
 
-        public PageBuilder setType(final @PageType.Type int type) {
+        public PageBuilder setPageType(final @PageType.Type int type) {
             this.mFlyBanner.mPageType = type;
             this.mFlyBanner.mIsNormalMode = type == PageType.TYPE_NORMAL;
             return this;
@@ -169,7 +169,7 @@ public class FlyBanner<T> extends RelativeLayout {
          * {@link PageOrientation.HORIZONTAL}: 横向
          * {@link PageOrientation.VERTICAL}: 竖向
          */
-        public PageBuilder setOrientation(final @PageOrientation.Orientation int orientation) {
+        public PageBuilder setPageOrientation(final @PageOrientation.Orientation int orientation) {
             this.mFlyBanner.mPageOrientation = orientation;
             return this;
         }
@@ -177,7 +177,7 @@ public class FlyBanner<T> extends RelativeLayout {
         /**
          * 设置 viewPager 圆角
          */
-        public PageBuilder setRadius(final int radius) {
+        public PageBuilder setPageRadius(final int radius) {
             setRadius(radius, radius, radius, radius);
             return this;
         }

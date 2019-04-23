@@ -29,7 +29,7 @@ public final class NoticeCreator {
                 //设置视图数据初始化
                 .setPages(new NoticeHolderCreator(), datas)
                 //设置 banner 翻页方向
-                .setOrientation(orientation)
+                .setPageOrientation(orientation)
                 //banner 配置生成
                 .pageBuild()
                 //设置指示器是否显示
