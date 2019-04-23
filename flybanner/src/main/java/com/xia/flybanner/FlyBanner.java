@@ -80,19 +80,20 @@ public class FlyBanner<T> extends RelativeLayout {
     /**
      * 设置视图数据初始化，必须第一步调用
      */
-    public FlyBuilder setPages(@NonNull final FBViewHolderCreator holderCreator,
-                               @NonNull final List<T> datas) {
+    public PageBuilder setPages(@NonNull final FBViewHolderCreator holderCreator,
+                                @NonNull final List<T> datas) {
         this.mDatas = datas;
         this.mDataSize = datas.size();
         this.mHolderCreator = holderCreator;
-        return new FlyBuilder(this);
+        return new PageBuilder(this);
     }
 
-    public class FlyBuilder {
+    public class PageBuilder {
         private FlyBanner mFlyBanner;
         private int mOrientation = PageOrientation.HORIZONTAL;
+        private int mTopLeftRadius, mTopRightRadius, mBottomLeftRadius, mBottomRightRadius;
 
-        public FlyBuilder(FlyBanner flyBanner) {
+        public PageBuilder(FlyBanner flyBanner) {
             this.mFlyBanner = flyBanner;
         }
 
@@ -102,7 +103,7 @@ public class FlyBanner<T> extends RelativeLayout {
          * {@link PageOrientation.HORIZONTAL}: 横向
          * {@link PageOrientation.VERTICAL}: 竖向
          */
-        public FlyBuilder setOrientation(final @PageOrientation.Orientation int orientation) {
+        public PageBuilder setOrientation(final @PageOrientation.Orientation int orientation) {
             this.mOrientation = orientation;
             return this;
         }
@@ -110,13 +111,34 @@ public class FlyBanner<T> extends RelativeLayout {
         /**
          * 配置 banner 是否为引导页面
          */
-        public FlyBuilder setGuidePage(final boolean isGuidePage) {
+        public PageBuilder setGuidePage(final boolean isGuidePage) {
             this.mFlyBanner.mIsNormalMode = !isGuidePage;
+            return this;
+        }
+
+        /**
+         * 设置 viewPager 圆角
+         */
+        public PageBuilder setRadius(final int radius) {
+            setRadius(radius, radius, radius, radius);
+            return this;
+        }
+
+        /**
+         * 设置 viewPager 圆角
+         */
+        public PageBuilder setRadius(int topLeftRadius, int topRightRadius,
+                                     int bottomLeftRadius, int bottomRightRadius) {
+            this.mTopLeftRadius = topLeftRadius;
+            this.mTopRightRadius = topRightRadius;
+            this.mBottomLeftRadius = bottomLeftRadius;
+            this.mBottomRightRadius = bottomRightRadius;
             return this;
         }
 
         public IndicatorBuilder pageBuild() {
             setPageOrientation();
+            setPageRadius();
             setPageAdapter();
             return new IndicatorBuilder(mFlyBanner);
         }
@@ -126,6 +148,23 @@ public class FlyBanner<T> extends RelativeLayout {
                     getContext(), (mOrientation == PageOrientation.HORIZONTAL
                     ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL), false);
             mLoopViewPager.setLayoutManager(layoutManager);
+        }
+
+        private void setPageRadius() {
+            final RecyclerViewCornerRadius cornerRadius = new RecyclerViewCornerRadius(mLoopViewPager);
+            if (mTopLeftRadius >= 0) {
+                cornerRadius.mTopLeftRadius = mTopLeftRadius;
+            }
+            if (mTopRightRadius >= 0) {
+                cornerRadius.mTopRightRadius = mTopRightRadius;
+            }
+            if (mBottomLeftRadius >= 0) {
+                cornerRadius.mBottomLeftRadius = mBottomLeftRadius;
+            }
+            if (mBottomRightRadius >= 0) {
+                cornerRadius.mBottomRightRadius = mBottomRightRadius;
+            }
+            mLoopViewPager.addItemDecoration(cornerRadius);
         }
 
         @SuppressWarnings("unchecked")
@@ -220,12 +259,12 @@ public class FlyBanner<T> extends RelativeLayout {
         /**
          * 指示器配置
          */
-        public CommonBuilder indicatorBuild(final boolean isVisible) {
+        public FlyBuilder indicatorBuild(final boolean isVisible) {
             final int visible = isVisible ? VISIBLE : GONE;
             mIndicatorView.setVisibility(visible);
 
             setPageIndicator();
-            return new CommonBuilder(mFlyBanner);
+            return new FlyBuilder(mFlyBanner);
         }
 
         private void setPageIndicator() {
@@ -337,41 +376,11 @@ public class FlyBanner<T> extends RelativeLayout {
         }
     }
 
-    public class CommonBuilder {
+    public class FlyBuilder {
         private FlyBanner mFlyBanner;
 
-        public CommonBuilder(FlyBanner flyBanner) {
+        public FlyBuilder(FlyBanner flyBanner) {
             this.mFlyBanner = flyBanner;
-        }
-
-        /**
-         * 设置 viewPager 圆角
-         */
-        public CommonBuilder setRadius(final int radius) {
-            setRadius(radius, radius, radius, radius);
-            return this;
-        }
-
-        /**
-         * 设置 viewPager 圆角
-         */
-        public CommonBuilder setRadius(int topLeftRadius, int topRightRadius,
-                                       int bottomLeftRadius, int bottomRightRadius) {
-            final RecyclerViewCornerRadius cornerRadius = new RecyclerViewCornerRadius(mLoopViewPager);
-            if (topLeftRadius >= 0) {
-                cornerRadius.mTopLeftRadius = topLeftRadius;
-            }
-            if (topRightRadius >= 0) {
-                cornerRadius.mTopRightRadius = topRightRadius;
-            }
-            if (bottomLeftRadius >= 0) {
-                cornerRadius.mBottomLeftRadius = bottomLeftRadius;
-            }
-            if (bottomRightRadius >= 0) {
-                cornerRadius.mBottomRightRadius = bottomRightRadius;
-            }
-            mLoopViewPager.addItemDecoration(cornerRadius);
-            return this;
         }
 
         /**

@@ -39,6 +39,8 @@ public final class BannerCreator {
                 .setOrientation(orientation)
                 //是否为引导页
                 .setGuidePage(isGuidePage)
+                //设置 viewPager 圆角
+                .setRadius(50)
                 //banner 生成
                 .pageBuild()
                 //设置指示器样式
@@ -53,8 +55,6 @@ public final class BannerCreator {
                 .setIndicatorSpacing(10)
                 //指示器生成
                 .indicatorBuild(dataSize > 1)
-                //设置 viewPager 圆角
-                .setRadius(50)
                 //设置自动轮播时间
                 .start(3000)
                 //设置是否进行自动轮播
