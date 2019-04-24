@@ -35,15 +35,15 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     : RelativeLayout(context, attrs) {
 
     //banner 翻页类型，默认为普通循环翻页
-    private var mPageType: Int = 0
+    private var mPageType: Int = PageType.TYPE_NORMAL
     //banner 翻页方向，默认为横向
-    private var mPageOrientation: Int = 0
+    private var mPageOrientation: Int = PageOrientation.HORIZONTAL
     //banner 是否自动翻页
     private var mCanLoop: Boolean = true
     //banner 自动翻页间隔时间
-    private var mAutoTurningTime: Long = 0
+    private var mAutoTurningTime: Long = 3000L
     //banner 圆角设置
-    private val mPageRadius: Int
+    private var mPageRadius: Int = -1
     private var mPageTopLeftRadius: Int = 0
     private var mPageTopRightRadius: Int = 0
     private var mPageBottomLeftRadius: Int = 0
@@ -52,17 +52,17 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     //是否显示指示器，默认显示
     private var mShowIndicator: Boolean = true
     //设置指示器方向，默认为横向
-    private var mIndicatorOrientation: Int = 0
+    private var mIndicatorOrientation: Int = PageIndicatorOrientation.HORIZONTAL
     //设置指示器的位置，（默认为右下角）
-    private var mIndicatorAlign: Int = 0
+    private var mIndicatorAlign: Int = PageIndicatorAlign.ALIGN_RIGHT_BOTTOM
     //设置指示器偏移
-    private val mIndicatorMargin: Int
-    private var mIndicatorLeftMargin: Int = 0
-    private var mIndicatorTopMargin: Int = 0
-    private var mIndicatorRightMargin: Int = 0
-    private var mIndicatorBottomMargin: Int = 0
+    private var mIndicatorMargin: Int = -1
+    private var mIndicatorLeftMargin: Int = 30
+    private var mIndicatorTopMargin: Int = 30
+    private var mIndicatorRightMargin: Int = 30
+    private var mIndicatorBottomMargin: Int = 30
     //设置指示器间距
-    private var mIndicatorSpacing: Int = 0
+    private var mIndicatorSpacing: Int = 5
 
     //指示器视图集
     private val mPointViews = ArrayList<ImageView>()
@@ -116,10 +116,10 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
         mIndicatorOrientation = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorOrientation, PageIndicatorOrientation.HORIZONTAL)
         mIndicatorAlign = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorAlign, PageIndicatorAlign.ALIGN_RIGHT_BOTTOM)
         mIndicatorMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMargin, -1)
-        mIndicatorLeftMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginLeft, 0)
-        mIndicatorRightMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginRight, 0)
-        mIndicatorTopMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginTop, 0)
-        mIndicatorBottomMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginBottom, 0)
+        mIndicatorLeftMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginLeft, 30)
+        mIndicatorRightMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginRight, 30)
+        mIndicatorTopMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginTop, 30)
+        mIndicatorBottomMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginBottom, 30)
         mIndicatorSpacing = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorSpacing, 5)
         typedArray.recycle()
 
