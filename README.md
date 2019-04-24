@@ -18,7 +18,7 @@ allprojects {
 ### fly-banner
 [ ![Download](https://api.bintray.com/packages/weixia/maven/x-flybanner/images/download.svg) ](https://bintray.com/weixia/maven/x-flybanner/_latestVersion)
 ```groovy
-compile 'me.xia:x-flybanner:1.0.7'
+compile 'me.xia:x-flybanner:1.1.0'
 ```
 
 ### 效果图：
@@ -27,36 +27,36 @@ compile 'me.xia:x-flybanner:1.0.7'
 ![](screenshot/GIF_2.gif)
 
 ### 配置：
-```java
-    public static void setDefault(final FlyBanner flyBanner,
-                                  final List datas,
-                                  final boolean isHorizontal,
-                                  final boolean isGuidePage,
-                                  final boolean isScaleCardView,
-                                  final OnItemClickListener onItemClickListener,
-                                  final OnPageChangeListener onPageChangeListener) {
+```kotlin
+    fun setDefault(flyBanner: FlyBanner<Any>,
+                   datas: List<Any>,
+                   isHorizontal: Boolean,
+                   isGuidePage: Boolean,
+                   isScaleCardView: Boolean,
+                   onItemClickListener: OnItemClickListener?,
+                   onPageChangeListener: OnPageChangeListener?) {
 
-        final int dataSize = datas.size();
-        final int indicatorAlign = isHorizontal ? PageIndicatorAlign.ALIGN_RIGHT_BOTTOM : PageIndicatorAlign.ALIGN_RIGHT_CENTER;
-        final int indicatorOrientation = isHorizontal ? PageIndicatorOrientation.HORIZONTAL : PageIndicatorOrientation.VERTICAL;
-        final int orientation = isHorizontal ? PageOrientation.HORIZONTAL : PageOrientation.VERTICAL;
-        final int pageType = isGuidePage ? PageType.TYPE_GUIDE : PageType.TYPE_NORMAL;
+        val dataSize = datas.size
+        val indicatorAlign = if (isHorizontal) PageIndicatorAlign.ALIGN_RIGHT_BOTTOM else PageIndicatorAlign.ALIGN_RIGHT_CENTER
+        val indicatorOrientation = if (isHorizontal) PageIndicatorOrientation.HORIZONTAL else PageIndicatorOrientation.VERTICAL
+        val orientation = if (isHorizontal) PageOrientation.HORIZONTAL else PageOrientation.VERTICAL
+        val pageType = if (isGuidePage) PageType.TYPE_GUIDE else PageType.TYPE_NORMAL
 
         flyBanner
                 //设置 banner 视图数据初始化
-                .setPages(new HolderCreator(), datas)
+                .setPages(HolderCreator(), datas)
                 //设置 banner 翻页类型，默认为普通循环翻页
                 .setPageType(pageType)
                 //设置 banner 翻页方向
                 .setPageOrientation(orientation)
                 //设置 viewPager 圆角
-                .setPageRadius(isScaleCardView ? 0 : 50)
+                .setPageRadius(if (isScaleCardView) 0 else 50)
                 //配置卡片式缩放视图
                 .setScaleCardView(isScaleCardView, 0.1f, 0.85f)
                 //banner 配置生成
                 .pageBuild()
                 //设置指示器样式
-                .setIndicatorId(new int[]{R.drawable.indicator_gray_radius, R.drawable.indicator_white_radius})
+                .setIndicatorId(intArrayOf(R.drawable.indicator_gray_radius, R.drawable.indicator_white_radius))
                 //设置指示器位置，默认为右下角
                 .setIndicatorAlign(indicatorAlign)
                 //设置指示器方向，默认为横向
@@ -76,7 +76,7 @@ compile 'me.xia:x-flybanner:1.0.7'
                 //设置点击事件监听
                 .setOnItemClickListener(onItemClickListener)
                 //设置页面切换事件监听
-                .setOnPageChangeListener(onPageChangeListener);
+                .setOnPageChangeListener(onPageChangeListener)
     }
 ```
 
@@ -104,6 +104,6 @@ compile 'me.xia:x-flybanner:1.0.7'
 ```
 
 
-### 详情请见 demo
-
-*感谢原作者的贡献*
+## *特别感谢*
+* [Android-ConvenientBanner](https://github.com/Bigkoo/Android-ConvenientBanner)
+* [RecyclerViewBanner](https://github.com/Mr-XiaoLiang/RecyclerViewBanner)
