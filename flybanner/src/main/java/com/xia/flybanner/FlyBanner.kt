@@ -39,7 +39,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     //banner 翻页方向，默认为横向
     private var mPageOrientation: Int = 0
     //banner 是否自动翻页
-    private var mCanLoop: Boolean = false
+    private var mCanLoop: Boolean = true
     //banner 自动翻页间隔时间
     private var mAutoTurningTime: Long = 0
     //banner 圆角设置
@@ -50,7 +50,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     private var mPageBottomRightRadius: Int = 0
 
     //是否显示指示器，默认显示
-    private var mShowIndicator: Boolean = false
+    private var mShowIndicator: Boolean = true
     //设置指示器方向，默认为横向
     private var mIndicatorOrientation: Int = 0
     //设置指示器的位置，（默认为右下角）
