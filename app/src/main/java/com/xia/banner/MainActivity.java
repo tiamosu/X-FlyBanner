@@ -18,12 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
+@SuppressWarnings("unchecked")
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private FlyBanner mFlyBanner, mNoticeView;
     private AppCompatButton mLoopControlBtn, mSetCurrentItemPosBtn,
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initEvent();
         refreshData();
         start();
-//        notice();
+        notice();
     }
 
     @Override
@@ -117,11 +119,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mIsScaleCardView, position -> showToast("onItemClick: " + position),
                 new OnPageChangeListener() {
                     @Override
-                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                     }
 
                     @Override
-                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     }
 
                     @Override
