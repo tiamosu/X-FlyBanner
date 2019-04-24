@@ -479,7 +479,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     /**
      * 设置翻页监听器
      */
-    fun setOnPageChangeListener(onPageChangeListener: OnPageChangeListener): FlyBanner<*> {
+    fun setOnPageChangeListener(onPageChangeListener: OnPageChangeListener?): FlyBanner<*> {
         mPageChangeListener.setOnPageChangeListener(onPageChangeListener)
         return this
     }
@@ -487,7 +487,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     /**
      * 设置 item 点击事件监听
      */
-    fun setOnItemClickListener(onItemClickListener: OnItemClickListener): FlyBanner<*> {
+    fun setOnItemClickListener(onItemClickListener: OnItemClickListener?): FlyBanner<*> {
         mPageAdapter?.setOnItemClickListener(onItemClickListener)
         return this
     }
@@ -578,7 +578,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
                 banner.stopTurning()
                 return
             }
-            if (banner.mIsScaleCardView) {
+            if (banner.mIsNormalMode && banner.mIsScaleCardView) {
                 if (page == 3 * banner.mDataSize && mIsScrollRight) {
                     mIsScrollRight = false
                 }
