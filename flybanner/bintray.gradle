@@ -79,7 +79,7 @@ bintray {
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
+    getArchiveClassifier().set('sources')
 }
 task javadoc(type: Javadoc) {
     failOnError false
@@ -87,8 +87,8 @@ task javadoc(type: Javadoc) {
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 }
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
     from javadoc.destinationDir
+    getArchiveClassifier().set('javadoc')
 }
 artifacts {
     archives javadocJar
