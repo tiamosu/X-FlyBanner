@@ -4,7 +4,7 @@
 ### fly-banner
 [ ![Download](https://api.bintray.com/packages/weixia/maven/x-flybanner/images/download.svg) ](https://bintray.com/weixia/maven/x-flybanner/_latestVersion)
 ```groovy
-compile 'me.xia:x-flybanner:1.1.1'
+compile 'me.xia:x-flybanner:1.1.2'
 ```
 
 ### 效果图：
@@ -36,7 +36,7 @@ compile 'me.xia:x-flybanner:1.1.1'
                 //设置 banner 翻页方向
                 .setPageOrientation(orientation)
                 //设置 viewPager 圆角
-                .setPageRadius(if (isScaleCardView) 0 else 50)
+                .setPageRadius(20)
                 //配置卡片式缩放视图
                 .setScaleCardView(isScaleCardView, 0.1f, 0.85f)
                 //banner 配置生成
@@ -48,9 +48,9 @@ compile 'me.xia:x-flybanner:1.1.1'
                 //设置指示器方向，默认为横向
                 .setIndicatorOrientation(indicatorOrientation)
                 //设置指示器偏移
-                .setIndicatorMargin(30)
+                .setIndicatorMargin(15)
                 //设置指示器间距
-                .setIndicatorSpacing(10)
+                .setIndicatorSpacing(3)
                 //设置指示器是否显示
                 .setIndicatorVisible(dataSize > 1)
                 //指示器生成
@@ -69,18 +69,18 @@ compile 'me.xia:x-flybanner:1.1.1'
 ```xml
     <com.xia.flybanner.FlyBanner
         android:id="@+id/main_banner"
-        android:layout_width="0pt"
-        android:layout_height="0pt"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_margin="15dp"
         app:fb_indicatorAlign="align_rightCenter"
-        app:fb_indicatorMargin="35"
+        app:fb_indicatorMargin="15dp"
         app:fb_indicatorOrientation="vertical"
         app:fb_indicatorShow="true"
-        app:fb_indicatorSpacing="10"
+        app:fb_indicatorSpacing="3dp"
         app:fb_pageAutoTurningTime="3000"
         app:fb_pageCanLoop="false"
         app:fb_pageOrientation="vertical"
-        app:fb_pageRadius="50"
+        app:fb_pageRadius="20dp"
         app:fb_pageType="guide"
         app:layout_constraintBottom_toBottomOf="@+id/main_blur_view"
         app:layout_constraintDimensionRatio="h,8:4"
