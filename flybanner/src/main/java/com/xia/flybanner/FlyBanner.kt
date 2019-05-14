@@ -21,6 +21,7 @@ import com.xia.flybanner.holder.FBViewHolderCreator
 import com.xia.flybanner.listener.FBPageChangeListener
 import com.xia.flybanner.listener.OnItemClickListener
 import com.xia.flybanner.listener.OnPageChangeListener
+import com.xia.flybanner.utils.SizeUtils
 import com.xia.flybanner.view.FBLoopViewPager
 import com.xia.flybanner.view.FBScaleLayoutManager
 import com.xia.flybanner.view.RecyclerViewCornerRadius
@@ -31,6 +32,7 @@ import java.util.*
  * @author weixia
  * @date 2019/4/16.
  */
+@Suppress("unused")
 class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null)
     : RelativeLayout(context, attrs) {
 
@@ -106,21 +108,21 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
         mPageOrientation = typedArray.getInt(R.styleable.FlyBanner_fb_pageOrientation, PageOrientation.HORIZONTAL)
         mCanLoop = typedArray.getBoolean(R.styleable.FlyBanner_fb_pageCanLoop, true)
         mAutoTurningTime = typedArray.getInteger(R.styleable.FlyBanner_fb_pageAutoTurningTime, 3000).toLong()
-        mPageRadius = typedArray.getInt(R.styleable.FlyBanner_fb_pageRadius, -1)
-        mPageTopLeftRadius = typedArray.getInt(R.styleable.FlyBanner_fb_pageRadiusTopLeft, 0)
-        mPageTopRightRadius = typedArray.getInt(R.styleable.FlyBanner_fb_pageRadiusTopRight, 0)
-        mPageBottomLeftRadius = typedArray.getInt(R.styleable.FlyBanner_fb_pageRadiusBottomLeft, 0)
-        mPageBottomRightRadius = typedArray.getInt(R.styleable.FlyBanner_fb_pageRadiusBottomRight, 0)
+        mPageRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadius, -1)
+        mPageTopLeftRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusTopLeft, 0)
+        mPageTopRightRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusTopRight, 0)
+        mPageBottomLeftRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusBottomLeft, 0)
+        mPageBottomRightRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusBottomRight, 0)
 
         mShowIndicator = typedArray.getBoolean(R.styleable.FlyBanner_fb_indicatorShow, true)
         mIndicatorOrientation = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorOrientation, PageIndicatorOrientation.HORIZONTAL)
         mIndicatorAlign = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorAlign, PageIndicatorAlign.ALIGN_RIGHT_BOTTOM)
-        mIndicatorMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMargin, -1)
-        mIndicatorLeftMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginLeft, 30)
-        mIndicatorRightMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginRight, 30)
-        mIndicatorTopMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginTop, 30)
-        mIndicatorBottomMargin = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorMarginBottom, 30)
-        mIndicatorSpacing = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorSpacing, 5)
+        mIndicatorMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMargin, -1)
+        mIndicatorLeftMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginLeft, SizeUtils.dp2px(30f))
+        mIndicatorRightMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginRight, SizeUtils.dp2px(30f))
+        mIndicatorTopMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginTop, SizeUtils.dp2px(30f))
+        mIndicatorBottomMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginBottom, SizeUtils.dp2px(30f))
+        mIndicatorSpacing = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorSpacing, SizeUtils.dp2px(5f))
         typedArray.recycle()
 
         init(context)
@@ -190,10 +192,10 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
          */
         fun setRadius(topLeftRadius: Int, topRightRadius: Int,
                       bottomLeftRadius: Int, bottomRightRadius: Int): PageBuilder {
-            this.mFlyBanner.mPageTopLeftRadius = topLeftRadius
-            this.mFlyBanner.mPageTopRightRadius = topRightRadius
-            this.mFlyBanner.mPageBottomLeftRadius = bottomLeftRadius
-            this.mFlyBanner.mPageBottomRightRadius = bottomRightRadius
+            this.mFlyBanner.mPageTopLeftRadius = SizeUtils.dp2px(topLeftRadius.toFloat())
+            this.mFlyBanner.mPageTopRightRadius = SizeUtils.dp2px(topRightRadius.toFloat())
+            this.mFlyBanner.mPageBottomLeftRadius = SizeUtils.dp2px(bottomLeftRadius.toFloat())
+            this.mFlyBanner.mPageBottomRightRadius = SizeUtils.dp2px(bottomRightRadius.toFloat())
             return this
         }
 
@@ -317,10 +319,10 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
          */
         fun setIndicatorMargin(leftMargin: Int, topMargin: Int,
                                rightMargin: Int, bottomMargin: Int): IndicatorBuilder {
-            this.mFlyBanner.mIndicatorLeftMargin = leftMargin
-            this.mFlyBanner.mIndicatorTopMargin = topMargin
-            this.mFlyBanner.mIndicatorRightMargin = rightMargin
-            this.mFlyBanner.mIndicatorBottomMargin = bottomMargin
+            this.mFlyBanner.mIndicatorLeftMargin = SizeUtils.dp2px(leftMargin.toFloat())
+            this.mFlyBanner.mIndicatorTopMargin = SizeUtils.dp2px(topMargin.toFloat())
+            this.mFlyBanner.mIndicatorRightMargin = SizeUtils.dp2px(rightMargin.toFloat())
+            this.mFlyBanner.mIndicatorBottomMargin = SizeUtils.dp2px(bottomMargin.toFloat())
             return this
         }
 
@@ -328,7 +330,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
          * 设置指示器间距
          */
         fun setIndicatorSpacing(indicatorSpacing: Int): IndicatorBuilder {
-            this.mFlyBanner.mIndicatorSpacing = indicatorSpacing
+            this.mFlyBanner.mIndicatorSpacing = SizeUtils.dp2px(indicatorSpacing.toFloat())
             return this
         }
 

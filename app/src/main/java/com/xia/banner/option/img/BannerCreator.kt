@@ -41,7 +41,7 @@ object BannerCreator {
                 //设置 banner 翻页方向
                 .setPageOrientation(orientation)
                 //设置 viewPager 圆角
-                .setPageRadius(if (isScaleCardView) 0 else 50)
+                .setPageRadius(20)
                 //配置卡片式缩放视图
                 .setScaleCardView(isScaleCardView, 0.1f, 0.85f)
                 //banner 配置生成
@@ -53,9 +53,9 @@ object BannerCreator {
                 //设置指示器方向，默认为横向
                 .setIndicatorOrientation(indicatorOrientation)
                 //设置指示器偏移
-                .setIndicatorMargin(30)
+                .setIndicatorMargin(15)
                 //设置指示器间距
-                .setIndicatorSpacing(10)
+                .setIndicatorSpacing(3)
                 //设置指示器是否显示
                 .setIndicatorVisible(dataSize > 1)
                 //指示器生成

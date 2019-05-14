@@ -29,8 +29,8 @@ android {
 }
 
 dependencies {
-//    implementation project(':flybanner')
-    implementation 'me.xia:x-flybanner:1.1.1'
+    implementation project(':flybanner')
+//    implementation 'me.xia:x-flybanner:1.1.1'
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
