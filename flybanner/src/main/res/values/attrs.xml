@@ -2,14 +2,11 @@
 <resources>
 
     <declare-styleable name="FlyBanner">
-        <attr name="fb_pageType">
-            <enum name="normal" value="0"/>
-            <enum name="guide" value="1"/>
-        </attr>
         <attr name="fb_pageOrientation">
             <enum name="horizontal" value="0"/>
             <enum name="vertical" value="1"/>
         </attr>
+        <attr name="fb_pageLoopMode" format="boolean"/>
         <attr name="fb_pageAutoPlay" format="boolean"/>
         <attr name="fb_pageAutoTurningTime" format="integer"/>
         <attr name="fb_pageRadius" format="dimension"/>

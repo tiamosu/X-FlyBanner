@@ -15,7 +15,6 @@ import com.xia.flybanner.adapter.FBPageAdapter
 import com.xia.flybanner.constant.PageIndicatorAlign
 import com.xia.flybanner.constant.PageIndicatorOrientation
 import com.xia.flybanner.constant.PageOrientation
-import com.xia.flybanner.constant.PageType
 import com.xia.flybanner.helper.FBLoopHelper
 import com.xia.flybanner.holder.FBViewHolderCreator
 import com.xia.flybanner.listener.FBPageChangeListener
@@ -36,12 +35,10 @@ import java.util.*
 class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null)
     : RelativeLayout(context, attrs) {
 
-    //banner 翻页类型，默认为普通循环翻页
-    private var mPageType: Int = PageType.TYPE_NORMAL
     //banner 翻页方向，默认为横向
     private var mPageOrientation: Int = PageOrientation.HORIZONTAL
-    //banner 是否自动翻页
-//    private var mCanLoop: Boolean = true
+    //banner 是否无限循环模式
+    private var mIsLoopMode: Boolean = true
     //banner 是否自动播放
     private var mIsAutoPlay: Boolean = true
     //banner 自动翻页间隔时间
@@ -80,8 +77,6 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     private var mTurning: Boolean = false
     //是否能够手动翻页
     private var mCanTurn: Boolean = false
-    //是否为普通翻页类型
-    private var mIsNormalMode: Boolean = false
 
     //banner 是否使用卡片式缩放视图
     private var mIsScaleCardView: Boolean = false
@@ -106,8 +101,8 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     init {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.FlyBanner)
-        mPageType = typedArray.getInt(R.styleable.FlyBanner_fb_pageType, PageType.TYPE_NORMAL)
         mPageOrientation = typedArray.getInt(R.styleable.FlyBanner_fb_pageOrientation, PageOrientation.HORIZONTAL)
+        mIsLoopMode = typedArray.getBoolean(R.styleable.FlyBanner_fb_pageLoopMode, true)
         mIsAutoPlay = typedArray.getBoolean(R.styleable.FlyBanner_fb_pageAutoPlay, true)
         mAutoTurningTime = typedArray.getInteger(R.styleable.FlyBanner_fb_pageAutoTurningTime, 3000).toLong()
         mPageRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadius, -1)
@@ -131,7 +126,6 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     }
 
     private fun init(context: Context) {
-        mIsNormalMode = mPageType == PageType.TYPE_NORMAL
         if (mPageRadius != -1) {
             mPageBottomRightRadius = mPageRadius
             mPageBottomLeftRadius = mPageBottomRightRadius
@@ -163,9 +157,8 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     inner class PageBuilder(private val mFlyBanner: FlyBanner<*>) {
 
-        fun setPageType(@PageType.Type type: Int): PageBuilder {
-            this.mFlyBanner.mPageType = type
-            this.mFlyBanner.mIsNormalMode = type == PageType.TYPE_NORMAL
+        fun setPageLoopMode(isLoopMode: Boolean): PageBuilder {
+            this.mFlyBanner.mIsLoopMode = isLoopMode
             return this
         }
 
@@ -258,9 +251,9 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
         }
 
         private fun setPageAdapter() {
-            mPageAdapter = FBPageAdapter(mHolderCreator!!, mDatas, mIsNormalMode)
+            mPageAdapter = FBPageAdapter(mHolderCreator!!, mDatas, mIsLoopMode)
             mLoopViewPager.adapter = mPageAdapter
-            mLoopHelper.setFirstItemPos(if (mIsNormalMode) mDataSize else 0)
+            mLoopHelper.setFirstItemPos(if (mIsLoopMode) mDataSize else 0)
             mLoopHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter!!)
         }
     }
@@ -501,7 +494,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
      */
     fun setCurrentItem(position: Int): FlyBanner<*> {
         stopTurning()
-        val page = if (mIsNormalMode) mDataSize + position else position
+        val page = if (mIsLoopMode) mDataSize + position else position
         mLoopHelper.setCurrentItem(page, true)
         startTurning()
         return this
@@ -578,11 +571,11 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
             }
             val currentItem = banner.mLoopHelper.getCurrentItem()
             var page = currentItem + 1
-            if (!banner.mIsNormalMode && page == banner.mDataSize) {
+            if (!banner.mIsLoopMode && page == banner.mDataSize) {
                 banner.stopTurning()
                 return
             }
-            if (banner.mIsNormalMode && banner.mIsScaleCardView) {
+            if (banner.mIsLoopMode && banner.mIsScaleCardView) {
                 if (page == 3 * banner.mDataSize && mIsScrollRight) {
                     mIsScrollRight = false
                 }

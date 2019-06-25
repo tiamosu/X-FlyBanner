@@ -28,11 +28,11 @@
         app:fb_indicatorOrientation="vertical"
         app:fb_indicatorShow="true"
         app:fb_indicatorSpacing="3dp"
-        app:fb_pageAutoTurningTime="3000"
         app:fb_pageAutoPlay="false"
+        app:fb_pageAutoTurningTime="3000"
+        app:fb_pageLoopMode="false"
         app:fb_pageOrientation="vertical"
         app:fb_pageRadius="20dp"
-        app:fb_pageType="guide"
         app:layout_constraintBottom_toBottomOf="@+id/main_blur_view"
         app:layout_constraintDimensionRatio="h,8:4"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -158,29 +158,29 @@
                 tools:text="翻页方向：横向"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/main_guide_page_btn"
+                android:id="@+id/main_loop_mode_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="引导页设置"
+                android:text="循环播放设置"
                 app:layout_constraintLeft_toLeftOf="@+id/main_indicator_orientation_btn"
                 app:layout_constraintTop_toBottomOf="@+id/main_indicator_orientation_btn"/>
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/main_guide_page_tv"
+                android:id="@+id/main_loop_mode_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                app:layout_constraintBaseline_toBaselineOf="@+id/main_guide_page_btn"
-                app:layout_constraintLeft_toRightOf="@+id/main_guide_page_btn"
-                tools:text="是否为引导页：false"/>
+                app:layout_constraintBaseline_toBaselineOf="@+id/main_loop_mode_btn"
+                app:layout_constraintLeft_toRightOf="@+id/main_loop_mode_btn"
+                tools:text="是否无限循环：false"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/main_scale_card_view_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="卡片式缩放视图"
-                app:layout_constraintLeft_toLeftOf="@+id/main_guide_page_btn"
-                app:layout_constraintTop_toBottomOf="@+id/main_guide_page_btn"/>
+                app:layout_constraintLeft_toLeftOf="@+id/main_loop_mode_btn"
+                app:layout_constraintTop_toBottomOf="@+id/main_loop_mode_btn"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/main_scale_card_view_tv"

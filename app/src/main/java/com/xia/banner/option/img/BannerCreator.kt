@@ -1,13 +1,11 @@
 package com.xia.banner.option.img
 
 import android.annotation.SuppressLint
-
 import com.xia.banner.R
 import com.xia.flybanner.FlyBanner
 import com.xia.flybanner.constant.PageIndicatorAlign
 import com.xia.flybanner.constant.PageIndicatorOrientation
 import com.xia.flybanner.constant.PageOrientation
-import com.xia.flybanner.constant.PageType
 import com.xia.flybanner.listener.OnItemClickListener
 import com.xia.flybanner.listener.OnPageChangeListener
 
@@ -22,7 +20,7 @@ object BannerCreator {
     fun setDefault(flyBanner: FlyBanner<Any>,
                    datas: List<Any>,
                    isHorizontal: Boolean,
-                   isGuidePage: Boolean,
+                   isLoopMode: Boolean,
                    isScaleCardView: Boolean,
                    onItemClickListener: OnItemClickListener?,
                    onPageChangeListener: OnPageChangeListener?) {
@@ -31,13 +29,12 @@ object BannerCreator {
         val indicatorAlign = if (isHorizontal) PageIndicatorAlign.ALIGN_RIGHT_BOTTOM else PageIndicatorAlign.ALIGN_RIGHT_CENTER
         val indicatorOrientation = if (isHorizontal) PageIndicatorOrientation.HORIZONTAL else PageIndicatorOrientation.VERTICAL
         val orientation = if (isHorizontal) PageOrientation.HORIZONTAL else PageOrientation.VERTICAL
-        val pageType = if (isGuidePage) PageType.TYPE_GUIDE else PageType.TYPE_NORMAL
 
         flyBanner
                 //设置 banner 视图数据初始化
                 .setPages(HolderCreator(), datas)
-                //设置 banner 翻页类型，默认为普通循环翻页
-                .setPageType(pageType)
+                //设置 banner 是否无限循环播放
+                .setPageLoopMode(isLoopMode)
                 //设置 banner 翻页方向
                 .setPageOrientation(orientation)
                 //设置 viewPager 圆角
@@ -63,7 +60,7 @@ object BannerCreator {
                 //设置自动轮播时间
                 .start(3000)
                 //设置是否进行自动轮播
-                .setAutoPlay(dataSize > 1 && !isGuidePage)
+                .setAutoPlay(dataSize > 1 && isLoopMode)
                 //设置点击事件监听
                 .setOnItemClickListener(onItemClickListener)
                 //设置页面切换事件监听

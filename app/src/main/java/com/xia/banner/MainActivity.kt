@@ -25,19 +25,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var mSetCurrentItemPosBtn: AppCompatButton
     private lateinit var mRefreshDataBtn: AppCompatButton
     private lateinit var mIndicatorOrientationBtn: AppCompatButton
-    private lateinit var mGuidePageBtn: AppCompatButton
+    private lateinit var mLoopModeBtn: AppCompatButton
     private lateinit var mScaleCardViewBtn: AppCompatButton
     private lateinit var mLoopStatusTv: AppCompatTextView
     private lateinit var mCurrentItemPosTv: AppCompatTextView
     private lateinit var mDataSizeTv: AppCompatTextView
     private lateinit var mIndicatorOrientationTv: AppCompatTextView
-    private lateinit var mGuidePageTv: AppCompatTextView
+    private lateinit var mLoopModeTv: AppCompatTextView
     private lateinit var mScaleCardViewTv: AppCompatTextView
     private lateinit var mBlurIv: AppCompatImageView
 
     private val mLocalImages = ArrayList<Int>()
     private var mIsHorizontal = true
-    private var mIsGuidePage: Boolean = false
+    private var mIsLoopMode: Boolean = false
     private var mIsScaleCardView: Boolean = false
     private var mBlurRunnable: Runnable? = null
 
@@ -76,8 +76,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         mIndicatorOrientationBtn = findViewById(R.id.main_indicator_orientation_btn)
         mIndicatorOrientationTv = findViewById(R.id.main_indicator_orientation_tv)
         mBlurIv = findViewById(R.id.main_blur_view)
-        mGuidePageBtn = findViewById(R.id.main_guide_page_btn)
-        mGuidePageTv = findViewById(R.id.main_guide_page_tv)
+        mLoopModeBtn = findViewById(R.id.main_loop_mode_btn)
+        mLoopModeTv = findViewById(R.id.main_loop_mode_tv)
         mScaleCardViewBtn = findViewById(R.id.main_scale_card_view_btn)
         mScaleCardViewTv = findViewById(R.id.main_scale_card_view_tv)
     }
@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         mSetCurrentItemPosBtn.setOnClickListener(this)
         mRefreshDataBtn.setOnClickListener(this)
         mIndicatorOrientationBtn.setOnClickListener(this)
-        mGuidePageBtn.setOnClickListener(this)
+        mLoopModeBtn.setOnClickListener(this)
         mScaleCardViewBtn.setOnClickListener(this)
     }
 
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun start() {
         BannerCreator.setDefault(mFlyBanner, mLocalImages, mIsHorizontal,
-                mIsGuidePage, mIsScaleCardView, object : OnItemClickListener {
+                mIsLoopMode, mIsScaleCardView, object : OnItemClickListener {
             override fun onItemClick(position: Int) {
                 showToast("onItemClick: $position")
             }
@@ -180,8 +180,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setGuidePageStatus() {
-        val text = "是否为引导页：$mIsGuidePage"
-        mGuidePageTv.text = text
+        val text = "是否无限循环：$mIsLoopMode"
+        mLoopModeTv.text = text
     }
 
     private fun setScaleCardViewStatus() {
@@ -229,8 +229,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             start()
             return
         }
-        if (v === mGuidePageBtn) {
-            mIsGuidePage = !mIsGuidePage
+        if (v === mLoopModeBtn) {
+            mIsLoopMode = !mIsLoopMode
             start()
             return
         }
