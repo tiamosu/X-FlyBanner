@@ -4,7 +4,7 @@
 ### fly-banner
 [ ![Download](https://api.bintray.com/packages/weixia/maven/x-flybanner/images/download.svg) ](https://bintray.com/weixia/maven/x-flybanner/_latestVersion)
 ```groovy
-compile 'me.xia:x-flybanner:1.1.3'
+compile 'me.xia:x-flybanner:1.1.4'
 ```
 
 ### 效果图：
@@ -17,7 +17,7 @@ compile 'me.xia:x-flybanner:1.1.3'
     fun setDefault(flyBanner: FlyBanner<Any>,
                    datas: List<Any>,
                    isHorizontal: Boolean,
-                   isGuidePage: Boolean,
+                   isLoopMode: Boolean,
                    isScaleCardView: Boolean,
                    onItemClickListener: OnItemClickListener?,
                    onPageChangeListener: OnPageChangeListener?) {
@@ -26,13 +26,12 @@ compile 'me.xia:x-flybanner:1.1.3'
         val indicatorAlign = if (isHorizontal) PageIndicatorAlign.ALIGN_RIGHT_BOTTOM else PageIndicatorAlign.ALIGN_RIGHT_CENTER
         val indicatorOrientation = if (isHorizontal) PageIndicatorOrientation.HORIZONTAL else PageIndicatorOrientation.VERTICAL
         val orientation = if (isHorizontal) PageOrientation.HORIZONTAL else PageOrientation.VERTICAL
-        val pageType = if (isGuidePage) PageType.TYPE_GUIDE else PageType.TYPE_NORMAL
 
         flyBanner
                 //设置 banner 视图数据初始化
                 .setPages(HolderCreator(), datas)
-                //设置 banner 翻页类型，默认为普通循环翻页
-                .setPageType(pageType)
+                //设置 banner 是否无限循环播放
+                .setPageLoopMode(isLoopMode)
                 //设置 banner 翻页方向
                 .setPageOrientation(orientation)
                 //设置 viewPager 圆角
@@ -58,7 +57,7 @@ compile 'me.xia:x-flybanner:1.1.3'
                 //设置自动轮播时间
                 .start(3000)
                 //设置是否进行自动轮播
-                .setCanLoop(dataSize > 1 && !isGuidePage)
+                .setAutoPlay(dataSize > 1 && isLoopMode)
                 //设置点击事件监听
                 .setOnItemClickListener(onItemClickListener)
                 //设置页面切换事件监听
@@ -77,11 +76,11 @@ compile 'me.xia:x-flybanner:1.1.3'
         app:fb_indicatorOrientation="vertical"
         app:fb_indicatorShow="true"
         app:fb_indicatorSpacing="3dp"
+        app:fb_pageAutoPlay="false"
         app:fb_pageAutoTurningTime="3000"
-        app:fb_pageCanLoop="false"
+        app:fb_pageLoopMode="false"
         app:fb_pageOrientation="vertical"
         app:fb_pageRadius="20dp"
-        app:fb_pageType="guide"
         app:layout_constraintBottom_toBottomOf="@+id/main_blur_view"
         app:layout_constraintDimensionRatio="h,8:4"
         app:layout_constraintLeft_toLeftOf="parent"
