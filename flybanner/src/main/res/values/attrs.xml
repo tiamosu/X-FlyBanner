@@ -10,7 +10,7 @@
             <enum name="horizontal" value="0"/>
             <enum name="vertical" value="1"/>
         </attr>
-        <attr name="fb_pageCanLoop" format="boolean"/>
+        <attr name="fb_pageAutoPlay" format="boolean"/>
         <attr name="fb_pageAutoTurningTime" format="integer"/>
         <attr name="fb_pageRadius" format="dimension"/>
         <attr name="fb_pageRadiusTopLeft" format="dimension"/>

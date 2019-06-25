@@ -41,7 +41,9 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     //banner 翻页方向，默认为横向
     private var mPageOrientation: Int = PageOrientation.HORIZONTAL
     //banner 是否自动翻页
-    private var mCanLoop: Boolean = true
+//    private var mCanLoop: Boolean = true
+    //banner 是否自动播放
+    private var mIsAutoPlay: Boolean = true
     //banner 自动翻页间隔时间
     private var mAutoTurningTime: Long = 3000L
     //banner 圆角设置
@@ -106,7 +108,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.FlyBanner)
         mPageType = typedArray.getInt(R.styleable.FlyBanner_fb_pageType, PageType.TYPE_NORMAL)
         mPageOrientation = typedArray.getInt(R.styleable.FlyBanner_fb_pageOrientation, PageOrientation.HORIZONTAL)
-        mCanLoop = typedArray.getBoolean(R.styleable.FlyBanner_fb_pageCanLoop, true)
+        mIsAutoPlay = typedArray.getBoolean(R.styleable.FlyBanner_fb_pageAutoPlay, true)
         mAutoTurningTime = typedArray.getInteger(R.styleable.FlyBanner_fb_pageAutoTurningTime, 3000).toLong()
         mPageRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadius, -1)
         mPageTopLeftRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusTopLeft, 0)
@@ -465,9 +467,9 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     /**
      * 设置是否自动翻页
      */
-    fun setCanLoop(canLoop: Boolean): FlyBanner<*> {
-        this.mCanLoop = canLoop
-        if (!canLoop) {
+    fun setAutoPlay(isAutoPlay: Boolean): FlyBanner<*> {
+        this.mIsAutoPlay = isAutoPlay
+        if (!isAutoPlay) {
             stopTurning()
             return this
         }
@@ -515,8 +517,8 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     /**
      * 是否开启了自动翻页
      */
-    fun isCanLoop(): Boolean {
-        return mCanLoop
+    fun isAutoPlay(): Boolean {
+        return mIsAutoPlay
     }
 
     /***
@@ -528,7 +530,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
         this.mAutoTurningTime = autoTurningTime
 
         stopTurning()
-        if (autoTurningTime < 0 || !mCanLoop || mDataSize <= 1) {
+        if (autoTurningTime < 0 || !mIsAutoPlay || mDataSize <= 1) {
             return
         }
         //设置可以翻页并开启翻页

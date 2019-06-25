@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setLoopStatus() {
-        val text = "是否自动翻页：" + mFlyBanner.isCanLoop()
+        val text = "是否自动翻页：" + mFlyBanner.isAutoPlay()
         mLoopStatusTv.text = text
     }
 
@@ -206,8 +206,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View) {
         if (v === mLoopControlBtn) {
-            val isCanLoop = mFlyBanner.isCanLoop()
-            mFlyBanner.setCanLoop(!isCanLoop)
+            val isCanLoop = mFlyBanner.isAutoPlay()
+            mFlyBanner.setAutoPlay(!isCanLoop)
             setLoopStatus()
             return
         }

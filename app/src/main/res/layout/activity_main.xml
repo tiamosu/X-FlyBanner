@@ -29,7 +29,7 @@
         app:fb_indicatorShow="true"
         app:fb_indicatorSpacing="3dp"
         app:fb_pageAutoTurningTime="3000"
-        app:fb_pageCanLoop="false"
+        app:fb_pageAutoPlay="false"
         app:fb_pageOrientation="vertical"
         app:fb_pageRadius="20dp"
         app:fb_pageType="guide"

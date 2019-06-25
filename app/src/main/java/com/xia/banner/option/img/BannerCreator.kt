@@ -63,7 +63,7 @@ object BannerCreator {
                 //设置自动轮播时间
                 .start(3000)
                 //设置是否进行自动轮播
-                .setCanLoop(dataSize > 1 && !isGuidePage)
+                .setAutoPlay(dataSize > 1 && !isGuidePage)
                 //设置点击事件监听
                 .setOnItemClickListener(onItemClickListener)
                 //设置页面切换事件监听
