@@ -1,6 +1,5 @@
 package com.xia.flybanner.helper
 
-import android.annotation.TargetApi
 import android.os.Build
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -75,18 +74,23 @@ class FBLoopHelper {
      */
     private fun initWidth(loopViewPager: FBLoopViewPager) {
         val vto = loopViewPager.viewTreeObserver
-        if (vto.isAlive) {
-            vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                override fun onGlobalLayout() {
-                    val currentVto = loopViewPager.viewTreeObserver
-                    if (currentVto.isAlive) {
+        if (!vto.isAlive) {
+            return
+        }
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val currentVto = loopViewPager.viewTreeObserver
+                if (currentVto.isAlive) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        @Suppress("DEPRECATION")
+                        currentVto.removeGlobalOnLayoutListener(this)
+                    } else {
                         currentVto.removeOnGlobalLayoutListener(this)
                     }
-                    setCurrentItem(mFirstItemPos)
                 }
-            })
-        }
+                setCurrentItem(mFirstItemPos)
+            }
+        })
     }
 
     fun setCurrentItem(item: Int) {

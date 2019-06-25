@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
  * @author weixia
  * @date 2019/4/16.
  */
-class RecyclerViewCornerRadius(recyclerView: RecyclerView) : RecyclerView.ItemDecoration() {
+class RecyclerViewCornerRadius(private val recyclerView: RecyclerView) : RecyclerView.ItemDecoration() {
     private var mRectF: RectF? = null
     private var mPath: Path? = null
 
@@ -26,27 +26,37 @@ class RecyclerViewCornerRadius(recyclerView: RecyclerView) : RecyclerView.ItemDe
     var mBottomRightRadius = 0
 
     init {
+        init()
+    }
+
+    private fun init() {
         val vto = recyclerView.viewTreeObserver
-        if (vto.isAlive) {
-            vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                override fun onGlobalLayout() {
-                    val currentVto = recyclerView.viewTreeObserver
-                    if (currentVto.isAlive) {
+        if (!vto.isAlive) {
+            return
+        }
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+            override fun onGlobalLayout() {
+                val currentVto = recyclerView.viewTreeObserver
+                if (currentVto.isAlive) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        @Suppress("DEPRECATION")
+                        currentVto.removeGlobalOnLayoutListener(this)
+                    } else {
                         currentVto.removeOnGlobalLayoutListener(this)
                     }
-                    mRectF = RectF(0f, 0f, recyclerView.measuredWidth.toFloat(), recyclerView.measuredHeight.toFloat())
-                    mPath = Path()
-                    mPath!!.reset()
-                    mPath!!.addRoundRect(mRectF, floatArrayOf(
-                            mTopLeftRadius.toFloat(), mTopLeftRadius.toFloat(),
-                            mTopRightRadius.toFloat(), mTopRightRadius.toFloat(),
-                            mBottomLeftRadius.toFloat(), mBottomLeftRadius.toFloat(),
-                            mBottomRightRadius.toFloat(), mBottomRightRadius.toFloat()),
-                            Path.Direction.CCW)
                 }
-            })
-        }
+                mRectF = RectF(0f, 0f, recyclerView.measuredWidth.toFloat(), recyclerView.measuredHeight.toFloat())
+                mPath = Path()
+                mPath!!.reset()
+                mPath!!.addRoundRect(mRectF, floatArrayOf(
+                        mTopLeftRadius.toFloat(), mTopLeftRadius.toFloat(),
+                        mTopRightRadius.toFloat(), mTopRightRadius.toFloat(),
+                        mBottomLeftRadius.toFloat(), mBottomLeftRadius.toFloat(),
+                        mBottomRightRadius.toFloat(), mBottomRightRadius.toFloat()),
+                        Path.Direction.CCW)
+            }
+        })
     }
 
     fun setCornerRadius(radius: Int) {
