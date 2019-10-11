@@ -4,7 +4,7 @@
 ### fly-banner
 [ ![Download](https://api.bintray.com/packages/weixia/maven/x-flybanner/images/download.svg) ](https://bintray.com/weixia/maven/x-flybanner/_latestVersion)
 ```groovy
-compile 'me.xia:x-flybanner:1.1.4'
+implementation 'me.xia:x-flybanner:1.1.4'
 ```
 
 ### 效果图：
