@@ -13,17 +13,20 @@ import androidx.recyclerview.widget.RecyclerView
  * @date 2019/4/16.
  */
 class RecyclerViewCornerRadius(private val recyclerView: RecyclerView) : RecyclerView.ItemDecoration() {
-    private var mRectF: RectF? = null
-    private var mPath: Path? = null
+    private var rectF: RectF? = null
+    private var path: Path? = null
 
     @JvmField
-    var mTopLeftRadius = 0
+    var topLeftRadius = 0
+
     @JvmField
-    var mTopRightRadius = 0
+    var topRightRadius = 0
+
     @JvmField
-    var mBottomLeftRadius = 0
+    var bottomLeftRadius = 0
+
     @JvmField
-    var mBottomRightRadius = 0
+    var bottomRightRadius = 0
 
     init {
         init()
@@ -46,38 +49,38 @@ class RecyclerViewCornerRadius(private val recyclerView: RecyclerView) : Recycle
                         currentVto.removeOnGlobalLayoutListener(this)
                     }
                 }
-                mRectF = RectF(0f, 0f, recyclerView.measuredWidth.toFloat(), recyclerView.measuredHeight.toFloat())
-                mPath = Path()
-                mPath!!.reset()
-                mPath!!.addRoundRect(mRectF, floatArrayOf(
-                        mTopLeftRadius.toFloat(), mTopLeftRadius.toFloat(),
-                        mTopRightRadius.toFloat(), mTopRightRadius.toFloat(),
-                        mBottomLeftRadius.toFloat(), mBottomLeftRadius.toFloat(),
-                        mBottomRightRadius.toFloat(), mBottomRightRadius.toFloat()),
+                rectF = RectF(0f, 0f, recyclerView.measuredWidth.toFloat(), recyclerView.measuredHeight.toFloat())
+                path = Path()
+                path!!.reset()
+                path!!.addRoundRect(rectF!!, floatArrayOf(
+                        topLeftRadius.toFloat(), topLeftRadius.toFloat(),
+                        topRightRadius.toFloat(), topRightRadius.toFloat(),
+                        bottomLeftRadius.toFloat(), bottomLeftRadius.toFloat(),
+                        bottomRightRadius.toFloat(), bottomRightRadius.toFloat()),
                         Path.Direction.CCW)
             }
         })
     }
 
     fun setCornerRadius(radius: Int) {
-        this.mTopLeftRadius = radius
-        this.mTopRightRadius = radius
-        this.mBottomLeftRadius = radius
-        this.mBottomRightRadius = radius
+        this.topLeftRadius = radius
+        this.topRightRadius = radius
+        this.bottomLeftRadius = radius
+        this.bottomRightRadius = radius
     }
 
     fun setCornerRadius(topLeftRadius: Int, topRightRadius: Int, bottomLeftRadius: Int, bottomRightRadius: Int) {
-        this.mTopLeftRadius = topLeftRadius
-        this.mTopRightRadius = topRightRadius
-        this.mBottomLeftRadius = bottomLeftRadius
-        this.mBottomRightRadius = bottomRightRadius
+        this.topLeftRadius = topLeftRadius
+        this.topRightRadius = topRightRadius
+        this.bottomLeftRadius = bottomLeftRadius
+        this.bottomRightRadius = bottomRightRadius
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        mRectF?.let {
+        rectF?.let {
             c.clipRect(it)
         }
-        mPath?.let {
+        path?.let {
             c.clipPath(it)
         }
     }

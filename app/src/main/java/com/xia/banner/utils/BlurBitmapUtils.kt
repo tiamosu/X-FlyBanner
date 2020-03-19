@@ -17,6 +17,7 @@ import android.widget.ImageView
  * @date 2019/4/19.
  */
 object BlurBitmapUtils {
+    
     /**
      * 建议模糊度(在0.0到25.0之间)
      */

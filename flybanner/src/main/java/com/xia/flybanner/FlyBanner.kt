@@ -36,129 +36,144 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     : RelativeLayout(context, attrs) {
 
     //banner 翻页方向，默认为横向
-    private var mPageOrientation: Int = PageOrientation.HORIZONTAL
+    private var pageOrientation = PageOrientation.HORIZONTAL
+
     //banner 是否无限循环模式
-    private var mIsLoopMode: Boolean = true
+    private var isLoopMode = true
+
     //banner 是否自动播放
-    private var mIsAutoPlay: Boolean = true
+    private var isAutoPlay = true
+
     //banner 自动翻页间隔时间
-    private var mAutoTurningTime: Long = 3000L
+    private var autoTurningTime = 3000L
+
     //banner 圆角设置
-    private var mPageRadius: Int = -1
-    private var mPageTopLeftRadius: Int = 0
-    private var mPageTopRightRadius: Int = 0
-    private var mPageBottomLeftRadius: Int = 0
-    private var mPageBottomRightRadius: Int = 0
+    private var pageRadius = -1
+    private var pageTopLeftRadius = 0
+    private var pageTopRightRadius = 0
+    private var pageBottomLeftRadius = 0
+    private var pageBottomRightRadius = 0
 
     //是否显示指示器，默认显示
-    private var mShowIndicator: Boolean = true
+    private var showIndicator = true
+
     //设置指示器方向，默认为横向
-    private var mIndicatorOrientation: Int = PageIndicatorOrientation.HORIZONTAL
+    private var indicatorOrientation = PageIndicatorOrientation.HORIZONTAL
+
     //设置指示器的位置，（默认为右下角）
-    private var mIndicatorAlign: Int = PageIndicatorAlign.ALIGN_RIGHT_BOTTOM
+    private var indicatorAlign = PageIndicatorAlign.ALIGN_RIGHT_BOTTOM
+
     //设置指示器偏移
-    private var mIndicatorMargin: Int = -1
-    private var mIndicatorLeftMargin: Int = 30
-    private var mIndicatorTopMargin: Int = 30
-    private var mIndicatorRightMargin: Int = 30
-    private var mIndicatorBottomMargin: Int = 30
+    private var indicatorMargin = -1
+    private var indicatorLeftMargin = 30
+    private var indicatorTopMargin = 30
+    private var indicatorRightMargin = 30
+    private var indicatorBottomMargin = 30
+
     //设置指示器间距
-    private var mIndicatorSpacing: Int = 5
+    private var indicatorSpacing = 5
 
     //指示器视图集
-    private val mPointViews = ArrayList<ImageView>()
+    private val pointViews = ArrayList<ImageView>()
+
     //数据集
-    private var mDatas: List<T> = ArrayList()
+    private var datas: List<T> = ArrayList()
+
     //视图构造
-    private var mHolderCreator: FBViewHolderCreator? = null
+    private var holderCreator: FBViewHolderCreator? = null
+
     //数据总数
-    private var mDataSize: Int = 0
+    private var dataSize = 0
+
     //正在翻页
-    private var mTurning: Boolean = false
+    private var turning = false
+
     //是否能够手动翻页
-    private var mCanTurn: Boolean = false
+    private var canTurn = false
 
     //banner 是否使用卡片式缩放视图
-    private var mIsScaleCardView: Boolean = false
+    private var isScaleCardView = false
+
     /**
      * 次要方块的露出距离的权重
      * 此权重为相对RecyclerView而言，并且分别针对左右两侧。
-     * 即：当 [mSecondaryExposedWeight] = 0.1F,那么主Item的宽度为RecyclerView.width * 0.8F
+     * 即：当 [secondaryExposedWeight] = 0.1F,那么主Item的宽度为RecyclerView.width * 0.8F
      */
-    private var mSecondaryExposedWeight: Float = 0f
+    private var secondaryExposedWeight = 0f
+
     /**
      * 次item缩放量
      * 表示当Item位于次Item位置时，显示尺寸相对于完整尺寸的量
      */
-    private var mScaleGap: Float = 0f
+    private var scaleGap = 0f
 
-    private val mLoopHelper = FBLoopHelper()
-    private val mAdSwitchTask = AdSwitchTask(this)
-    private val mPageChangeListener = FBPageChangeListener()
-    private var mPageAdapter: FBPageAdapter<*>? = null
-    private lateinit var mLoopViewPager: FBLoopViewPager
-    private lateinit var mIndicatorView: LinearLayout
+    private val loopHelper by lazy { FBLoopHelper() }
+    private val adSwitchTask by lazy { AdSwitchTask(this) }
+    private val pageChangeListener by lazy { FBPageChangeListener() }
+    private var pageAdapter: FBPageAdapter<*>? = null
+    private lateinit var loopViewPager: FBLoopViewPager
+    private lateinit var indicatorView: LinearLayout
 
     init {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.FlyBanner)
-        mPageOrientation = typedArray.getInt(R.styleable.FlyBanner_fb_pageOrientation, PageOrientation.HORIZONTAL)
-        mIsLoopMode = typedArray.getBoolean(R.styleable.FlyBanner_fb_pageLoopMode, true)
-        mIsAutoPlay = typedArray.getBoolean(R.styleable.FlyBanner_fb_pageAutoPlay, true)
-        mAutoTurningTime = typedArray.getInteger(R.styleable.FlyBanner_fb_pageAutoTurningTime, 3000).toLong()
-        mPageRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadius, -1)
-        mPageTopLeftRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusTopLeft, 0)
-        mPageTopRightRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusTopRight, 0)
-        mPageBottomLeftRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusBottomLeft, 0)
-        mPageBottomRightRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusBottomRight, 0)
+        pageOrientation = typedArray.getInt(R.styleable.FlyBanner_fb_pageOrientation, PageOrientation.HORIZONTAL)
+        isLoopMode = typedArray.getBoolean(R.styleable.FlyBanner_fb_pageLoopMode, true)
+        isAutoPlay = typedArray.getBoolean(R.styleable.FlyBanner_fb_pageAutoPlay, true)
+        autoTurningTime = typedArray.getInteger(R.styleable.FlyBanner_fb_pageAutoTurningTime, 3000).toLong()
+        pageRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadius, -1)
+        pageTopLeftRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusTopLeft, 0)
+        pageTopRightRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusTopRight, 0)
+        pageBottomLeftRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusBottomLeft, 0)
+        pageBottomRightRadius = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_pageRadiusBottomRight, 0)
 
-        mShowIndicator = typedArray.getBoolean(R.styleable.FlyBanner_fb_indicatorShow, true)
-        mIndicatorOrientation = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorOrientation, PageIndicatorOrientation.HORIZONTAL)
-        mIndicatorAlign = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorAlign, PageIndicatorAlign.ALIGN_RIGHT_BOTTOM)
-        mIndicatorMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMargin, -1)
-        mIndicatorLeftMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginLeft, SizeUtils.dp2px(15f))
-        mIndicatorRightMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginRight, SizeUtils.dp2px(15f))
-        mIndicatorTopMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginTop, SizeUtils.dp2px(15f))
-        mIndicatorBottomMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginBottom, SizeUtils.dp2px(15f))
-        mIndicatorSpacing = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorSpacing, SizeUtils.dp2px(3f))
+        showIndicator = typedArray.getBoolean(R.styleable.FlyBanner_fb_indicatorShow, true)
+        indicatorOrientation = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorOrientation, PageIndicatorOrientation.HORIZONTAL)
+        indicatorAlign = typedArray.getInt(R.styleable.FlyBanner_fb_indicatorAlign, PageIndicatorAlign.ALIGN_RIGHT_BOTTOM)
+        indicatorMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMargin, -1)
+        indicatorLeftMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginLeft, SizeUtils.dp2px(15f))
+        indicatorRightMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginRight, SizeUtils.dp2px(15f))
+        indicatorTopMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginTop, SizeUtils.dp2px(15f))
+        indicatorBottomMargin = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorMarginBottom, SizeUtils.dp2px(15f))
+        indicatorSpacing = typedArray.getDimensionPixelOffset(R.styleable.FlyBanner_fb_indicatorSpacing, SizeUtils.dp2px(3f))
         typedArray.recycle()
 
         init(context)
     }
 
     private fun init(context: Context) {
-        if (mPageRadius != -1) {
-            mPageBottomRightRadius = mPageRadius
-            mPageBottomLeftRadius = mPageBottomRightRadius
-            mPageTopRightRadius = mPageBottomLeftRadius
-            mPageTopLeftRadius = mPageTopRightRadius
+        if (pageRadius != -1) {
+            pageBottomRightRadius = pageRadius
+            pageBottomLeftRadius = pageBottomRightRadius
+            pageTopRightRadius = pageBottomLeftRadius
+            pageTopLeftRadius = pageTopRightRadius
         }
-        if (mIndicatorMargin != -1) {
-            mIndicatorBottomMargin = mIndicatorMargin
-            mIndicatorTopMargin = mIndicatorBottomMargin
-            mIndicatorRightMargin = mIndicatorTopMargin
-            mIndicatorLeftMargin = mIndicatorRightMargin
+        if (indicatorMargin != -1) {
+            indicatorBottomMargin = indicatorMargin
+            indicatorTopMargin = indicatorBottomMargin
+            indicatorRightMargin = indicatorTopMargin
+            indicatorLeftMargin = indicatorRightMargin
         }
 
         val view = LayoutInflater.from(context)
                 .inflate(R.layout.fb_include_viewpager, this, true)
-        mLoopViewPager = view.findViewById(R.id.fb_loop_vp)
-        mIndicatorView = view.findViewById(R.id.fb_indicator_ll)
+        loopViewPager = view.findViewById(R.id.fb_loop_vp)
+        indicatorView = view.findViewById(R.id.fb_indicator_ll)
     }
 
     /**
      * 设置视图数据初始化，必须第一步调用
      */
     fun setPages(holderCreator: FBViewHolderCreator, datas: List<T>): PageBuilder {
-        this.mDatas = datas
-        this.mDataSize = datas.size
-        this.mHolderCreator = holderCreator
+        this.datas = datas
+        this.dataSize = datas.size
+        this.holderCreator = holderCreator
         return PageBuilder(this)
     }
 
     inner class PageBuilder(private val mFlyBanner: FlyBanner<*>) {
 
         fun setPageLoopMode(isLoopMode: Boolean): PageBuilder {
-            this.mFlyBanner.mIsLoopMode = isLoopMode
+            this.mFlyBanner.isLoopMode = isLoopMode
             return this
         }
 
@@ -170,7 +185,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
          * [PageOrientation.VERTICAL]: 竖向
          */
         fun setPageOrientation(@PageOrientation.Orientation orientation: Int): PageBuilder {
-            this.mFlyBanner.mPageOrientation = orientation
+            this.mFlyBanner.pageOrientation = orientation
             return this
         }
 
@@ -187,10 +202,10 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
          */
         fun setRadius(topLeftRadius: Int, topRightRadius: Int,
                       bottomLeftRadius: Int, bottomRightRadius: Int): PageBuilder {
-            this.mFlyBanner.mPageTopLeftRadius = SizeUtils.dp2px(topLeftRadius.toFloat())
-            this.mFlyBanner.mPageTopRightRadius = SizeUtils.dp2px(topRightRadius.toFloat())
-            this.mFlyBanner.mPageBottomLeftRadius = SizeUtils.dp2px(bottomLeftRadius.toFloat())
-            this.mFlyBanner.mPageBottomRightRadius = SizeUtils.dp2px(bottomRightRadius.toFloat())
+            this.mFlyBanner.pageTopLeftRadius = SizeUtils.dp2px(topLeftRadius.toFloat())
+            this.mFlyBanner.pageTopRightRadius = SizeUtils.dp2px(topRightRadius.toFloat())
+            this.mFlyBanner.pageBottomLeftRadius = SizeUtils.dp2px(bottomLeftRadius.toFloat())
+            this.mFlyBanner.pageBottomRightRadius = SizeUtils.dp2px(bottomRightRadius.toFloat())
             return this
         }
 
@@ -200,12 +215,12 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
         fun setScaleCardView(isScaleCardView: Boolean,
                              secondaryExposedWeight: Float?,
                              scaleGap: Float?): PageBuilder {
-            this.mFlyBanner.mIsScaleCardView = isScaleCardView
+            this.mFlyBanner.isScaleCardView = isScaleCardView
             if (secondaryExposedWeight != null) {
-                this.mFlyBanner.mSecondaryExposedWeight = secondaryExposedWeight
+                this.mFlyBanner.secondaryExposedWeight = secondaryExposedWeight
             }
             if (scaleGap != null) {
-                this.mFlyBanner.mScaleGap = scaleGap
+                this.mFlyBanner.scaleGap = scaleGap
             }
             return this
         }
@@ -218,43 +233,43 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
         }
 
         private fun setPageOrientation() {
-            val orientation = if (mPageOrientation == PageOrientation.HORIZONTAL)
+            val orientation = if (pageOrientation == PageOrientation.HORIZONTAL)
                 RecyclerView.HORIZONTAL
             else
                 RecyclerView.VERTICAL
             val layoutManager: RecyclerView.LayoutManager
-            if (mIsScaleCardView) {
+            if (isScaleCardView) {
                 layoutManager = FBScaleLayoutManager(context, orientation)
-                layoutManager.mSecondaryExposedWeight = mSecondaryExposedWeight
-                layoutManager.mScaleGap = mScaleGap
+                layoutManager.secondaryExposedWeight = secondaryExposedWeight
+                layoutManager.scaleGap = scaleGap
             } else {
                 layoutManager = LinearLayoutManager(context, orientation, false)
             }
-            mLoopViewPager.layoutManager = layoutManager
+            loopViewPager.layoutManager = layoutManager
         }
 
         private fun setPageRadius() {
-            val cornerRadius = RecyclerViewCornerRadius(mLoopViewPager)
-            if (mPageTopLeftRadius >= 0) {
-                cornerRadius.mTopLeftRadius = mPageTopLeftRadius
+            val cornerRadius = RecyclerViewCornerRadius(loopViewPager)
+            if (pageTopLeftRadius >= 0) {
+                cornerRadius.topLeftRadius = pageTopLeftRadius
             }
-            if (mPageTopRightRadius >= 0) {
-                cornerRadius.mTopRightRadius = mPageTopRightRadius
+            if (pageTopRightRadius >= 0) {
+                cornerRadius.topRightRadius = pageTopRightRadius
             }
-            if (mPageBottomLeftRadius >= 0) {
-                cornerRadius.mBottomLeftRadius = mPageBottomLeftRadius
+            if (pageBottomLeftRadius >= 0) {
+                cornerRadius.bottomLeftRadius = pageBottomLeftRadius
             }
-            if (mPageBottomRightRadius >= 0) {
-                cornerRadius.mBottomRightRadius = mPageBottomRightRadius
+            if (pageBottomRightRadius >= 0) {
+                cornerRadius.bottomRightRadius = pageBottomRightRadius
             }
-            mLoopViewPager.addItemDecoration(cornerRadius)
+            loopViewPager.addItemDecoration(cornerRadius)
         }
 
         private fun setPageAdapter() {
-            mPageAdapter = FBPageAdapter(mHolderCreator!!, mDatas, mIsLoopMode)
-            mLoopViewPager.adapter = mPageAdapter
-            mLoopHelper.setFirstItemPos(if (mIsLoopMode) mDataSize else 0)
-            mLoopHelper.attachToRecyclerView(mLoopViewPager, mPageAdapter!!)
+            pageAdapter = FBPageAdapter(holderCreator!!, datas, isLoopMode)
+            loopViewPager.adapter = pageAdapter
+            loopHelper.setFirstItemPos(if (isLoopMode) dataSize else 0)
+            loopHelper.attachToRecyclerView(loopViewPager, pageAdapter!!)
         }
     }
 
@@ -284,7 +299,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
          * [PageIndicatorAlign.ALIGN_RIGHT_BOTTOM]: 右下角
          */
         fun setIndicatorAlign(@PageIndicatorAlign.IndicatorAlign align: Int): IndicatorBuilder {
-            this.mFlyBanner.mIndicatorAlign = align
+            this.mFlyBanner.indicatorAlign = align
             return this
         }
 
@@ -297,7 +312,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
          */
         fun setIndicatorOrientation(
                 @PageIndicatorOrientation.IndicatorOrientation orientation: Int): IndicatorBuilder {
-            this.mFlyBanner.mIndicatorOrientation = orientation
+            this.mFlyBanner.indicatorOrientation = orientation
             return this
         }
 
@@ -314,10 +329,10 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
          */
         fun setIndicatorMargin(leftMargin: Int, topMargin: Int,
                                rightMargin: Int, bottomMargin: Int): IndicatorBuilder {
-            this.mFlyBanner.mIndicatorLeftMargin = SizeUtils.dp2px(leftMargin.toFloat())
-            this.mFlyBanner.mIndicatorTopMargin = SizeUtils.dp2px(topMargin.toFloat())
-            this.mFlyBanner.mIndicatorRightMargin = SizeUtils.dp2px(rightMargin.toFloat())
-            this.mFlyBanner.mIndicatorBottomMargin = SizeUtils.dp2px(bottomMargin.toFloat())
+            this.mFlyBanner.indicatorLeftMargin = SizeUtils.dp2px(leftMargin.toFloat())
+            this.mFlyBanner.indicatorTopMargin = SizeUtils.dp2px(topMargin.toFloat())
+            this.mFlyBanner.indicatorRightMargin = SizeUtils.dp2px(rightMargin.toFloat())
+            this.mFlyBanner.indicatorBottomMargin = SizeUtils.dp2px(bottomMargin.toFloat())
             return this
         }
 
@@ -325,7 +340,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
          * 设置指示器间距
          */
         fun setIndicatorSpacing(indicatorSpacing: Int): IndicatorBuilder {
-            this.mFlyBanner.mIndicatorSpacing = SizeUtils.dp2px(indicatorSpacing.toFloat())
+            this.mFlyBanner.indicatorSpacing = SizeUtils.dp2px(indicatorSpacing.toFloat())
             return this
         }
 
@@ -333,7 +348,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
          * 设置指示器是否显示
          */
         fun setIndicatorVisible(indicatorVisible: Boolean): IndicatorBuilder {
-            this.mFlyBanner.mShowIndicator = indicatorVisible
+            this.mFlyBanner.showIndicator = indicatorVisible
             return this
         }
 
@@ -341,55 +356,55 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
          * 指示器配置
          */
         fun indicatorBuild(): FlyBuilder {
-            val visible = if (mShowIndicator) View.VISIBLE else View.GONE
-            mIndicatorView.visibility = visible
+            val visible = if (showIndicator) View.VISIBLE else View.GONE
+            indicatorView.visibility = visible
 
             setPageIndicator()
             return FlyBuilder(mFlyBanner)
         }
 
         private fun setPageIndicator() {
-            mPointViews.clear()
-            mIndicatorView.removeAllViews()
-            if (mDatas.isEmpty() || mIndicatorId.size < 2
-                    || mIndicatorView.visibility != View.VISIBLE) {
+            pointViews.clear()
+            indicatorView.removeAllViews()
+            if (datas.isEmpty() || mIndicatorId.size < 2
+                    || indicatorView.visibility != View.VISIBLE) {
                 return
             }
             setPageIndicatorOrientation()
             setPageIndicatorAlign()
             setPageIndicatorMargin()
 
-            for (count in 0 until mDataSize) {
+            for (count in 0 until dataSize) {
                 // 翻页指示的点
                 val pointView = ImageView(context)
-                if (mIndicatorOrientation == PageIndicatorOrientation.HORIZONTAL) {
-                    pointView.setPadding(mIndicatorSpacing, 0, mIndicatorSpacing, 0)
+                if (indicatorOrientation == PageIndicatorOrientation.HORIZONTAL) {
+                    pointView.setPadding(indicatorSpacing, 0, indicatorSpacing, 0)
                 } else {
-                    pointView.setPadding(0, mIndicatorSpacing, 0, mIndicatorSpacing)
+                    pointView.setPadding(0, indicatorSpacing, 0, indicatorSpacing)
                 }
-                if (mLoopHelper.getFirstItemPos() % mDataSize == count) {
+                if (loopHelper.getFirstItemPos() % dataSize == count) {
                     pointView.setImageResource(mIndicatorId[1])
                 } else {
                     pointView.setImageResource(mIndicatorId[0])
                 }
-                mPointViews.add(pointView)
-                mIndicatorView.addView(pointView)
+                pointViews.add(pointView)
+                indicatorView.addView(pointView)
             }
 
-            mPageChangeListener.setPageIndicator(mPointViews, mIndicatorId)
-            mLoopHelper.setOnPageChangeListener(mPageChangeListener)
+            pageChangeListener.setPageIndicator(pointViews, mIndicatorId)
+            loopHelper.setOnPageChangeListener(pageChangeListener)
         }
 
         private fun setPageIndicatorOrientation() {
-            if (mIndicatorOrientation == PageIndicatorOrientation.HORIZONTAL) {
-                mIndicatorView.orientation = LinearLayout.HORIZONTAL
+            if (indicatorOrientation == PageIndicatorOrientation.HORIZONTAL) {
+                indicatorView.orientation = LinearLayout.HORIZONTAL
             } else {
-                mIndicatorView.orientation = LinearLayout.VERTICAL
+                indicatorView.orientation = LinearLayout.VERTICAL
             }
         }
 
         private fun setPageIndicatorAlign() {
-            val layoutParams = mIndicatorView.layoutParams as LayoutParams
+            val layoutParams = indicatorView.layoutParams as LayoutParams
             val verbs = intArrayOf(
                     ALIGN_PARENT_TOP, CENTER_VERTICAL, ALIGN_PARENT_BOTTOM,
                     CENTER_HORIZONTAL, CENTER_IN_PARENT, ALIGN_PARENT_RIGHT)
@@ -397,7 +412,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
                 layoutParams.addRule(verb, 0)
             }
 
-            when (mIndicatorAlign) {
+            when (indicatorAlign) {
                 PageIndicatorAlign.ALIGN_LEFT_TOP -> layoutParams.addRule(ALIGN_PARENT_TOP, TRUE)
                 PageIndicatorAlign.ALIGN_LEFT_CENTER -> layoutParams.addRule(CENTER_VERTICAL, TRUE)
                 PageIndicatorAlign.ALIGN_LEFT_BOTTOM -> layoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE)
@@ -425,24 +440,24 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
                 else -> {
                 }
             }
-            mIndicatorView.layoutParams = layoutParams
+            indicatorView.layoutParams = layoutParams
         }
 
         private fun setPageIndicatorMargin() {
-            val layoutParams = mIndicatorView.layoutParams as MarginLayoutParams
-            if (mIndicatorLeftMargin >= 0) {
-                layoutParams.leftMargin = mIndicatorLeftMargin
+            val layoutParams = indicatorView.layoutParams as MarginLayoutParams
+            if (indicatorLeftMargin >= 0) {
+                layoutParams.leftMargin = indicatorLeftMargin
             }
-            if (mIndicatorTopMargin >= 0) {
-                layoutParams.topMargin = mIndicatorTopMargin
+            if (indicatorTopMargin >= 0) {
+                layoutParams.topMargin = indicatorTopMargin
             }
-            if (mIndicatorRightMargin >= 0) {
-                layoutParams.rightMargin = mIndicatorRightMargin
+            if (indicatorRightMargin >= 0) {
+                layoutParams.rightMargin = indicatorRightMargin
             }
-            if (mIndicatorBottomMargin >= 0) {
-                layoutParams.bottomMargin = mIndicatorBottomMargin
+            if (indicatorBottomMargin >= 0) {
+                layoutParams.bottomMargin = indicatorBottomMargin
             }
-            mIndicatorView.layoutParams = layoutParams
+            indicatorView.layoutParams = layoutParams
         }
     }
 
@@ -461,12 +476,12 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
      * 设置是否自动翻页
      */
     fun setAutoPlay(isAutoPlay: Boolean): FlyBanner<*> {
-        this.mIsAutoPlay = isAutoPlay
+        this.isAutoPlay = isAutoPlay
         if (!isAutoPlay) {
             stopTurning()
             return this
         }
-        if (mTurning) {
+        if (turning) {
             return this
         }
         startTurning()
@@ -477,7 +492,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
      * 设置翻页监听器
      */
     fun setOnPageChangeListener(onPageChangeListener: OnPageChangeListener?): FlyBanner<*> {
-        mPageChangeListener.setOnPageChangeListener(onPageChangeListener)
+        pageChangeListener.setOnPageChangeListener(onPageChangeListener)
         return this
     }
 
@@ -485,7 +500,7 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
      * 设置 item 点击事件监听
      */
     fun setOnItemClickListener(onItemClickListener: OnItemClickListener?): FlyBanner<*> {
-        mPageAdapter?.setOnItemClickListener(onItemClickListener)
+        pageAdapter?.setOnItemClickListener(onItemClickListener)
         return this
     }
 
@@ -494,8 +509,8 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
      */
     fun setCurrentItem(position: Int): FlyBanner<*> {
         stopTurning()
-        val page = if (mIsLoopMode) mDataSize + position else position
-        mLoopHelper.setCurrentItem(page, true)
+        val page = if (isLoopMode) dataSize + position else position
+        loopHelper.setCurrentItem(page, true)
         startTurning()
         return this
     }
@@ -504,14 +519,14 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
      * 获取当前页对应的 position
      */
     fun getCurrentItem(): Int {
-        return mLoopHelper.getRealCurrentItem()
+        return loopHelper.getRealCurrentItem()
     }
 
     /**
      * 是否开启了自动翻页
      */
     fun isAutoPlay(): Boolean {
-        return mIsAutoPlay
+        return isAutoPlay
     }
 
     /***
@@ -519,39 +534,39 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
      * @param autoTurningTime 自动翻页时间
      */
     @JvmOverloads
-    fun startTurning(autoTurningTime: Long = mAutoTurningTime) {
-        this.mAutoTurningTime = autoTurningTime
+    fun startTurning(autoTurningTime: Long = this.autoTurningTime) {
+        this.autoTurningTime = autoTurningTime
 
         stopTurning()
-        if (autoTurningTime < 0 || !mIsAutoPlay || mDataSize <= 1) {
+        if (autoTurningTime < 0 || !isAutoPlay || dataSize <= 1) {
             return
         }
         //设置可以翻页并开启翻页
-        mCanTurn = true
-        mTurning = true
-        postDelayed(mAdSwitchTask, autoTurningTime)
+        canTurn = true
+        turning = true
+        postDelayed(adSwitchTask, autoTurningTime)
     }
 
     /**
      * 停止翻页
      */
     fun stopTurning() {
-        if (mTurning) {
-            mTurning = false
-            removeCallbacks(mAdSwitchTask)
+        if (turning) {
+            turning = false
+            removeCallbacks(adSwitchTask)
         }
     }
 
     //触碰控件的时候，翻页应该停止，离开的时候如果之前是开启了翻页的话则重新启动翻页
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        if (!mCanTurn) {
+        if (!canTurn) {
             return super.dispatchTouchEvent(ev)
         }
         val action = ev.action
         if (action == MotionEvent.ACTION_UP
                 || action == MotionEvent.ACTION_CANCEL
                 || action == MotionEvent.ACTION_OUTSIDE) {
-            startTurning(mAutoTurningTime)
+            startTurning(autoTurningTime)
         } else if (action == MotionEvent.ACTION_DOWN) {
             stopTurning()
         }
@@ -561,22 +576,23 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
     private class AdSwitchTask internal constructor(convenientBanner: FlyBanner<*>) : Runnable {
 
         private val mReference: WeakReference<FlyBanner<*>> = WeakReference(convenientBanner)
+
         //是否从左向右翻页
         private var mIsScrollRight = true
 
         override fun run() {
             val banner = mReference.get()
-            if (banner == null || !banner.mTurning) {
+            if (banner == null || !banner.turning) {
                 return
             }
-            val currentItem = banner.mLoopHelper.getCurrentItem()
+            val currentItem = banner.loopHelper.getCurrentItem()
             var page = currentItem + 1
-            if (!banner.mIsLoopMode && page == banner.mDataSize) {
+            if (!banner.isLoopMode && page == banner.dataSize) {
                 banner.stopTurning()
                 return
             }
-            if (banner.mIsLoopMode && banner.mIsScaleCardView) {
-                if (page == 3 * banner.mDataSize && mIsScrollRight) {
+            if (banner.isLoopMode && banner.isScaleCardView) {
+                if (page == 3 * banner.dataSize && mIsScrollRight) {
                     mIsScrollRight = false
                 }
                 if (!mIsScrollRight) {
@@ -587,8 +603,8 @@ class FlyBanner<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
                     }
                 }
             }
-            banner.mLoopHelper.setCurrentItem(page, true)
-            banner.postDelayed(banner.mAdSwitchTask, banner.mAutoTurningTime)
+            banner.loopHelper.setCurrentItem(page, true)
+            banner.postDelayed(banner.adSwitchTask, banner.autoTurningTime)
         }
     }
 }

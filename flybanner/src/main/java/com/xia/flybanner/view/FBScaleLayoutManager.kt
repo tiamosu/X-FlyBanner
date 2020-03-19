@@ -24,38 +24,38 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
      * 当[getOrientation]为[RecyclerView.VERTICAL]时，表示上下方Item的露出距离
      */
     @JvmField
-    var mSecondaryExposed = 0
+    var secondaryExposed = 0
 
     /**
      * 次要方块的露出距离的权重
-     * 注意，只有当[mSecondaryExposed]为0时，才会使用此属性
+     * 注意，只有当[secondaryExposed]为0时，才会使用此属性
      * 此权重为相对RecyclerView而言，并且分别针对左右两侧。
-     * 即：当 [mSecondaryExposedWeight] = 0.1F,那么主Item的宽度为RecyclerView.width * 0.8F
+     * 即：当 [secondaryExposedWeight] = 0.1F,那么主Item的宽度为RecyclerView.width * 0.8F
      */
     @JvmField
-    var mSecondaryExposedWeight = 0.1f
+    var secondaryExposedWeight = 0.1f
 
     /**
      * 次item缩放量
      * 表示当Item位于次Item位置时，显示尺寸相对于完整尺寸的量
      */
     @JvmField
-    var mScaleGap = 0.85f
+    var scaleGap = 0.85f
 
     /**
      * 偏移量，如果是纵向排版，那么代表Y，如果是横向排版，那么代表X
      */
-    private var mOffset = 0
+    private var offset = 0
 
     /**
      * 存放所有item的位置和尺寸
      */
-    private val mItemsFrames = SparseArray<Rect>()
+    private val itemsFrames = SparseArray<Rect>()
 
     /**
      * 记录item是否已经展示
      */
-    private val mItemsAttached = SparseBooleanArray()
+    private val itemsAttached = SparseBooleanArray()
 
     /**
      * 获取已使用的宽度，即不可用于Item的缩进宽度
@@ -65,10 +65,10 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
             if (orientation == RecyclerView.VERTICAL) {
                 return 0
             }
-            return if (mSecondaryExposed == 0) {
-                (width * (mSecondaryExposedWeight * 2)).toInt()
+            return if (secondaryExposed == 0) {
+                (width * (secondaryExposedWeight * 2)).toInt()
             } else {
-                mSecondaryExposed * 2
+                secondaryExposed * 2
             }
         }
 
@@ -80,10 +80,10 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
             if (orientation == RecyclerView.HORIZONTAL) {
                 return 0
             }
-            return if (mSecondaryExposed == 0) {
-                (height * (mSecondaryExposedWeight * 2)).toInt()
+            return if (secondaryExposed == 0) {
+                (height * (secondaryExposedWeight * 2)).toInt()
             } else {
-                mSecondaryExposed * 2
+                secondaryExposed * 2
             }
         }
 
@@ -109,7 +109,7 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
     override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {
         //如果没有item,那么就清空所有的Item,并且结束
         if (itemCount == 0) {
-            mOffset = 0
+            offset = 0
             removeAndRecycleAllViews(recycler!!)
             return
         }
@@ -129,14 +129,14 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
         var offsetX = (usedWidth * 0.5f).toInt()
         var offsetY = (usedHeight * 0.5f).toInt()
         for (position in 0 until itemCount) {
-            var frame: Rect? = mItemsFrames.get(position)
+            var frame: Rect? = itemsFrames.get(position)
             if (frame == null) {
                 frame = Rect()
             }
             frame.set(offsetX, offsetY, offsetX + viewWidth, offsetY + viewHeight)
 
-            mItemsFrames.put(position, frame)
-            mItemsAttached.put(position, false)
+            itemsFrames.put(position, frame)
+            itemsAttached.put(position, false)
 
             if (orientation == RecyclerView.VERTICAL) {
                 offsetY += viewHeight
@@ -160,8 +160,8 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
             return
         }
 
-        val offsetX = if (orientation == RecyclerView.HORIZONTAL) mOffset else 0
-        val offsetY = if (orientation == RecyclerView.VERTICAL) mOffset else 0
+        val offsetX = if (orientation == RecyclerView.HORIZONTAL) offset else 0
+        val offsetY = if (orientation == RecyclerView.VERTICAL) offset else 0
         // 当前scroll offset状态下的显示区域
         val displayFrame = Rect(offsetX, offsetY,
                 horizontalSpace + offsetX, verticalSpace + offsetY)
@@ -176,7 +176,7 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
             childFrame.bottom = getDecoratedBottom(child)
 
             if (!Rect.intersects(displayFrame, childFrame)) {
-                mItemsAttached.put(getPosition(child), false)
+                itemsAttached.put(getPosition(child), false)
                 removeAndRecycleView(child, recycler)
             }
         }
@@ -189,22 +189,22 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
         //由于RecyclerView实际上并没有scroll，也就是说RecyclerView容器的滑动效果是依赖于LayoutManager对item进行平移来实现的
         //故在放置item时要将item的计算位置平移到实际位置
         for (i in 0 until itemCount) {
-            if (Rect.intersects(displayFrame, mItemsFrames.get(i))) {
+            if (Rect.intersects(displayFrame, itemsFrames.get(i))) {
                 //在onLayoutChildren时由于移除了所有的item view，可以遍历全部item进行添加
                 //在scroll时就不同了，由于scroll时会先将已显示的item view进行平移，
                 //然后移除屏幕外的item view，此时仍然在屏幕内显示的item view就无需再次添加了
-                if (!mItemsAttached.get(i)) {
+                if (!itemsAttached.get(i)) {
                     val scrap = recycler.getViewForPosition(i)
                     measureChildWithMargins(scrap, usedWidth, usedHeight)
                     addView(scrap)
-                    val frame = mItemsFrames.get(i)
+                    val frame = itemsFrames.get(i)
                     // Important！布局到RecyclerView容器中，所有的计算都是为了得出任意position的item的边界来布局
                     layoutDecorated(scrap,
                             frame.left - offsetX,
                             frame.top - offsetY,
                             frame.right - offsetX,
                             frame.bottom - offsetY)
-                    mItemsAttached.put(i, true)
+                    itemsAttached.put(i, true)
                 }
             }
         }
@@ -220,8 +220,8 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
         for (i in 0 until itemCount) {
             val child = getChildAt(i) ?: continue
             val position = getPosition(child)
-            val weight = offsetWeight(displayFrame, mItemsFrames.get(position))
-            val scale = (1 - mScaleGap) * weight + mScaleGap
+            val weight = offsetWeight(displayFrame, itemsFrames.get(position))
+            val scale = (1 - scaleGap) * weight + scaleGap
             child.scaleY = scale
             child.scaleX = scale
         }
@@ -244,14 +244,14 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
      * 计算两个线段之间的重叠部分的长度
      */
     private fun overlapLength(start1: Int, start2: Int, end1: Int, end2: Int): Int {
-        return Math.min(end1, end2) - Math.max(start1, start2)
+        return end1.coerceAtMost(end2) - start1.coerceAtLeast(start2)
     }
 
     /**
      * 横向滑动时，回调的方法
      */
     override fun scrollHorizontallyBy(dx: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
-        val tempX = mOffset + dx
+        val tempX = offset + dx
         val horizontalSpace = horizontalSpace
         val usedWidth = usedWidth
         val minOffset = horizontalSpace / 2 * -1
@@ -259,11 +259,11 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
 
         var scrollLength = dx
         if (tempX < minOffset) {
-            scrollLength = minOffset - mOffset
+            scrollLength = minOffset - offset
         } else if (tempX > maxOffset) {
-            scrollLength = maxOffset - mOffset
+            scrollLength = maxOffset - offset
         }
-        mOffset += scrollLength
+        offset += scrollLength
 
         offsetChildrenHorizontal(-scrollLength)
         if (recycler != null && state != null) {
@@ -285,11 +285,11 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
         val itemHeight = verticalSpace - usedHeight
         val itemWidth = horizontalSpace - usedWidth
         val left = if (orientation == RecyclerView.HORIZONTAL)
-            1.0f * targetPosition.toFloat() * itemWidth.toFloat() + leftOff - mOffset
+            1.0f * targetPosition.toFloat() * itemWidth.toFloat() + leftOff - offset
         else
             0f
         val top = if (orientation == RecyclerView.VERTICAL)
-            1.0f * targetPosition.toFloat() * itemHeight.toFloat() + topOff - mOffset
+            1.0f * targetPosition.toFloat() * itemHeight.toFloat() + topOff - offset
         else
             0f
         return PointF(left, top)
@@ -299,7 +299,7 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
      * 纵向滑动时，回调的方法
      */
     override fun scrollVerticallyBy(dy: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
-        val tempY = mOffset + dy
+        val tempY = offset + dy
         val verticalSpace = verticalSpace
         val usedHeight = usedHeight
         val minOffset = verticalSpace / 2 * -1
@@ -307,11 +307,11 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
 
         var scrollLength = dy
         if (tempY < minOffset) {
-            scrollLength = minOffset - mOffset
+            scrollLength = minOffset - offset
         } else if (tempY > maxOffset) {
-            scrollLength = maxOffset - mOffset
+            scrollLength = maxOffset - offset
         }
-        mOffset += scrollLength
+        offset += scrollLength
 
         offsetChildrenVertical(-scrollLength)
         if (recycler != null && state != null) {
@@ -325,11 +325,11 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
      * 滑动至指定为的方法
      */
     override fun scrollToPosition(position: Int) {
-        val pos = Math.min(Math.max(position, 0), itemCount)
-        mOffset = if (orientation == RecyclerView.HORIZONTAL)
-            mItemsFrames.get(pos).left
+        val pos = position.coerceAtLeast(0).coerceAtMost(itemCount)
+        offset = if (orientation == RecyclerView.HORIZONTAL)
+            itemsFrames.get(pos).left
         else
-            mItemsFrames.get(pos).top
+            itemsFrames.get(pos).top
         requestLayout()
     }
 
@@ -337,7 +337,7 @@ class FBScaleLayoutManager(context: Context, orientation: Int) :
      * 以动画的形式，带有中间过程的滑动到指定位置
      */
     override fun smoothScrollToPosition(recyclerView: RecyclerView, state: RecyclerView.State?, position: Int) {
-        val pos = Math.min(Math.max(position, 0), itemCount)
+        val pos = position.coerceAtLeast(0).coerceAtMost(itemCount)
         val scroller = LinearSmoothScroller(recyclerView.context)
         scroller.targetPosition = pos
         startSmoothScroll(scroller)

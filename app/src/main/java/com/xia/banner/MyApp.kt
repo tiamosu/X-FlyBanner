@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
  * @author weixia
  * @date 2019/4/16.
  */
+@Suppress("unused")
 class MyApp : Application() {
 
     override fun onLowMemory() {

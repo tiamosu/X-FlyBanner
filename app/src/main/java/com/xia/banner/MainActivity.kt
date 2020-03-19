@@ -19,27 +19,27 @@ import com.xia.flybanner.listener.OnPageChangeListener
 import java.util.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-    private lateinit var mFlyBanner: FlyBanner<Any>
-    private lateinit var mNoticeView: FlyBanner<Any>
-    private lateinit var mLoopControlBtn: AppCompatButton
-    private lateinit var mSetCurrentItemPosBtn: AppCompatButton
-    private lateinit var mRefreshDataBtn: AppCompatButton
-    private lateinit var mIndicatorOrientationBtn: AppCompatButton
-    private lateinit var mLoopModeBtn: AppCompatButton
-    private lateinit var mScaleCardViewBtn: AppCompatButton
-    private lateinit var mLoopStatusTv: AppCompatTextView
-    private lateinit var mCurrentItemPosTv: AppCompatTextView
-    private lateinit var mDataSizeTv: AppCompatTextView
-    private lateinit var mIndicatorOrientationTv: AppCompatTextView
-    private lateinit var mLoopModeTv: AppCompatTextView
-    private lateinit var mScaleCardViewTv: AppCompatTextView
-    private lateinit var mBlurIv: AppCompatImageView
+    private lateinit var flyBanner: FlyBanner<Any>
+    private lateinit var noticeView: FlyBanner<Any>
+    private lateinit var loopControlBtn: AppCompatButton
+    private lateinit var setCurrentItemPosBtn: AppCompatButton
+    private lateinit var refreshDataBtn: AppCompatButton
+    private lateinit var indicatorOrientationBtn: AppCompatButton
+    private lateinit var loopModeBtn: AppCompatButton
+    private lateinit var scaleCardViewBtn: AppCompatButton
+    private lateinit var loopStatusTv: AppCompatTextView
+    private lateinit var currentItemPosTv: AppCompatTextView
+    private lateinit var dataSizeTv: AppCompatTextView
+    private lateinit var indicatorOrientationTv: AppCompatTextView
+    private lateinit var loopModeTv: AppCompatTextView
+    private lateinit var scaleCardViewTv: AppCompatTextView
+    private lateinit var blurIv: AppCompatImageView
 
-    private val mLocalImages = ArrayList<Int>()
-    private var mIsHorizontal = true
-    private var mIsLoopMode: Boolean = false
-    private var mIsScaleCardView: Boolean = false
-    private var mBlurRunnable: Runnable? = null
+    private val localImages = ArrayList<Int>()
+    private var isHorizontal = true
+    private var isLoopMode: Boolean = false
+    private var isScaleCardView: Boolean = false
+    private var blurRunnable: Runnable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,44 +55,44 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         //开始自动翻页
-        mFlyBanner.startTurning()
+        flyBanner.startTurning()
     }
 
     override fun onPause() {
         super.onPause()
         //停止翻页
-        mFlyBanner.stopTurning()
+        flyBanner.stopTurning()
     }
 
     private fun initView() {
-        mFlyBanner = findViewById(R.id.main_banner)
-        mNoticeView = findViewById(R.id.main_notice)
-        mLoopControlBtn = findViewById(R.id.main_loop_control_btn)
-        mLoopStatusTv = findViewById(R.id.main_loop_status_tv)
-        mSetCurrentItemPosBtn = findViewById(R.id.main_set_current_item_pos_btn)
-        mCurrentItemPosTv = findViewById(R.id.main_current_item_position_tv)
-        mRefreshDataBtn = findViewById(R.id.main_refresh_data_btn)
-        mDataSizeTv = findViewById(R.id.main_data_size_tv)
-        mIndicatorOrientationBtn = findViewById(R.id.main_indicator_orientation_btn)
-        mIndicatorOrientationTv = findViewById(R.id.main_indicator_orientation_tv)
-        mBlurIv = findViewById(R.id.main_blur_view)
-        mLoopModeBtn = findViewById(R.id.main_loop_mode_btn)
-        mLoopModeTv = findViewById(R.id.main_loop_mode_tv)
-        mScaleCardViewBtn = findViewById(R.id.main_scale_card_view_btn)
-        mScaleCardViewTv = findViewById(R.id.main_scale_card_view_tv)
+        flyBanner = findViewById(R.id.main_banner)
+        noticeView = findViewById(R.id.main_notice)
+        loopControlBtn = findViewById(R.id.main_loop_control_btn)
+        loopStatusTv = findViewById(R.id.main_loop_status_tv)
+        setCurrentItemPosBtn = findViewById(R.id.main_set_current_item_pos_btn)
+        currentItemPosTv = findViewById(R.id.main_current_item_position_tv)
+        refreshDataBtn = findViewById(R.id.main_refresh_data_btn)
+        dataSizeTv = findViewById(R.id.main_data_size_tv)
+        indicatorOrientationBtn = findViewById(R.id.main_indicator_orientation_btn)
+        indicatorOrientationTv = findViewById(R.id.main_indicator_orientation_tv)
+        blurIv = findViewById(R.id.main_blur_view)
+        loopModeBtn = findViewById(R.id.main_loop_mode_btn)
+        loopModeTv = findViewById(R.id.main_loop_mode_tv)
+        scaleCardViewBtn = findViewById(R.id.main_scale_card_view_btn)
+        scaleCardViewTv = findViewById(R.id.main_scale_card_view_tv)
     }
 
     private fun initEvent() {
-        mLoopControlBtn.setOnClickListener(this)
-        mSetCurrentItemPosBtn.setOnClickListener(this)
-        mRefreshDataBtn.setOnClickListener(this)
-        mIndicatorOrientationBtn.setOnClickListener(this)
-        mLoopModeBtn.setOnClickListener(this)
-        mScaleCardViewBtn.setOnClickListener(this)
+        loopControlBtn.setOnClickListener(this)
+        setCurrentItemPosBtn.setOnClickListener(this)
+        refreshDataBtn.setOnClickListener(this)
+        indicatorOrientationBtn.setOnClickListener(this)
+        loopModeBtn.setOnClickListener(this)
+        scaleCardViewBtn.setOnClickListener(this)
     }
 
     private fun refreshData() {
-        mLocalImages.clear()
+        localImages.clear()
         val min = 1
         val max = 7
         val randomNum = Random().nextInt(max - min) + min
@@ -101,21 +101,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         for (position in 0 until randomNum) {
             val imgResId = getResId("ic_test_$position", R.drawable::class.java)
             if (imgResId != -1) {
-                mLocalImages.add(imgResId)
+                localImages.add(imgResId)
             }
         }
     }
 
     private fun start() {
-        BannerCreator.setDefault(mFlyBanner, mLocalImages, mIsHorizontal,
-                mIsLoopMode, mIsScaleCardView, object : OnItemClickListener {
+        BannerCreator.setDefault(flyBanner, localImages, isHorizontal,
+                isLoopMode, isScaleCardView, object : OnItemClickListener {
             override fun onItemClick(position: Int) {
                 showToast("onItemClick: $position")
             }
         }, object : OnPageChangeListener {
             override fun onPageSelected(index: Int, isLastPage: Boolean) {
                 notifyBackgroundChange(index)
-                showToast("onPageSelected: " + index + "   currentItem:" + mFlyBanner.getCurrentItem())
+                showToast("onPageSelected: " + index + "   currentItem:" + flyBanner.getCurrentItem())
                 setPosition(index, isLastPage)
             }
 
@@ -128,8 +128,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         notifyBackgroundChange(0)
         setLoopStatus()
-        setPosition(0, mLocalImages.size <= 1)
-        setDataSize(mLocalImages.size)
+        setPosition(0, localImages.size <= 1)
+        setDataSize(localImages.size)
         setIndicatorOrientation()
         setGuidePageStatus()
         setScaleCardViewStatus()
@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         list.add("大促销下单拆福袋，亿万新年红包随便拿")
         list.add("家电五折团，抢十亿无门槛现金红包")
         list.add("星球大战剃须刀首发送200元代金券")
-        NoticeCreator.setDefault(mNoticeView, list, false, object : OnItemClickListener {
+        NoticeCreator.setDefault(noticeView, list, false, object : OnItemClickListener {
             override fun onItemClick(position: Int) {
                 showToast(list[position])
             }
@@ -160,33 +160,33 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setLoopStatus() {
-        val text = "是否自动翻页：" + mFlyBanner.isAutoPlay()
-        mLoopStatusTv.text = text
+        val text = "是否自动翻页：" + flyBanner.isAutoPlay()
+        loopStatusTv.text = text
     }
 
     private fun setPosition(index: Int, isLastPage: Boolean) {
         val text = "position：$index，最后一页：$isLastPage"
-        mCurrentItemPosTv.text = text
+        currentItemPosTv.text = text
     }
 
     private fun setDataSize(dataSize: Int) {
         val text = "总数据条数：$dataSize"
-        mDataSizeTv.text = text
+        dataSizeTv.text = text
     }
 
     private fun setIndicatorOrientation() {
-        val text = "翻页方向：" + if (mIsHorizontal) "横向" else "竖向"
-        mIndicatorOrientationTv.text = text
+        val text = "翻页方向：" + if (isHorizontal) "横向" else "竖向"
+        indicatorOrientationTv.text = text
     }
 
     private fun setGuidePageStatus() {
-        val text = "是否无限循环：$mIsLoopMode"
-        mLoopModeTv.text = text
+        val text = "是否无限循环：$isLoopMode"
+        loopModeTv.text = text
     }
 
     private fun setScaleCardViewStatus() {
-        val text = "是否为卡片式缩放视图：$mIsScaleCardView"
-        mScaleCardViewTv.text = text
+        val text = "是否为卡片式缩放视图：$isScaleCardView"
+        scaleCardViewTv.text = text
     }
 
     private fun showToast(text: String) {
@@ -194,48 +194,48 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun notifyBackgroundChange(position: Int) {
-        val resId = mLocalImages[position]
-        mBlurIv.removeCallbacks(mBlurRunnable)
-        mBlurRunnable = Runnable {
+        val resId = localImages[position]
+        blurIv.removeCallbacks(blurRunnable)
+        blurRunnable = Runnable {
             val bitmap = BitmapFactory.decodeResource(resources, resId)
             val newBitmap = BlurBitmapUtils.getBlurBitmap(this@MainActivity, bitmap, 15)
-            ViewSwitchUtils.startSwitchBackgroundAnim(mBlurIv, newBitmap)
+            ViewSwitchUtils.startSwitchBackgroundAnim(blurIv, newBitmap)
         }
-        mBlurIv.postDelayed(mBlurRunnable, 500)
+        blurIv.postDelayed(blurRunnable, 500)
     }
 
     override fun onClick(v: View) {
-        if (v === mLoopControlBtn) {
-            val isCanLoop = mFlyBanner.isAutoPlay()
-            mFlyBanner.setAutoPlay(!isCanLoop)
+        if (v === loopControlBtn) {
+            val isCanLoop = flyBanner.isAutoPlay()
+            flyBanner.setAutoPlay(!isCanLoop)
             setLoopStatus()
             return
         }
-        if (v === mSetCurrentItemPosBtn) {
+        if (v === setCurrentItemPosBtn) {
             val min = 0
-            val max = mLocalImages.size
+            val max = localImages.size
             val randomNum = Random().nextInt(max - min) + min
-            mFlyBanner.setCurrentItem(randomNum)
+            flyBanner.setCurrentItem(randomNum)
             return
         }
-        if (v === mRefreshDataBtn) {
+        if (v === refreshDataBtn) {
             refreshData()
             start()
             showToast("数据已刷新")
             return
         }
-        if (v === mIndicatorOrientationBtn) {
-            mIsHorizontal = !mIsHorizontal
+        if (v === indicatorOrientationBtn) {
+            isHorizontal = !isHorizontal
             start()
             return
         }
-        if (v === mLoopModeBtn) {
-            mIsLoopMode = !mIsLoopMode
+        if (v === loopModeBtn) {
+            isLoopMode = !isLoopMode
             start()
             return
         }
-        if (v === mScaleCardViewBtn) {
-            mIsScaleCardView = !mIsScaleCardView
+        if (v === scaleCardViewBtn) {
+            isScaleCardView = !isScaleCardView
             start()
         }
     }

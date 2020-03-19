@@ -14,27 +14,26 @@ import com.xia.flybanner.view.FBLoopViewPager
  * @date 2019/4/16.
  */
 class FBLoopHelper {
-    private var mFirstItemPos: Int = 0
-    private var mLastPosition: Int = 0
+    private var firstItemPos = 0
+    private var lastPosition = 0
 
-    private val mPagerSnapHelper = PagerSnapHelper()
-    private var mLoopViewPager: FBLoopViewPager? = null
-    private var mPageAdapter: FBPageAdapter<*>? = null
-    private var mOnScrollListener: RecyclerView.OnScrollListener? = null
-    private var mOnPageChangeListener: OnPageChangeListener? = null
+    private val pagerSnapHelper by lazy { PagerSnapHelper() }
+    private var loopViewPager: FBLoopViewPager? = null
+    private var pageAdapter: FBPageAdapter<*>? = null
+    private var scrollListener: RecyclerView.OnScrollListener? = null
+    private var pageChangeListener: OnPageChangeListener? = null
 
-    fun attachToRecyclerView(loopViewPager: FBLoopViewPager,
-                             pageAdapter: FBPageAdapter<*>) {
-        this.mLoopViewPager = loopViewPager
-        this.mPageAdapter = pageAdapter
-        this.mLastPosition = -1
+    fun attachToRecyclerView(loopViewPager: FBLoopViewPager, pageAdapter: FBPageAdapter<*>) {
+        this.loopViewPager = loopViewPager
+        this.pageAdapter = pageAdapter
+        this.lastPosition = -1
 
-        mOnScrollListener?.let {
+        scrollListener?.let {
             loopViewPager.removeOnScrollListener(it)
         }
-        mOnScrollListener = object : RecyclerView.OnScrollListener() {
+        scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                mOnPageChangeListener?.onScrollStateChanged(recyclerView, newState)
+                pageChangeListener?.onScrollStateChanged(recyclerView, newState)
 
                 //这里变换位置实现循环
                 val count = pageAdapter.getRealItemCount()
@@ -48,11 +47,11 @@ class FBLoopHelper {
                     currentItem -= count
                 }
                 val position = currentItem % count
-                if (mLastPosition != position) {
-                    mLastPosition = position
+                if (lastPosition != position) {
+                    lastPosition = position
                     setCurrentItem(currentItem)
 
-                    mOnPageChangeListener?.apply {
+                    pageChangeListener?.apply {
                         val isLastPage = position == count - 1
                         this.onPageSelected(position, isLastPage)
                     }
@@ -60,13 +59,13 @@ class FBLoopHelper {
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                mOnPageChangeListener?.onScrolled(recyclerView, dx, dy)
+                pageChangeListener?.onScrolled(recyclerView, dx, dy)
             }
         }
-        loopViewPager.addOnScrollListener(mOnScrollListener!!)
+        loopViewPager.addOnScrollListener(scrollListener!!)
 
         initWidth(loopViewPager)
-        mPagerSnapHelper.attachToRecyclerView(loopViewPager)
+        pagerSnapHelper.attachToRecyclerView(loopViewPager)
     }
 
     /**
@@ -88,7 +87,7 @@ class FBLoopHelper {
                         currentVto.removeOnGlobalLayoutListener(this)
                     }
                 }
-                setCurrentItem(mFirstItemPos)
+                setCurrentItem(firstItemPos)
             }
         })
     }
@@ -99,28 +98,28 @@ class FBLoopHelper {
 
     fun setCurrentItem(item: Int, smoothScroll: Boolean) {
         if (smoothScroll) {
-            mLoopViewPager?.smoothScrollToPosition(item)
+            loopViewPager?.smoothScrollToPosition(item)
         } else {
             scrollToPosition(item)
         }
     }
 
     private fun scrollToPosition(pos: Int) {
-        val layoutManager = mLoopViewPager?.layoutManager as? LinearLayoutManager
+        val layoutManager = loopViewPager?.layoutManager as? LinearLayoutManager
         layoutManager?.scrollToPositionWithOffset(pos, 0)
     }
 
     fun setFirstItemPos(firstItemPos: Int) {
-        this.mFirstItemPos = firstItemPos
+        this.firstItemPos = firstItemPos
     }
 
     fun getFirstItemPos(): Int {
-        return mFirstItemPos
+        return firstItemPos
     }
 
     fun getCurrentItem(): Int {
-        val layoutManager = mLoopViewPager?.layoutManager ?: return 0
-        val view = mPagerSnapHelper.findSnapView(layoutManager) ?: return 0
+        val layoutManager = loopViewPager?.layoutManager ?: return 0
+        val view = pagerSnapHelper.findSnapView(layoutManager) ?: return 0
         return layoutManager.getPosition(view)
     }
 
@@ -132,10 +131,10 @@ class FBLoopHelper {
     }
 
     fun getRealItemCount(): Int {
-        return mPageAdapter?.getRealItemCount() ?: 0
+        return pageAdapter?.getRealItemCount() ?: 0
     }
 
     fun setOnPageChangeListener(onPageChangeListener: OnPageChangeListener?) {
-        this.mOnPageChangeListener = onPageChangeListener
+        this.pageChangeListener = onPageChangeListener
     }
 }

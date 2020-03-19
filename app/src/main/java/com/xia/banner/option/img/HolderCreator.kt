@@ -18,6 +18,5 @@ class HolderCreator : FBViewHolderCreator {
 
     override fun getLayoutId(): Int {
         return R.layout.item_banner_img
-        //        return R.layout.item_banner_img_scale;
     }
 }

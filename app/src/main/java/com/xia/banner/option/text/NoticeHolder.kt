@@ -12,15 +12,13 @@ import androidx.appcompat.widget.AppCompatTextView
  * @date 2019/4/16.
  */
 class NoticeHolder internal constructor(itemView: View) : FBHolder<Any>(itemView) {
-    private var mAppCompatTextView: AppCompatTextView? = null
+    private var textView: AppCompatTextView? = null
 
     override fun initView(itemView: View) {
-        mAppCompatTextView = itemView.findViewById(R.id.item_notice_tv)
+        textView = itemView.findViewById(R.id.item_notice_tv)
     }
 
     override fun updateUI(data: Any) {
-        if (mAppCompatTextView != null) {
-            mAppCompatTextView!!.text = data.toString()
-        }
+        textView?.text = data.toString()
     }
 }

@@ -24,9 +24,9 @@ class FBLoopViewPager : RecyclerView {
 
     private fun solveVelocity(velocity: Int): Int {
         return if (velocity > 0) {
-            Math.min(velocity, FLING_MAX_VELOCITY)
+            velocity.coerceAtMost(FLING_MAX_VELOCITY)
         } else {
-            Math.max(velocity, -FLING_MAX_VELOCITY)
+            velocity.coerceAtLeast(-FLING_MAX_VELOCITY)
         }
     }
 
